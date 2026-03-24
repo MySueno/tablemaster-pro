@@ -483,6 +483,15 @@
     background: var(--tmp-footer-bg, #D32637);
 }
 
+/* Sticky header */
+.tmp-wrapper.tmp-sticky-header thead {
+    will-change: transform;
+}
+
+.tmp-wrapper.tmp-sticky-header .tmp-thead-stuck .tmp-th {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
 /* Print */
 @media print {
     .tmp-controls,

@@ -39,6 +39,7 @@ $default_sort_col  = sanitize_text_field( $settings['default_sort_col'] ?? '' );
 $default_sort_dir  = in_array( $settings['default_sort_dir'] ?? '', $allowed_sort_dir, true ) ? $settings['default_sort_dir'] : 'asc';
 $inline_html       = ! empty( $settings['inline_html'] );
 $sticky_first_col  = ! empty( $settings['sticky_first_col'] );
+$sticky_header     = ! empty( $settings['sticky_header'] );
 
 $columns = $data['columns'];
 $rows    = $data['rows'];
@@ -65,7 +66,7 @@ $rows    = $data['rows'];
 </style>
 
 <div id="<?php echo esc_attr( $table_uid ); ?>"
-     class="tmp-wrapper tmp-mobile-<?php echo esc_attr( $mobile_mode ); ?><?php echo $sticky_first_col ? ' tmp-sticky-first' : ''; ?>"
+     class="tmp-wrapper tmp-mobile-<?php echo esc_attr( $mobile_mode ); ?><?php echo $sticky_first_col ? ' tmp-sticky-first' : ''; ?><?php echo $sticky_header ? ' tmp-sticky-header' : ''; ?>"
      data-table-id="<?php echo esc_attr( $table->id ); ?>"
      data-per-page="<?php echo esc_attr( $per_page ); ?>"
      data-collapsible="<?php echo $collapsible ? '1' : '0'; ?>"

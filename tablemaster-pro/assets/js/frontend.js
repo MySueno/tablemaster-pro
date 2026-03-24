@@ -122,6 +122,47 @@
         }
 
         this.applyFilters();
+
+        if (this.wrapper.classList.contains('tmp-sticky-header')) {
+            this.initStickyHeader();
+        }
+    };
+
+    TableMasterInstance.prototype.initStickyHeader = function () {
+        var self = this;
+        var thead = this.thead;
+        var wrapper = this.wrapper;
+        var scrollWrapper = wrapper.querySelector('.tmp-table-scroll-wrapper');
+        var ticking = false;
+
+        function updateStickyHeader() {
+            var wrapperRect = (scrollWrapper || wrapper).getBoundingClientRect();
+            var theadHeight = thead.offsetHeight;
+            var tableBottom = wrapperRect.bottom;
+            var viewportTop = 0;
+
+            if (wrapperRect.top < viewportTop && tableBottom > theadHeight) {
+                var offset = Math.min(
+                    viewportTop - wrapperRect.top,
+                    tableBottom - wrapperRect.top - theadHeight
+                );
+                thead.style.transform = 'translateY(' + Math.max(0, offset) + 'px)';
+                thead.classList.add('tmp-thead-stuck');
+            } else {
+                thead.style.transform = '';
+                thead.classList.remove('tmp-thead-stuck');
+            }
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', function () {
+            if (!ticking) {
+                requestAnimationFrame(updateStickyHeader);
+                ticking = true;
+            }
+        }, { passive: true });
+
+        updateStickyHeader();
     };
 
     TableMasterInstance.prototype.buildTree = function () {

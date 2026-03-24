@@ -667,6 +667,7 @@
             column_filters:     $('#tmp-column-filters').is(':checked'),
             inline_html:        $('#tmp-inline-html').is(':checked'),
             sticky_first_col:   $('#tmp-sticky-first-col').is(':checked'),
+            sticky_header:      $('#tmp-sticky-header').is(':checked'),
             default_sort_col:   $('#tmp-default-sort-col').val(),
             default_sort_dir:   $('#tmp-default-sort-dir').val(),
             default_col_width:  $('#tmp-default-col-width').val().trim(),

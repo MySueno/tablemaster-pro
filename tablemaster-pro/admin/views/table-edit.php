@@ -275,6 +275,13 @@ $page_title = $is_new
                     <p class="description"><?php esc_html_e( 'De eerste kolom blijft zichtbaar als de tabel horizontaal gescrolld wordt (scroll-modus).', TMP_TEXT_DOMAIN ); ?></p>
                 </div>
                 <div class="tmp-form-group">
+                    <label>
+                        <input type="checkbox" id="tmp-sticky-header" <?php checked( $settings['sticky_header'] ?? false ); ?>>
+                        <?php esc_html_e( 'Header vastzetten bij verticaal scrollen', TMP_TEXT_DOMAIN ); ?>
+                    </label>
+                    <p class="description"><?php esc_html_e( 'De kolomkoppen blijven zichtbaar als de bezoeker door de tabel scrollt, tot het einde van de tabel.', TMP_TEXT_DOMAIN ); ?></p>
+                </div>
+                <div class="tmp-form-group">
                     <label for="tmp-default-sort-col"><?php esc_html_e( 'Standaard sorteerkolom (index, 0 = eerste):', TMP_TEXT_DOMAIN ); ?></label>
                     <input type="number" id="tmp-default-sort-col" value="<?php echo esc_attr( $settings['default_sort_col'] ?? '' ); ?>" min="0" class="small-text">
                 </div>
