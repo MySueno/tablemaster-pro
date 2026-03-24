@@ -523,7 +523,7 @@
             pagination:         $('#tmp-pagination').is(':checked'),
             per_page:           parseInt($('#tmp-per-page').val(), 10),
             per_page_selector:  $('#tmp-per-page-selector').is(':checked'),
-            collapsible_groups: $('#tmp-collapsible').is(':checked'),
+            collapsible_groups: false,
             mobile_mode:        'scroll',
             column_filters:     $('#tmp-column-filters').is(':checked'),
             inline_html:        $('#tmp-inline-html').is(':checked'),
