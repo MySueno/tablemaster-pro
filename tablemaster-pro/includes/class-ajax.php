@@ -251,6 +251,8 @@ class TableMaster_Ajax {
             $saved++;
         }
 
+        TableMaster_DB::flush_table_cache( $table_id );
+
         wp_send_json_success( array( 'saved' => $saved, 'cleared' => $cleared ) );
     }
 }
