@@ -374,9 +374,16 @@ foreach ( $font_css_map as $fk => $selector ) :
                             }
                             $footer_label = implode( ' ', $footer_content_parts );
                         ?>
-                            <td class="tmp-td tmp-footer-cell" colspan="<?php echo esc_attr( $total_cols_footer ); ?>">
-                                <?php echo wp_kses_post( $footer_label ); ?>
-                            </td>
+                            <?php if ( $sticky_first_col && $total_cols_footer > 1 ) : ?>
+                                <td class="tmp-td tmp-footer-cell tmp-sticky-label">
+                                    <?php echo wp_kses_post( $footer_label ); ?>
+                                </td>
+                                <td class="tmp-td tmp-footer-cell" colspan="<?php echo esc_attr( $total_cols_footer - 1 ); ?>"></td>
+                            <?php else : ?>
+                                <td class="tmp-td tmp-footer-cell" colspan="<?php echo esc_attr( $total_cols_footer ); ?>">
+                                    <?php echo wp_kses_post( $footer_label ); ?>
+                                </td>
+                            <?php endif; ?>
                         <?php elseif ( $is_group ) :
                             $filled_count = 0;
                             $first_filled = '';
@@ -393,16 +400,30 @@ foreach ( $font_css_map as $fk => $selector ) :
                                 $total_cols = count( $columns );
                                 if ( $collapsible ) $total_cols++;
                         ?>
-                            <td class="tmp-td tmp-group-cell" colspan="<?php echo esc_attr( $total_cols ); ?>">
-                                <div class="tmp-group-cell-inner">
-                                    <?php if ( $collapsible ) : ?>
-                                        <button class="tmp-toggle-btn" aria-expanded="<?php echo $row->is_collapsed ? 'false' : 'true'; ?>" aria-label="<?php esc_attr_e( 'In-/uitklappen', TMP_TEXT_DOMAIN ); ?>">
-                                            <span class="tmp-toggle-icon"><?php echo $row->is_collapsed ? '▶' : '▼'; ?></span>
-                                        </button>
-                                    <?php endif; ?>
-                                    <span class="tmp-group-label"><?php echo wp_kses_post( $first_filled ); ?></span>
-                                </div>
-                            </td>
+                            <?php if ( $sticky_first_col && $total_cols > 1 ) : ?>
+                                <td class="tmp-td tmp-group-cell tmp-sticky-label">
+                                    <div class="tmp-group-cell-inner">
+                                        <?php if ( $collapsible ) : ?>
+                                            <button class="tmp-toggle-btn" aria-expanded="<?php echo $row->is_collapsed ? 'false' : 'true'; ?>" aria-label="<?php esc_attr_e( 'In-/uitklappen', TMP_TEXT_DOMAIN ); ?>">
+                                                <span class="tmp-toggle-icon"><?php echo $row->is_collapsed ? '▶' : '▼'; ?></span>
+                                            </button>
+                                        <?php endif; ?>
+                                        <span class="tmp-group-label"><?php echo wp_kses_post( $first_filled ); ?></span>
+                                    </div>
+                                </td>
+                                <td class="tmp-td tmp-group-cell" colspan="<?php echo esc_attr( $total_cols - 1 ); ?>"></td>
+                            <?php else : ?>
+                                <td class="tmp-td tmp-group-cell" colspan="<?php echo esc_attr( $total_cols ); ?>">
+                                    <div class="tmp-group-cell-inner">
+                                        <?php if ( $collapsible ) : ?>
+                                            <button class="tmp-toggle-btn" aria-expanded="<?php echo $row->is_collapsed ? 'false' : 'true'; ?>" aria-label="<?php esc_attr_e( 'In-/uitklappen', TMP_TEXT_DOMAIN ); ?>">
+                                                <span class="tmp-toggle-icon"><?php echo $row->is_collapsed ? '▶' : '▼'; ?></span>
+                                            </button>
+                                        <?php endif; ?>
+                                        <span class="tmp-group-label"><?php echo wp_kses_post( $first_filled ); ?></span>
+                                    </div>
+                                </td>
+                            <?php endif; ?>
                             <?php else :
                                 if ( $collapsible ) : ?>
                                     <td class="tmp-toggle-cell">

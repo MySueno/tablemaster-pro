@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.7
+Stable tag: 1.3.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.8 =
+* Fix: Sticky first column — groep-rijen (G1/G2/G3) en footer-rijen blijven nu zichtbaar bij horizontaal scrollen
+* Fix: Groep-rij cel wordt gesplitst in een sticky label-cel en een lege rest-cel bij sticky first column
 
 = 1.3.7 =
 * Fix: Kritieke PHP parse error opgelost — geneste <?php tag in gegroepeerde header veroorzaakte site crash
