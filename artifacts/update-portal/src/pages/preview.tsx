@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const FRONTEND_CSS = `/tablemaster-assets/frontend.css`;
 
@@ -230,6 +230,7 @@ function DemoTable({
 export default function Preview() {
   const [theme, setTheme] = useState<ThemeKey>("red");
   const [viewportWidth, setViewportWidth] = useState<number | null>(null);
+  const [pluginVersion, setPluginVersion] = useState<string | null>(null);
   const colors = THEMES[theme];
 
   useEffect(() => {
@@ -237,7 +238,23 @@ export default function Preview() {
     link.rel = "stylesheet";
     link.href = import.meta.env.BASE_URL + "tablemaster-assets/frontend.css";
     document.head.appendChild(link);
-    return () => { document.head.removeChild(link); };
+
+    const noindex = document.createElement("meta");
+    noindex.name = "robots";
+    noindex.content = "noindex, nofollow";
+    document.head.appendChild(noindex);
+
+    return () => {
+      document.head.removeChild(link);
+      document.head.removeChild(noindex);
+    };
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/wp-update/version")
+      .then((r) => r.json())
+      .then((d) => setPluginVersion(d.version))
+      .catch(() => {});
   }, []);
 
   return (
@@ -261,6 +278,30 @@ export default function Preview() {
               </button>
             ))}
           </div>
+
+          <a
+            href="/api/wp-update/download"
+            download
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "6px 16px",
+              background: "#2e7d32",
+              color: "#fff",
+              borderRadius: 8,
+              textDecoration: "none",
+              fontWeight: 600,
+              fontSize: "0.85rem",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+              <path d="M8 1v9m0 0L5 7m3 3l3-3M2 12v1a2 2 0 002 2h8a2 2 0 002-2v-1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Download {pluginVersion ? `v${pluginVersion}` : ""}
+          </a>
 
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <label style={{ fontSize: "0.85rem", color: "#666" }}>Breedte:</label>
