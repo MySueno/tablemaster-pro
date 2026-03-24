@@ -10,9 +10,7 @@ class TableMaster_WPML {
     }
 
     public static function is_active() {
-        return defined( 'ICL_SITEPRESS_VERSION' )
-            && ( has_filter( 'wpml_register_single_string' )
-                || has_filter( 'wpml_translate_single_string' ) );
+        return defined( 'ICL_SITEPRESS_VERSION' ) && defined( 'WPML_ST_VERSION' );
     }
 
     public static function is_string_translation_active() {
