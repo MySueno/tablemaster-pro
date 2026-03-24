@@ -413,51 +413,32 @@
     display: block;
 }
 
-/* Color presets */
-.tmp-presets {
+/* Color sections */
+.tmp-color-section {
     margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #e8e8e8;
 }
 
-.tmp-presets > label {
-    display: block;
-    font-weight: 600;
+.tmp-color-section:last-of-type {
+    border-bottom: none;
     margin-bottom: 8px;
 }
 
-.tmp-preset-buttons {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.tmp-preset-btn {
-    padding: 6px 12px;
-    border: 2px solid transparent;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.82em;
+.tmp-color-section-title {
+    font-size: 0.85em;
     font-weight: 700;
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    transition: transform 0.1s, box-shadow 0.1s;
+    color: #1d2327;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.tmp-preset-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-}
-
-.tmp-preset-btn.active {
-    border-color: #1d2327;
-    box-shadow: 0 0 0 2px rgba(0,0,0,0.15);
-}
-
-/* Color grid */
-.tmp-color-grid {
+.tmp-color-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 16px;
+    gap: 12px;
+    margin-bottom: 6px;
 }
 
 .tmp-color-field label {
@@ -583,7 +564,7 @@
         width: 100%;
         position: static;
     }
-    .tmp-color-grid {
+    .tmp-color-row {
         grid-template-columns: 1fr;
     }
 }

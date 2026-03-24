@@ -109,15 +109,12 @@ class TableMaster_Admin {
         $table_id  = intval( $_GET['id'] ?? 0 );
         $table     = $table_id ? TableMaster_DB::get_table( $table_id ) : null;
         $settings  = $table ? json_decode( $table->settings, true ) : array();
-        $presets   = TableMaster_Settings::get_color_presets();
-
         wp_localize_script( 'tablemaster-admin', 'tableMasterAdmin', array(
             'ajaxurl'    => admin_url( 'admin-ajax.php' ),
             'nonce'      => wp_create_nonce( 'tablemaster_admin' ),
             'table_id'   => $table_id,
             'table_name' => $table ? $table->name : '',
             'settings'   => $settings,
-            'presets'    => $presets,
             'list_url'   => admin_url( 'admin.php?page=tablemaster' ),
             'edit_url'   => admin_url( 'admin.php?page=tablemaster-edit&id=' ),
             'lang'       => defined( 'ICL_LANGUAGE_CODE' ) ? ICL_LANGUAGE_CODE : '',

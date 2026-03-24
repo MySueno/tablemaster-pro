@@ -112,53 +112,87 @@ $page_title = $is_new
 
             <!-- COLORS TAB -->
             <div class="tmp-tab-content active" id="tmp-tab-colors">
-                <div class="tmp-presets">
-                    <label><?php esc_html_e( 'Kleurthema:', TMP_TEXT_DOMAIN ); ?></label>
-                    <div class="tmp-preset-buttons">
-                        <?php foreach ( $presets as $key => $preset ) : ?>
-                            <button class="tmp-preset-btn <?php echo $active_theme === $key ? 'active' : ''; ?>"
-                                    data-preset="<?php echo esc_attr( $key ); ?>"
-                                    style="background:<?php echo esc_attr( $preset['header_bg'] ); ?>"
-                                    title="<?php echo esc_attr( ucfirst( $key ) ); ?>">
-                                <?php echo esc_html( ucfirst( $key ) ); ?>
-                            </button>
-                        <?php endforeach; ?>
-                        <button class="tmp-preset-btn <?php echo $active_theme === 'custom' ? 'active' : ''; ?>" data-preset="custom" style="background:linear-gradient(135deg,#ff6b6b,#4ecdc4,#45b7d1)">
-                            <?php esc_html_e( 'Custom', TMP_TEXT_DOMAIN ); ?>
-                        </button>
+                <?php
+                $color_sections = array(
+                    array(
+                        'title' => __( 'Koptekst', TMP_TEXT_DOMAIN ),
+                        'bg'    => array( 'key' => 'header_bg',   'label' => __( 'Achtergrond', TMP_TEXT_DOMAIN ) ),
+                        'text'  => array( 'key' => 'header_text', 'label' => __( 'Tekst', TMP_TEXT_DOMAIN ) ),
+                    ),
+                    array(
+                        'title' => __( 'Groep 1', TMP_TEXT_DOMAIN ),
+                        'bg'    => array( 'key' => 'group1_bg',   'label' => __( 'Achtergrond', TMP_TEXT_DOMAIN ) ),
+                        'text'  => array( 'key' => 'group1_text', 'label' => __( 'Tekst', TMP_TEXT_DOMAIN ) ),
+                    ),
+                    array(
+                        'title' => __( 'Groep 2', TMP_TEXT_DOMAIN ),
+                        'bg'    => array( 'key' => 'group2_bg',   'label' => __( 'Achtergrond', TMP_TEXT_DOMAIN ) ),
+                        'text'  => array( 'key' => 'group2_text', 'label' => __( 'Tekst', TMP_TEXT_DOMAIN ) ),
+                    ),
+                    array(
+                        'title' => __( 'Groep 3', TMP_TEXT_DOMAIN ),
+                        'bg'    => array( 'key' => 'group3_bg',   'label' => __( 'Achtergrond', TMP_TEXT_DOMAIN ) ),
+                        'text'  => array( 'key' => 'group3_text', 'label' => __( 'Tekst', TMP_TEXT_DOMAIN ) ),
+                    ),
+                    array(
+                        'title' => __( 'Rijen', TMP_TEXT_DOMAIN ),
+                        'bg'    => array( 'key' => 'odd_bg',  'label' => __( 'Oneven', TMP_TEXT_DOMAIN ) ),
+                        'text'  => array( 'key' => 'even_bg', 'label' => __( 'Even', TMP_TEXT_DOMAIN ) ),
+                    ),
+                );
+                foreach ( $color_sections as $section ) : ?>
+                    <div class="tmp-color-section">
+                        <div class="tmp-color-section-title"><?php echo esc_html( $section['title'] ); ?></div>
+                        <div class="tmp-color-row">
+                            <div class="tmp-color-field">
+                                <label><?php echo esc_html( $section['bg']['label'] ); ?></label>
+                                <input type="text" class="tmp-color-picker"
+                                       data-color-key="<?php echo esc_attr( $section['bg']['key'] ); ?>"
+                                       value="<?php echo esc_attr( $c[ $section['bg']['key'] ] ?? '#ffffff' ); ?>"
+                                       data-default-color="<?php echo esc_attr( $c[ $section['bg']['key'] ] ?? '#ffffff' ); ?>">
+                            </div>
+                            <div class="tmp-color-field">
+                                <label><?php echo esc_html( $section['text']['label'] ); ?></label>
+                                <input type="text" class="tmp-color-picker"
+                                       data-color-key="<?php echo esc_attr( $section['text']['key'] ); ?>"
+                                       value="<?php echo esc_attr( $c[ $section['text']['key'] ] ?? '#ffffff' ); ?>"
+                                       data-default-color="<?php echo esc_attr( $c[ $section['text']['key'] ] ?? '#ffffff' ); ?>">
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+
+                <div class="tmp-color-section">
+                    <div class="tmp-color-section-title"><?php esc_html_e( 'Overig', TMP_TEXT_DOMAIN ); ?></div>
+                    <div class="tmp-color-row">
+                        <div class="tmp-color-field">
+                            <label><?php esc_html_e( 'Hover', TMP_TEXT_DOMAIN ); ?></label>
+                            <input type="text" class="tmp-color-picker"
+                                   data-color-key="hover_bg"
+                                   value="<?php echo esc_attr( $c['hover_bg'] ?? '#f0f0f0' ); ?>"
+                                   data-default-color="<?php echo esc_attr( $c['hover_bg'] ?? '#f0f0f0' ); ?>">
+                        </div>
+                        <div class="tmp-color-field">
+                            <label><?php esc_html_e( 'Rand', TMP_TEXT_DOMAIN ); ?></label>
+                            <input type="text" class="tmp-color-picker"
+                                   data-color-key="border_color"
+                                   value="<?php echo esc_attr( $c['border_color'] ?? '#e8e8e8' ); ?>"
+                                   data-default-color="<?php echo esc_attr( $c['border_color'] ?? '#e8e8e8' ); ?>">
+                        </div>
+                    </div>
+                    <div class="tmp-color-row">
+                        <div class="tmp-color-field">
+                            <label><?php esc_html_e( 'Accent', TMP_TEXT_DOMAIN ); ?></label>
+                            <input type="text" class="tmp-color-picker"
+                                   data-color-key="accent_color"
+                                   value="<?php echo esc_attr( $c['accent_color'] ?? '#D32637' ); ?>"
+                                   data-default-color="<?php echo esc_attr( $c['accent_color'] ?? '#D32637' ); ?>">
+                        </div>
+                        <div class="tmp-color-field"></div>
                     </div>
                 </div>
 
-                <div class="tmp-color-grid">
-                    <?php
-                    $color_fields = array(
-                        'header_bg'    => __( 'Koptekst achtergrond', TMP_TEXT_DOMAIN ),
-                        'header_text'  => __( 'Koptekst tekstkleur', TMP_TEXT_DOMAIN ),
-                        'group1_bg'    => __( 'Groep 1 achtergrond', TMP_TEXT_DOMAIN ),
-                        'group1_text'  => __( 'Groep 1 tekstkleur', TMP_TEXT_DOMAIN ),
-                        'group2_bg'    => __( 'Groep 2 achtergrond', TMP_TEXT_DOMAIN ),
-                        'group2_text'  => __( 'Groep 2 tekstkleur', TMP_TEXT_DOMAIN ),
-                        'group3_bg'    => __( 'Groep 3 achtergrond', TMP_TEXT_DOMAIN ),
-                        'group3_text'  => __( 'Groep 3 tekstkleur', TMP_TEXT_DOMAIN ),
-                        'odd_bg'       => __( 'Oneven rijen achtergrond', TMP_TEXT_DOMAIN ),
-                        'even_bg'      => __( 'Even rijen achtergrond', TMP_TEXT_DOMAIN ),
-                        'hover_bg'     => __( 'Hover kleur rij', TMP_TEXT_DOMAIN ),
-                        'border_color' => __( 'Randkleur', TMP_TEXT_DOMAIN ),
-                        'accent_color' => __( 'Accentkleur', TMP_TEXT_DOMAIN ),
-                    );
-                    foreach ( $color_fields as $key => $label ) : ?>
-                        <div class="tmp-color-field">
-                            <label><?php echo esc_html( $label ); ?></label>
-                            <input type="text"
-                                   class="tmp-color-picker"
-                                   data-color-key="<?php echo esc_attr( $key ); ?>"
-                                   value="<?php echo esc_attr( $c[$key] ?? '#ffffff' ); ?>"
-                                   data-default-color="<?php echo esc_attr( $c[$key] ?? '#ffffff' ); ?>">
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-
-                <p class="description" style="margin-top:12px;font-style:italic;"><?php esc_html_e( 'Kleuren worden direct toegepast op de rijtabel links.', TMP_TEXT_DOMAIN ); ?></p>
+                <p class="description" style="margin-top:12px;font-style:italic;"><?php esc_html_e( 'Kleuren worden direct toegepast op de tabel links.', TMP_TEXT_DOMAIN ); ?></p>
             </div>
 
             <!-- DISPLAY TAB -->

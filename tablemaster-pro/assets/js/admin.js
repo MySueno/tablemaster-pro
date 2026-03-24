@@ -107,30 +107,8 @@
         $adminTable.find('td').css({ borderColor: c.border_color || '#e0e0e0' });
     }
 
-    /* ===== PRESETS ===== */
+    /* ===== PRESETS (removed — colors are now fully custom) ===== */
     function initPresetButtons() {
-        $('.tmp-preset-btn').on('click', function () {
-            var key = $(this).data('preset');
-            if (key === 'custom') {
-                $('.tmp-preset-btn').removeClass('active');
-                $(this).addClass('active');
-                return;
-            }
-            var preset = presets[key];
-            if (!preset) return;
-
-            $('.tmp-preset-btn').removeClass('active');
-            $(this).addClass('active');
-
-            $.each(preset, function (colorKey, val) {
-                var $input = $('.tmp-color-picker[data-color-key="' + colorKey + '"]');
-                $input.val(val);
-                $input.wpColorPicker('color', val);
-            });
-
-            updatePreview();
-            isDirty = true;
-        });
     }
 
     /* ===== COLUMNS ===== */
@@ -533,7 +511,7 @@
             return;
         }
 
-        var activeTheme = $('.tmp-preset-btn.active').data('preset') || 'custom';
+        var activeTheme = 'custom';
         var colors      = getColorValues();
 
         var tableSettings = {
