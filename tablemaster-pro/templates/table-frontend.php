@@ -355,7 +355,7 @@ $rows    = $data['rows'];
                                 if ( $gc['content'] !== '' ) $filled_count++;
                             }
 
-                            if ( $filled_count <= 1 ) :
+                            if ( $filled_count <= 1 || $row->row_type === 'group_1' ) :
                                 $total_cols = count( $columns );
                                 if ( $collapsible ) $total_cols++;
                                 $group_label = '';
