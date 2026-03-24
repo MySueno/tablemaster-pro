@@ -417,8 +417,8 @@ if ( $has_cell_rows ) {
             if ($field.data('original') === original && $field.val().trim() === '') {
                 $field.val(val);
                 $field.closest('.tmp-translate-row')
-                      .addClass('tmp-translate-prefilled')
-                      .removeClass('tmp-translate-done');
+                      .addClass('tmp-translate-done')
+                      .removeClass('tmp-translate-prefilled');
             }
         });
     }
@@ -426,9 +426,8 @@ if ( $has_cell_rows ) {
     $('.tmp-translate-input').on('input', function() {
         isDirty = true;
         var $row = $(this).closest('.tmp-translate-row');
-        if ($row.hasClass('tmp-translate-prefilled')) {
-            $row.removeClass('tmp-translate-prefilled');
-        }
+        $row.removeClass('tmp-translate-prefilled');
+        propagateTranslation($(this));
         updateProgress();
     });
 
