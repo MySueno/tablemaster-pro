@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.5
+Stable tag: 1.2.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,23 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.2.7 =
+* Nieuw: Admin CSV-export — exporteer tabellen als CSV-bestand vanuit de bewerkpagina en het tabeloverzicht
+* Nieuw: Slimme vertaal auto-fill — identieke celteksten krijgen automatisch dezelfde vertaling (geel gemarkeerd)
+* Nieuw: Live auto-fill bij typen — wanneer je een vertaling invoert, worden lege velden met dezelfde originele tekst automatisch ingevuld
+* Verbeterd: Vertaalteller telt alleen handmatig vertaalde velden (prefilled velden tellen pas mee na opslaan)
+* Verbeterd: Prefilled vertalingen worden groen na handmatige bewerking
+* Fix: Geen geel bolletje meer bij lege prefilled velden
+
+= 1.2.6 =
+* Nieuw: Eigen vertaaleditor — side-by-side layout met origineel en vertaling
+* Nieuw: Voortgangsteller voor vertalingen per taal
+* Nieuw: Kopieerknop per veld om originele tekst over te nemen
+* Nieuw: Sticky opslaan-balk onderaan de vertaaleditor
+* Nieuw: Waarschuwing bij niet-opgeslagen vertalingen
+* Nieuw: Taalschakelaar met dirty-check bij meerdere WPML-talen
+* Verbeterd: WPML niet actief of slechts één taal → duidelijke melding in plaats van foutmelding
 
 = 1.2.5 =
 * Nieuw: Standaard kolombreedte op tabelniveau — stel een breedte in (bijv. 150px) die geldt voor alle kolommen zonder eigen breedte
