@@ -405,85 +405,12 @@
         display: none !important;
     }
 
-    /* CARD MODE */
-    .tmp-mobile-card .tmp-table-scroll-wrapper {
-        overflow: visible;
-        border: none;
-    }
-
-    .tmp-mobile-card .tmp-table,
-    .tmp-mobile-card thead,
-    .tmp-mobile-card tbody,
-    .tmp-mobile-card th,
-    .tmp-mobile-card td,
-    .tmp-mobile-card tr {
-        display: block;
-        width: 100%;
-    }
-
-    .tmp-mobile-card thead {
-        display: none;
-    }
-
-    .tmp-mobile-card .tmp-type-data {
-        border: 1px solid var(--tmp-border, #ccc);
-        border-radius: 6px;
-        margin-bottom: 0.75em;
-        padding: 0.5em;
-        background: var(--tmp-odd-bg, #fff);
-    }
-
-    .tmp-mobile-card .tmp-type-data .tmp-td {
-        border: none;
-        padding: 4px 8px;
-        display: flex;
-        gap: 0.5em;
-    }
-
-    .tmp-mobile-card .tmp-type-data .tmp-td::before {
-        content: attr(data-label) ':';
-        font-weight: 700;
-        min-width: 120px;
-        flex-shrink: 0;
-        color: var(--tmp-accent, #D32637);
-    }
-
-    .tmp-mobile-card .tmp-type-group_1,
-    .tmp-mobile-card .tmp-type-group_2,
-    .tmp-mobile-card .tmp-type-group_3 {
-        border-radius: 6px;
-        margin-bottom: 0.5em;
-        margin-top: 0.75em;
-    }
-
-    .tmp-mobile-card .tmp-type-group_1 .tmp-group-cell,
-    .tmp-mobile-card .tmp-type-group_2 .tmp-group-cell,
-    .tmp-mobile-card .tmp-type-group_3 .tmp-group-cell {
-        padding: 10px 14px;
-        border: none;
-    }
-
-    .tmp-mobile-card .tmp-type-group_1 .tmp-group-cell {
-        font-size: 1.1em;
-        padding: 12px 14px;
-    }
-
-    .tmp-mobile-card .tmp-type-footer {
-        border-radius: 6px;
-        margin-top: 0.75em;
-    }
-
-    .tmp-mobile-card .tmp-type-footer .tmp-footer-cell {
-        padding: 10px 14px;
-        border: none;
-    }
-
-    /* SCROLL MODE: ensure scrollable */
-    .tmp-mobile-scroll .tmp-table-scroll-wrapper {
+    /* Ensure scrollable on mobile */
+    .tmp-table-scroll-wrapper {
         overflow-x: auto;
     }
 
-    .tmp-mobile-scroll .tmp-table {
+    .tmp-table {
         min-width: 500px;
     }
 }

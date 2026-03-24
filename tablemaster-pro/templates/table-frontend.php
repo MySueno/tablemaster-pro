@@ -23,7 +23,7 @@ $border_color = $colors['border_color'];
 $accent_color = $colors['accent_color'];
 
 $allowed_search_pos = array( 'left', 'right', 'top', 'bottom' );
-$allowed_mobile     = array( 'scroll', 'card' );
+$allowed_mobile     = array( 'scroll' );
 $allowed_sort_dir   = array( 'asc', 'desc' );
 
 $show_search       = ! empty( $settings['search'] );
