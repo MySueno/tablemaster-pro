@@ -382,20 +382,18 @@ if ( $has_cell_rows ) {
 
     function updateProgress() {
         var count = 0;
-        var allFilled = true;
         $('.tmp-translate-row').each(function() {
             var $row   = $(this);
             var $input = $row.find('.tmp-translate-input');
             if (!$input.length) return;
             var filled = $input.val().trim() !== '';
-            if (filled && !$row.hasClass('tmp-translate-prefilled')) {
-                $row.addClass('tmp-translate-done');
+            if (filled) {
+                if (!$row.hasClass('tmp-translate-prefilled')) {
+                    $row.addClass('tmp-translate-done');
+                }
                 count++;
-            } else if (filled && $row.hasClass('tmp-translate-prefilled')) {
-                // prefilled: don't count
             } else {
                 $row.removeClass('tmp-translate-done tmp-translate-prefilled');
-                allFilled = false;
             }
         });
         $('#tmp-progress-count').text(count);
@@ -480,6 +478,13 @@ if ( $has_cell_rows ) {
             $btn.prop('disabled', false).removeClass('updating-message');
             if (res.success) {
                 isDirty = false;
+                $('.tmp-translate-prefilled').each(function() {
+                    var $row = $(this);
+                    if ($row.find('.tmp-translate-input').val().trim() !== '') {
+                        $row.removeClass('tmp-translate-prefilled').addClass('tmp-translate-done');
+                    }
+                });
+                updateProgress();
                 $status.removeClass('error').addClass('success').text('Vertalingen opgeslagen!');
                 setTimeout(function() { $status.text('').removeClass('success'); }, 3000);
             } else {
