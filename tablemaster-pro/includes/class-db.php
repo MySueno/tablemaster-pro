@@ -7,56 +7,53 @@ class TableMaster_DB {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
 
-        $sql_tables = "
-        CREATE TABLE IF NOT EXISTS {$wpdb->prefix}tablemaster_tables (
-            id          INT          NOT NULL AUTO_INCREMENT,
-            name        VARCHAR(255) NOT NULL DEFAULT '',
-            slug        VARCHAR(255) NOT NULL DEFAULT '',
-            settings    LONGTEXT     NOT NULL DEFAULT '',
-            created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            created_by  INT          NOT NULL DEFAULT 0,
-            PRIMARY KEY (id),
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+        dbDelta( "CREATE TABLE {$wpdb->prefix}tablemaster_tables (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            name varchar(255) NOT NULL DEFAULT '',
+            slug varchar(255) NOT NULL DEFAULT '',
+            settings longtext NOT NULL,
+            created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+            updated_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+            created_by bigint(20) unsigned NOT NULL DEFAULT 0,
+            PRIMARY KEY  (id),
             UNIQUE KEY slug (slug)
-        ) $charset_collate;
+        ) $charset_collate;" );
 
-        CREATE TABLE IF NOT EXISTS {$wpdb->prefix}tablemaster_columns (
-            id           INT          NOT NULL AUTO_INCREMENT,
-            table_id     INT          NOT NULL,
-            label        VARCHAR(255) NOT NULL DEFAULT '',
-            type         VARCHAR(50)  NOT NULL DEFAULT 'text',
-            order_index  INT          NOT NULL DEFAULT 0,
-            settings     TEXT         NOT NULL DEFAULT '',
-            PRIMARY KEY (id),
+        dbDelta( "CREATE TABLE {$wpdb->prefix}tablemaster_columns (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            table_id bigint(20) unsigned NOT NULL,
+            label varchar(255) NOT NULL DEFAULT '',
+            type varchar(50) NOT NULL DEFAULT 'text',
+            order_index int(11) NOT NULL DEFAULT 0,
+            settings text NOT NULL,
+            PRIMARY KEY  (id),
             KEY table_id (table_id)
-        ) $charset_collate;
+        ) $charset_collate;" );
 
-        CREATE TABLE IF NOT EXISTS {$wpdb->prefix}tablemaster_rows (
-            id           INT          NOT NULL AUTO_INCREMENT,
-            table_id     INT          NOT NULL,
-            parent_id    INT          NULL DEFAULT NULL,
-            row_type     VARCHAR(20)  NOT NULL DEFAULT 'data',
-            order_index  INT          NOT NULL DEFAULT 0,
-            is_collapsed TINYINT(1)   NOT NULL DEFAULT 0,
-            PRIMARY KEY (id),
+        dbDelta( "CREATE TABLE {$wpdb->prefix}tablemaster_rows (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            table_id bigint(20) unsigned NOT NULL,
+            parent_id bigint(20) unsigned DEFAULT NULL,
+            row_type varchar(20) NOT NULL DEFAULT 'data',
+            order_index int(11) NOT NULL DEFAULT 0,
+            is_collapsed tinyint(1) NOT NULL DEFAULT 0,
+            PRIMARY KEY  (id),
             KEY table_id (table_id),
             KEY parent_id (parent_id)
-        ) $charset_collate;
+        ) $charset_collate;" );
 
-        CREATE TABLE IF NOT EXISTS {$wpdb->prefix}tablemaster_cells (
-            id         INT      NOT NULL AUTO_INCREMENT,
-            row_id     INT      NOT NULL,
-            column_id  INT      NOT NULL,
-            content    LONGTEXT NOT NULL DEFAULT '',
-            lang       VARCHAR(10) NOT NULL DEFAULT '',
-            PRIMARY KEY (id),
+        dbDelta( "CREATE TABLE {$wpdb->prefix}tablemaster_cells (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            row_id bigint(20) unsigned NOT NULL,
+            column_id bigint(20) unsigned NOT NULL,
+            content longtext NOT NULL,
+            lang varchar(10) NOT NULL DEFAULT '',
+            PRIMARY KEY  (id),
             KEY row_id (row_id),
             KEY column_id (column_id)
-        ) $charset_collate;
-        ";
-
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        dbDelta( $sql_tables );
+        ) $charset_collate;" );
 
         update_option( 'tablemaster_db_version', TMP_VERSION );
 
@@ -111,12 +108,16 @@ class TableMaster_DB {
             ),
         ) );
 
+        $now = current_time( 'mysql' );
+
         $wpdb->insert(
             "{$wpdb->prefix}tablemaster_tables",
             array(
                 'name'       => 'Medewerkers Overzicht (Demo)',
                 'slug'       => 'medewerkers-overzicht-demo',
                 'settings'   => $green_settings,
+                'created_at' => $now,
+                'updated_at' => $now,
                 'created_by' => 1,
             )
         );
@@ -221,6 +222,8 @@ class TableMaster_DB {
                 'name'       => 'Medische Behandelingen (Demo)',
                 'slug'       => 'medische-behandelingen-demo',
                 'settings'   => $red_settings,
+                'created_at' => $now,
+                'updated_at' => $now,
                 'created_by' => 1,
             )
         );
@@ -302,12 +305,16 @@ class TableMaster_DB {
 
     public static function save_table( $data ) {
         global $wpdb;
+        $now = current_time( 'mysql' );
+
         if ( ! empty( $data['id'] ) ) {
+            self::flush_table_cache( intval( $data['id'] ) );
             $wpdb->update(
                 "{$wpdb->prefix}tablemaster_tables",
                 array(
-                    'name'     => sanitize_text_field( $data['name'] ),
-                    'settings' => wp_json_encode( $data['settings'] ),
+                    'name'       => sanitize_text_field( $data['name'] ),
+                    'settings'   => wp_json_encode( $data['settings'] ),
+                    'updated_at' => $now,
                 ),
                 array( 'id' => intval( $data['id'] ) )
             );
@@ -320,6 +327,8 @@ class TableMaster_DB {
                     'name'       => sanitize_text_field( $data['name'] ),
                     'slug'       => $slug,
                     'settings'   => wp_json_encode( $data['settings'] ),
+                    'created_at' => $now,
+                    'updated_at' => $now,
                     'created_by' => get_current_user_id(),
                 )
             );
@@ -330,6 +339,7 @@ class TableMaster_DB {
     public static function delete_table( $id ) {
         global $wpdb;
         $id = intval( $id );
+        self::flush_table_cache( $id );
         $row_ids = $wpdb->get_col( $wpdb->prepare(
             "SELECT id FROM {$wpdb->prefix}tablemaster_rows WHERE table_id = %d", $id
         ) );
@@ -417,9 +427,27 @@ class TableMaster_DB {
         return $new_table_id;
     }
 
+    public static function flush_table_cache( $table_id ) {
+        global $wpdb;
+        $wpdb->query( $wpdb->prepare(
+            "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+            '_transient_tmp_data_' . intval( $table_id ) . '_%'
+        ) );
+        $wpdb->query( $wpdb->prepare(
+            "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+            '_transient_timeout_tmp_data_' . intval( $table_id ) . '_%'
+        ) );
+    }
+
     public static function get_table_data( $table_id, $lang = '' ) {
         global $wpdb;
         $table_id = intval( $table_id );
+
+        $cache_key = 'tmp_data_' . $table_id . '_' . ( $lang ?: 'default' );
+        $cached    = get_transient( $cache_key );
+        if ( false !== $cached ) {
+            return $cached;
+        }
 
         $columns = $wpdb->get_results( $wpdb->prepare(
             "SELECT * FROM {$wpdb->prefix}tablemaster_columns WHERE table_id = %d ORDER BY order_index",
@@ -453,15 +481,21 @@ class TableMaster_DB {
             $row->cells = $cells[$row->id] ?? array();
         }
 
-        return array(
+        $result = array(
             'columns' => $columns,
             'rows'    => $rows,
         );
+
+        set_transient( $cache_key, $result, HOUR_IN_SECONDS );
+
+        return $result;
     }
 
     public static function save_table_structure( $table_id, $columns_data, $rows_data, $lang = '' ) {
         global $wpdb;
         $table_id = intval( $table_id );
+
+        self::flush_table_cache( $table_id );
 
         $existing_col_ids = $wpdb->get_col( $wpdb->prepare(
             "SELECT id FROM {$wpdb->prefix}tablemaster_columns WHERE table_id = %d", $table_id

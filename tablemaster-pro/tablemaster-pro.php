@@ -33,7 +33,6 @@ require_once TMP_PLUGIN_DIR . 'admin/class-admin.php';
 require_once TMP_PLUGIN_DIR . 'includes/class-block.php';
 
 register_activation_hook( __FILE__, array( 'TableMaster_DB', 'install' ) );
-register_uninstall_hook( __FILE__, array( 'TableMaster_DB', 'uninstall' ) );
 
 function tablemaster_pro_init() {
     $plugin = new TableMaster();

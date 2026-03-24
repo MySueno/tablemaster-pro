@@ -66,6 +66,15 @@ $rows    = $data['rows'];
         <div class="tmp-caption"><?php echo esc_html( $caption ); ?></div>
     <?php endif; ?>
 
+    <?php if ( $show_search && $search_pos === 'top' ) : ?>
+        <div class="tmp-controls tmp-controls-top tmp-search-center">
+            <div class="tmp-search-wrap">
+                <label class="screen-reader-text" for="<?php echo esc_attr( $table_uid ); ?>-search"><?php esc_html_e( 'Zoeken', TMP_TEXT_DOMAIN ); ?></label>
+                <input type="search" id="<?php echo esc_attr( $table_uid ); ?>-search" class="tmp-search" placeholder="<?php esc_attr_e( 'Zoeken…', TMP_TEXT_DOMAIN ); ?>">
+            </div>
+        </div>
+    <?php endif; ?>
+
     <div class="tmp-controls tmp-controls-top">
         <?php if ( $show_search && $search_pos === 'left' ) : ?>
             <div class="tmp-search-wrap">
@@ -220,7 +229,7 @@ $rows    = $data['rows'];
                                         <?php elseif ( $col_type === 'html' && $inline_html ) : ?>
                                             <?php echo wp_kses_post( $raw_content ); ?>
                                         <?php else : ?>
-                                            <?php echo esc_html( $raw_content ); ?>
+                                            <?php echo wp_kses_post( $raw_content ); ?>
                                         <?php endif; ?>
                                     </span>
                                 <?php endif; ?>
@@ -238,6 +247,15 @@ $rows    = $data['rows'];
             <nav class="tmp-pagination" aria-label="<?php esc_attr_e( 'Tabel paginering', TMP_TEXT_DOMAIN ); ?>"></nav>
         <?php endif; ?>
     </div>
+
+    <?php if ( $show_search && $search_pos === 'bottom' ) : ?>
+        <div class="tmp-controls tmp-search-center" style="margin-top:0.75em;">
+            <div class="tmp-search-wrap">
+                <label class="screen-reader-text" for="<?php echo esc_attr( $table_uid ); ?>-search"><?php esc_html_e( 'Zoeken', TMP_TEXT_DOMAIN ); ?></label>
+                <input type="search" id="<?php echo esc_attr( $table_uid ); ?>-search" class="tmp-search" placeholder="<?php esc_attr_e( 'Zoeken…', TMP_TEXT_DOMAIN ); ?>">
+            </div>
+        </div>
+    <?php endif; ?>
 
     <?php
     $export_enabled = TableMaster_Settings::get( 'enable_export' );

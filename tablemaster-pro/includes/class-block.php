@@ -15,7 +15,7 @@ class TableMaster_Block {
         wp_register_script(
             'tablemaster-block',
             TMP_PLUGIN_URL . 'assets/js/block.js',
-            array( 'wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-server-side-render' ),
+            array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-server-side-render' ),
             TMP_VERSION,
             false
         );

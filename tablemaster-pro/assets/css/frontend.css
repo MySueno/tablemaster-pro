@@ -40,6 +40,14 @@
     margin-top: 0.75em;
 }
 
+.tmp-search-center {
+    justify-content: center;
+}
+
+.tmp-search-center .tmp-search {
+    min-width: 260px;
+}
+
 .tmp-search-wrap input.tmp-search {
     padding: 6px 10px;
     border: 1px solid var(--tmp-border, #ccc);

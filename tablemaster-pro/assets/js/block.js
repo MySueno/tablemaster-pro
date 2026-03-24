@@ -18,7 +18,7 @@
     blocks.registerBlockType('tablemaster/table', {
         title:       'TableMaster Tabel',
         icon:        'editor-table',
-        category:    'common',
+        category:    'text',
         description: 'Voeg een interactieve TableMaster tabel in.',
         attributes: {
             tableId: { type: 'number', default: 0 }
@@ -66,7 +66,7 @@
 })(
     window.wp.blocks,
     window.wp.element,
-    window.wp.editor || window.wp.blockEditor,
+    window.wp.blockEditor || window.wp.editor,
     window.wp.components,
     window.wp.serverSideRender
 );

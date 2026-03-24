@@ -192,7 +192,7 @@ $page_title = $is_new
                     <select id="tmp-search-position">
                         <?php
                         $sp = $settings['search_position'] ?? 'right';
-                        foreach ( array( 'left' => __( 'Links', TMP_TEXT_DOMAIN ), 'right' => __( 'Rechts', TMP_TEXT_DOMAIN ) ) as $val => $lbl ) {
+                        foreach ( array( 'left' => __( 'Links', TMP_TEXT_DOMAIN ), 'right' => __( 'Rechts', TMP_TEXT_DOMAIN ), 'top' => __( 'Boven (gecentreerd)', TMP_TEXT_DOMAIN ), 'bottom' => __( 'Onder', TMP_TEXT_DOMAIN ) ) as $val => $lbl ) {
                             echo '<option value="' . esc_attr( $val ) . '"' . selected( $sp, $val, false ) . '>' . esc_html( $lbl ) . '</option>';
                         }
                         ?>
