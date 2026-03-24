@@ -1,5 +1,6 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! class_exists( '\Elementor\Widget_Base' ) ) return;
 
 class TableMaster_Elementor_Widget extends \Elementor\Widget_Base {
 
@@ -138,7 +139,11 @@ class TableMaster_Elementor_Widget extends \Elementor\Widget_Base {
         $table_id = intval( $settings['table_id'] ?? 0 );
 
         if ( ! $table_id ) {
-            if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
+            $is_edit = false;
+            if ( class_exists( '\Elementor\Plugin' ) && isset( \Elementor\Plugin::$instance->editor ) ) {
+                $is_edit = \Elementor\Plugin::$instance->editor->is_edit_mode();
+            }
+            if ( $is_edit ) {
                 echo '<div class="tablemaster-placeholder">';
                 echo '<span class="dashicons dashicons-editor-table"></span>';
                 echo esc_html__( 'Selecteer een tabel in het paneel links.', TMP_TEXT_DOMAIN );

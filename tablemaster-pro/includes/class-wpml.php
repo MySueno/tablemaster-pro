@@ -10,7 +10,8 @@ class TableMaster_WPML {
     }
 
     public static function is_active() {
-        return defined( 'ICL_SITEPRESS_VERSION' ) && function_exists( 'icl_register_string' );
+        return defined( 'ICL_SITEPRESS_VERSION' )
+            && has_filter( 'wpml_register_single_string' );
     }
 
     public static function is_string_translation_active() {
@@ -23,6 +24,32 @@ class TableMaster_WPML {
 
     public static function get_context( $table_id ) {
         return 'tablemaster-pro - Table ' . $table_id;
+    }
+
+    public static function get_current_language() {
+        return apply_filters( 'wpml_current_language', '' );
+    }
+
+    public static function get_default_language() {
+        return apply_filters( 'wpml_default_language', '' );
+    }
+
+    private static function wpml_register_string( $context, $name, $value ) {
+        do_action( 'wpml_register_single_string', $context, $name, $value );
+    }
+
+    private static function wpml_translate_string( $value, $context, $name ) {
+        return apply_filters( 'wpml_translate_single_string', $value, $context, $name );
+    }
+
+    private static function wpml_get_active_languages() {
+        $langs = apply_filters( 'wpml_active_languages', array(), 'skip_missing=0' );
+        return is_array( $langs ) ? $langs : array();
+    }
+
+    private static function wpml_table_exists( $table_name ) {
+        global $wpdb;
+        return $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) === $table_name;
     }
 
     public function maybe_register_all_strings() {
@@ -58,11 +85,11 @@ class TableMaster_WPML {
 
         $current_names = array();
 
-        icl_register_string( $context, 'table_name', $table->name );
+        self::wpml_register_string( $context, 'table_name', $table->name );
         $current_names[] = 'table_name';
 
         if ( ! empty( $settings['caption'] ) ) {
-            icl_register_string( $context, 'caption', $settings['caption'] );
+            self::wpml_register_string( $context, 'caption', $settings['caption'] );
             $current_names[] = 'caption';
         }
 
@@ -70,7 +97,7 @@ class TableMaster_WPML {
 
         foreach ( $data['columns'] as $col ) {
             $name = 'col_' . $col->id . '_label';
-            icl_register_string( $context, $name, $col->label );
+            self::wpml_register_string( $context, $name, $col->label );
             $current_names[] = $name;
         }
 
@@ -78,7 +105,7 @@ class TableMaster_WPML {
             foreach ( $row->cells as $col_id => $content ) {
                 if ( trim( $content ) === '' ) continue;
                 $name = 'row_' . $row->id . '_col_' . $col_id;
-                icl_register_string( $context, $name, $content );
+                self::wpml_register_string( $context, $name, $content );
                 $current_names[] = $name;
             }
         }
@@ -91,26 +118,30 @@ class TableMaster_WPML {
 
         if ( empty( $current_names ) ) return;
 
+        $strings_table = $wpdb->prefix . 'icl_strings';
+        $translations_table = $wpdb->prefix . 'icl_string_translations';
+
+        if ( ! self::wpml_table_exists( $strings_table ) ) return;
+
         $placeholders = implode( ',', array_fill( 0, count( $current_names ), '%s' ) );
         $args = array_merge( array( $context ), $current_names );
 
         $orphaned_ids = $wpdb->get_col( $wpdb->prepare(
-            "SELECT id FROM {$wpdb->prefix}icl_strings WHERE context = %s AND name NOT IN ($placeholders)",
+            "SELECT id FROM {$strings_table} WHERE context = %s AND name NOT IN ($placeholders)",
             $args
         ) );
 
         if ( ! empty( $orphaned_ids ) ) {
             $in = implode( ',', array_map( 'intval', $orphaned_ids ) );
-            $wpdb->query( "DELETE FROM {$wpdb->prefix}icl_string_translations WHERE string_id IN ($in)" );
-            $wpdb->query( "DELETE FROM {$wpdb->prefix}icl_strings WHERE id IN ($in)" );
+            if ( self::wpml_table_exists( $translations_table ) ) {
+                $wpdb->query( "DELETE FROM {$translations_table} WHERE string_id IN ($in)" );
+            }
+            $wpdb->query( "DELETE FROM {$strings_table} WHERE id IN ($in)" );
         }
     }
 
     public static function translate_string( $context, $name, $value ) {
-        if ( function_exists( 'icl_t' ) ) {
-            return icl_t( $context, $name, $value );
-        }
-        return $value;
+        return self::wpml_translate_string( $value, $context, $name );
     }
 
     public static function get_translation_progress( $table_id, $lang ) {
@@ -120,10 +151,17 @@ class TableMaster_WPML {
             return array( 'total' => 0, 'translated' => 0, 'percent' => 0 );
         }
 
+        $strings_table      = $wpdb->prefix . 'icl_strings';
+        $translations_table = $wpdb->prefix . 'icl_string_translations';
+
+        if ( ! self::wpml_table_exists( $strings_table ) || ! self::wpml_table_exists( $translations_table ) ) {
+            return array( 'total' => 0, 'translated' => 0, 'percent' => 0 );
+        }
+
         $context = self::get_context( $table_id );
 
         $total = (int) $wpdb->get_var( $wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->prefix}icl_strings WHERE context = %s",
+            "SELECT COUNT(*) FROM {$strings_table} WHERE context = %s",
             $context
         ) );
 
@@ -132,8 +170,8 @@ class TableMaster_WPML {
         }
 
         $translated = (int) $wpdb->get_var( $wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->prefix}icl_strings s
-             INNER JOIN {$wpdb->prefix}icl_string_translations t ON t.string_id = s.id
+            "SELECT COUNT(*) FROM {$strings_table} s
+             INNER JOIN {$translations_table} t ON t.string_id = s.id
              WHERE s.context = %s AND t.language = %s AND t.status = 10 AND t.value != ''",
             $context, $lang
         ) );
@@ -144,17 +182,8 @@ class TableMaster_WPML {
     }
 
     public static function get_non_default_languages() {
-        $active_langs = array();
-        if ( function_exists( 'icl_get_languages' ) ) {
-            $langs = icl_get_languages( 'skip_missing=0' );
-            if ( is_array( $langs ) ) {
-                $active_langs = $langs;
-            }
-        }
-        $default_lang = '';
-        if ( function_exists( 'apply_filters' ) ) {
-            $default_lang = apply_filters( 'wpml_default_language', $default_lang );
-        }
+        $active_langs  = self::wpml_get_active_languages();
+        $default_lang  = self::get_default_language();
         $result = array();
         foreach ( $active_langs as $code => $l ) {
             if ( $code !== $default_lang ) {

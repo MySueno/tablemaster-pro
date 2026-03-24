@@ -3,7 +3,7 @@
  * Plugin Name: TableMaster Pro
  * Plugin URI:  https://example.com/tablemaster-pro
  * Description: Maak krachtige, interactieve tabellen met groepering, sortering, filtering en paginering. Beheer via een intuïtief dashboard en publiceer via shortcode of Gutenberg block.
- * Version:     1.2.8
+ * Version:     1.2.9
  * Author:      TableMaster Pro
  * Author URI:  https://example.com
  * License:     GPL-2.0-or-later

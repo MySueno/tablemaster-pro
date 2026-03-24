@@ -16,23 +16,10 @@ $rows     = $data['rows'] ?? array();
 $settings = json_decode( $table->settings, true );
 $context  = TableMaster_WPML::get_context( $table_id );
 
-$active_langs = array();
-if ( function_exists( 'icl_get_languages' ) ) {
-    $langs = icl_get_languages( 'skip_missing=0' );
-    if ( is_array( $langs ) ) {
-        foreach ( $langs as $l ) {
-            $active_langs[ $l['code'] ] = $l;
-        }
-    }
-}
+$all_langs = apply_filters( 'wpml_active_languages', array(), 'skip_missing=0' );
+$active_langs = is_array( $all_langs ) ? $all_langs : array();
 
-$default_lang = '';
-if ( defined( 'ICL_LANGUAGE_CODE' ) ) {
-    $default_lang = ICL_LANGUAGE_CODE;
-}
-if ( function_exists( 'apply_filters' ) ) {
-    $default_lang = apply_filters( 'wpml_default_language', $default_lang );
-}
+$default_lang = TableMaster_WPML::get_default_language();
 
 if ( ! $target_lang && count( $active_langs ) > 0 ) {
     foreach ( $active_langs as $code => $l ) {
@@ -77,13 +64,20 @@ if ( ! function_exists( 'tmp_get_translation' ) ) {
     function tmp_get_translation( $context, $name, $lang ) {
         global $wpdb;
         if ( ! defined( 'WPML_ST_VERSION' ) ) return '';
+
+        $strings_table      = $wpdb->prefix . 'icl_strings';
+        $translations_table = $wpdb->prefix . 'icl_string_translations';
+
+        if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $strings_table ) ) !== $strings_table ) return '';
+        if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $translations_table ) ) !== $translations_table ) return '';
+
         $string_id = $wpdb->get_var( $wpdb->prepare(
-            "SELECT id FROM {$wpdb->prefix}icl_strings WHERE context = %s AND name = %s",
+            "SELECT id FROM {$strings_table} WHERE context = %s AND name = %s",
             $context, $name
         ) );
         if ( ! $string_id ) return '';
         $translation = $wpdb->get_var( $wpdb->prepare(
-            "SELECT value FROM {$wpdb->prefix}icl_string_translations WHERE string_id = %d AND language = %s AND status = 10",
+            "SELECT value FROM {$translations_table} WHERE string_id = %d AND language = %s AND status = 10",
             $string_id, $lang
         ) );
         return $translation !== null ? $translation : '';

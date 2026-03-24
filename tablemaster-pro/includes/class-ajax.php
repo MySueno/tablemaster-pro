@@ -190,6 +190,16 @@ class TableMaster_Ajax {
 
         $context = TableMaster_WPML::get_context( $table_id );
 
+        $strings_table      = $wpdb->prefix . 'icl_strings';
+        $translations_table = $wpdb->prefix . 'icl_string_translations';
+
+        if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $strings_table ) ) !== $strings_table ) {
+            wp_send_json_error( array( 'message' => 'WPML-databasetabellen niet gevonden.' ) );
+        }
+        if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $translations_table ) ) !== $translations_table ) {
+            wp_send_json_error( array( 'message' => 'WPML-databasetabellen niet gevonden.' ) );
+        }
+
         $saved   = 0;
         $cleared = 0;
         foreach ( $translations as $name => $value ) {
@@ -197,21 +207,21 @@ class TableMaster_Ajax {
             $value = trim( $value );
 
             $string_id = $wpdb->get_var( $wpdb->prepare(
-                "SELECT id FROM {$wpdb->prefix}icl_strings WHERE context = %s AND name = %s",
+                "SELECT id FROM {$strings_table} WHERE context = %s AND name = %s",
                 $context, $name
             ) );
 
             if ( ! $string_id ) continue;
 
             $existing = $wpdb->get_var( $wpdb->prepare(
-                "SELECT id FROM {$wpdb->prefix}icl_string_translations WHERE string_id = %d AND language = %s",
+                "SELECT id FROM {$translations_table} WHERE string_id = %d AND language = %s",
                 $string_id, $lang
             ) );
 
             if ( $value === '' ) {
                 if ( $existing ) {
                     $wpdb->delete(
-                        $wpdb->prefix . 'icl_string_translations',
+                        $translations_table,
                         array( 'id' => $existing ),
                         array( '%d' )
                     );
@@ -228,7 +238,7 @@ class TableMaster_Ajax {
 
             if ( $existing ) {
                 $wpdb->update(
-                    $wpdb->prefix . 'icl_string_translations',
+                    $translations_table,
                     array( 'value' => $value, 'status' => 10 ),
                     array( 'id' => $existing ),
                     array( '%s', '%d' ),
@@ -236,7 +246,7 @@ class TableMaster_Ajax {
                 );
             } else {
                 $wpdb->insert(
-                    $wpdb->prefix . 'icl_string_translations',
+                    $translations_table,
                     array(
                         'string_id'        => $string_id,
                         'language'         => $lang,

@@ -532,12 +532,10 @@ class TableMaster_DB {
         foreach ( $langs as $lang ) {
             delete_transient( 'tmp_data_' . $table_id . '_' . $lang );
         }
-        if ( function_exists( 'icl_get_languages' ) ) {
-            $wpml_langs = icl_get_languages( 'skip_missing=0' );
-            if ( is_array( $wpml_langs ) ) {
-                foreach ( array_keys( $wpml_langs ) as $code ) {
-                    delete_transient( 'tmp_data_' . $table_id . '_' . sanitize_key( $code ) );
-                }
+        $wpml_langs = apply_filters( 'wpml_active_languages', array(), 'skip_missing=0' );
+        if ( is_array( $wpml_langs ) ) {
+            foreach ( array_keys( $wpml_langs ) as $code ) {
+                delete_transient( 'tmp_data_' . $table_id . '_' . sanitize_key( $code ) );
             }
         }
     }

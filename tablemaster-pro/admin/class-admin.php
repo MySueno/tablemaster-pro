@@ -128,7 +128,7 @@ class TableMaster_Admin {
             'settings'   => $settings,
             'list_url'   => admin_url( 'admin.php?page=tablemaster' ),
             'edit_url'   => admin_url( 'admin.php?page=tablemaster-edit&id=' ),
-            'lang'       => defined( 'ICL_LANGUAGE_CODE' ) ? ICL_LANGUAGE_CODE : '',
+            'lang'       => TableMaster_WPML::get_current_language(),
             'i18n'       => array(
                 'confirm_delete'    => __( 'Weet je zeker dat je deze tabel wilt verwijderen? Dit kan niet ongedaan worden gemaakt.', TMP_TEXT_DOMAIN ),
                 'saved'             => __( 'Opgeslagen!', TMP_TEXT_DOMAIN ),

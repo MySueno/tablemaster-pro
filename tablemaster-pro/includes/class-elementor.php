@@ -4,6 +4,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class TableMaster_Elementor {
 
     public function register() {
+        if ( ! did_action( 'elementor/loaded' ) && ! class_exists( '\Elementor\Plugin' ) ) {
+            return;
+        }
+
         add_action( 'elementor/widgets/register', array( $this, 'register_widget' ) );
         add_action( 'elementor/preview/enqueue_styles', array( $this, 'enqueue_preview_assets' ) );
         add_action( 'elementor/preview/enqueue_scripts', array( $this, 'enqueue_preview_assets' ) );
@@ -13,7 +17,16 @@ class TableMaster_Elementor {
 
     public function register_widget( $widgets_manager ) {
         require_once TMP_PLUGIN_DIR . 'includes/class-elementor-widget.php';
-        $widgets_manager->register( new TableMaster_Elementor_Widget() );
+
+        if ( ! class_exists( 'TableMaster_Elementor_Widget' ) ) {
+            return;
+        }
+
+        if ( method_exists( $widgets_manager, 'register' ) ) {
+            $widgets_manager->register( new TableMaster_Elementor_Widget() );
+        } elseif ( method_exists( $widgets_manager, 'register_widget_type' ) ) {
+            $widgets_manager->register_widget_type( new TableMaster_Elementor_Widget() );
+        }
     }
 
     public function enqueue_preview_assets() {

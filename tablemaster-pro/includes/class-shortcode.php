@@ -22,8 +22,8 @@ class TableMaster_Shortcode {
         TableMaster::enqueue_frontend_assets();
 
         $settings = json_decode( $table->settings, true );
-        $lang     = defined( 'ICL_LANGUAGE_CODE' ) ? ICL_LANGUAGE_CODE : '';
-        $default_lang = function_exists( 'apply_filters' ) ? apply_filters( 'wpml_default_language', '' ) : '';
+        $lang     = TableMaster_WPML::get_current_language();
+        $default_lang = TableMaster_WPML::get_default_language();
 
         $use_translation = false;
         if ( TableMaster_WPML::is_active() && $lang && $lang !== $default_lang ) {

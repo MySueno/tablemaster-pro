@@ -78,7 +78,7 @@ if ( ! $table ) {
     <div class="tmp-preview-page">
         <?php
         $settings = json_decode( $table->settings, true );
-        $lang     = defined( 'ICL_LANGUAGE_CODE' ) ? ICL_LANGUAGE_CODE : '';
+        $lang     = TableMaster_WPML::get_current_language();
         $data     = TableMaster_DB::get_table_data( $table_id, $lang );
         include TMP_PLUGIN_DIR . 'templates/table-frontend.php';
         ?>
