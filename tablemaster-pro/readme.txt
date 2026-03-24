@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,16 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.1 =
+* Fix: Vertaalvoortgang telt nu alle ingevulde velden mee (inclusief automatisch ingevulde)
+* Fix: Na opslaan worden prefilled vertalingen correct als definitief gemarkeerd
+* Fix: Globale vertaal-lookup werkte niet — context-patroon gecorrigeerd zodat vertalingen uit andere tabellen correct worden gevonden
+* Fix: Groen thema toonde rode stip in tabeloverzicht — kleurcode gecorrigeerd
+* Fix: Groen thema kon niet worden opgeslagen — ontbrak in de toegestane thema-lijst
+* Fix: Groen kleurenpreset toegevoegd (was niet gedefinieerd)
+* Fix: Groen thema toegevoegd aan instellingen-dropdown
+* Fix: Gedupliceerde tabellen krijgen nu correct een aanmaakdatum
 
 = 1.3.0 =
 * Nieuw: Slimme vertaal-prefill — bestaande vertalingen uit andere tabellen worden automatisch ingevuld
