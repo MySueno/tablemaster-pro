@@ -31,11 +31,23 @@ class TableMaster_Settings {
             'default_per_page' => min( 500, max( 1, intval( $data['default_per_page'] ?? 10 ) ) ),
             'enable_export'    => ! empty( $data['enable_export'] ),
             'border_radius'    => min( 50, max( 0, intval( $data['border_radius'] ?? 4 ) ) ),
-            'update_url'               => esc_url_raw( $data['update_url'] ?? '' ),
+            'update_url'               => self::sanitize_update_url( $data['update_url'] ?? '' ),
             'delete_data_on_uninstall' => ! empty( $data['delete_data_on_uninstall'] ) ? '1' : '0',
         );
         update_option( 'tablemaster_settings', $clean );
         delete_transient( 'tmp_update_check' );
+    }
+
+    public static function sanitize_update_url( $url ) {
+        $url = esc_url_raw( $url, array( 'https' ) );
+        if ( empty( $url ) ) return '';
+        $host = wp_parse_url( $url, PHP_URL_HOST );
+        if ( ! $host ) return '';
+        $ip = gethostbyname( $host );
+        if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) === false ) {
+            return '';
+        }
+        return $url;
     }
 
     public static function sanitize_hex_color( $color, $default = '#000000' ) {

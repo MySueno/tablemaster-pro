@@ -45,22 +45,22 @@ $rows    = $data['rows'];
 ?>
 <style>
 #<?php echo esc_attr( $table_uid ); ?> {
-    --tmp-header-bg:    <?php echo $header_bg; ?>;
-    --tmp-header-text:  <?php echo $header_text; ?>;
-    --tmp-group1-bg:    <?php echo $group1_bg; ?>;
-    --tmp-group1-text:  <?php echo $group1_text; ?>;
-    --tmp-group2-bg:    <?php echo $group2_bg; ?>;
-    --tmp-group2-text:  <?php echo $group2_text; ?>;
-    --tmp-group3-bg:    <?php echo $group3_bg; ?>;
-    --tmp-group3-text:  <?php echo $group3_text; ?>;
-    --tmp-footer-bg:    <?php echo $footer_bg; ?>;
-    --tmp-footer-text:  <?php echo $footer_text; ?>;
-    --tmp-odd-bg:       <?php echo $odd_bg; ?>;
-    --tmp-even-bg:      <?php echo $even_bg; ?>;
-    --tmp-hover-bg:     <?php echo $hover_bg; ?>;
-    --tmp-border:       <?php echo $border_color; ?>;
-    --tmp-accent:       <?php echo $accent_color; ?>;
-    --tmp-radius:       <?php echo $border_radius; ?>px;
+    --tmp-header-bg:    <?php echo esc_attr( $header_bg ); ?>;
+    --tmp-header-text:  <?php echo esc_attr( $header_text ); ?>;
+    --tmp-group1-bg:    <?php echo esc_attr( $group1_bg ); ?>;
+    --tmp-group1-text:  <?php echo esc_attr( $group1_text ); ?>;
+    --tmp-group2-bg:    <?php echo esc_attr( $group2_bg ); ?>;
+    --tmp-group2-text:  <?php echo esc_attr( $group2_text ); ?>;
+    --tmp-group3-bg:    <?php echo esc_attr( $group3_bg ); ?>;
+    --tmp-group3-text:  <?php echo esc_attr( $group3_text ); ?>;
+    --tmp-footer-bg:    <?php echo esc_attr( $footer_bg ); ?>;
+    --tmp-footer-text:  <?php echo esc_attr( $footer_text ); ?>;
+    --tmp-odd-bg:       <?php echo esc_attr( $odd_bg ); ?>;
+    --tmp-even-bg:      <?php echo esc_attr( $even_bg ); ?>;
+    --tmp-hover-bg:     <?php echo esc_attr( $hover_bg ); ?>;
+    --tmp-border:       <?php echo esc_attr( $border_color ); ?>;
+    --tmp-accent:       <?php echo esc_attr( $accent_color ); ?>;
+    --tmp-radius:       <?php echo intval( $border_radius ); ?>px;
 }
 </style>
 

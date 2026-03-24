@@ -21,6 +21,8 @@ if ( $delete_data ) {
 
 delete_transient( 'tmp_update_check' );
 
-$wpdb->query(
-    "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_tmp_data_%' OR option_name LIKE '_transient_timeout_tmp_data_%'"
-);
+$wpdb->query( $wpdb->prepare(
+    "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
+    '_transient_tmp_data_%',
+    '_transient_timeout_tmp_data_%'
+) );

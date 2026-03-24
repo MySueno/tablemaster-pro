@@ -145,9 +145,20 @@ class TableMaster_Ajax {
 
         foreach ( $columns as &$col ) {
             $col['label'] = isset( $col['label'] ) ? mb_substr( sanitize_text_field( $col['label'] ), 0, 200 ) : '';
-            $col['type']  = isset( $col['type'] ) ? sanitize_text_field( $col['type'] ) : 'text';
+            $allowed_types = array( 'text', 'number', 'date', 'link', 'image', 'html' );
+            $col['type']  = isset( $col['type'] ) && in_array( $col['type'], $allowed_types, true ) ? $col['type'] : 'text';
         }
         unset( $col );
+
+        foreach ( $rows as &$row ) {
+            if ( isset( $row['cells'] ) && is_array( $row['cells'] ) ) {
+                foreach ( $row['cells'] as $cell_key => &$cell_val ) {
+                    $cell_val = wp_kses_post( $cell_val );
+                }
+                unset( $cell_val );
+            }
+        }
+        unset( $row );
 
         TableMaster_DB::save_table_structure( $table_id, $columns, $rows, $lang );
         do_action( 'tablemaster_after_save_structure', $table_id );
@@ -269,6 +280,14 @@ class TableMaster_Ajax {
 
     public function search_posts() {
         $this->verify_nonce();
+
+        $user_id = get_current_user_id();
+        $transient_key = 'tmp_search_rate_' . $user_id;
+        $requests = (int) get_transient( $transient_key );
+        if ( $requests >= 30 ) {
+            wp_send_json_error( array( 'message' => __( 'Te veel verzoeken. Probeer het later opnieuw.', TMP_TEXT_DOMAIN ) ), 429 );
+        }
+        set_transient( $transient_key, $requests + 1, 60 );
 
         $search = sanitize_text_field( wp_unslash( $_POST['search'] ?? '' ) );
         if ( strlen( $search ) < 2 ) {

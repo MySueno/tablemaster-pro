@@ -443,8 +443,11 @@ class TableMaster_DB {
             "SELECT id FROM {$wpdb->prefix}tablemaster_rows WHERE table_id = %d", $id
         ) );
         if ( $row_ids ) {
-            $in = implode( ',', array_map( 'intval', $row_ids ) );
-            $wpdb->query( "DELETE FROM {$wpdb->prefix}tablemaster_cells WHERE row_id IN ($in)" );
+            $placeholders = implode( ',', array_fill( 0, count( $row_ids ), '%d' ) );
+            $wpdb->query( $wpdb->prepare(
+                "DELETE FROM {$wpdb->prefix}tablemaster_cells WHERE row_id IN ($placeholders)",
+                array_map( 'intval', $row_ids )
+            ) );
         }
         $wpdb->delete( "{$wpdb->prefix}tablemaster_rows",   array( 'table_id' => $id ) );
         $wpdb->delete( "{$wpdb->prefix}tablemaster_columns", array( 'table_id' => $id ) );
@@ -566,14 +569,18 @@ class TableMaster_DB {
         $row_ids = wp_list_pluck( $rows, 'id' );
         $cells   = array();
         if ( $row_ids ) {
-            $in = implode( ',', array_map( 'intval', $row_ids ) );
+            $placeholders = implode( ',', array_fill( 0, count( $row_ids ), '%d' ) );
             $lang_clause = '';
+            $query_args = array_map( 'intval', $row_ids );
             if ( $lang ) {
-                $lang_clause = $wpdb->prepare( " AND (lang = %s OR lang = '')", $lang );
+                $lang_clause = ' AND (lang = %s OR lang = %s)';
+                $query_args[] = $lang;
+                $query_args[] = '';
             }
-            $raw_cells = $wpdb->get_results(
-                "SELECT * FROM {$wpdb->prefix}tablemaster_cells WHERE row_id IN ($in)$lang_clause ORDER BY lang DESC"
-            );
+            $raw_cells = $wpdb->get_results( $wpdb->prepare(
+                "SELECT * FROM {$wpdb->prefix}tablemaster_cells WHERE row_id IN ($placeholders)$lang_clause ORDER BY lang DESC",
+                $query_args
+            ) );
             foreach ( $raw_cells as $cell ) {
                 if ( ! isset( $cells[$cell->row_id][$cell->column_id] ) ) {
                     $cells[$cell->row_id][$cell->column_id] = $cell->content;
