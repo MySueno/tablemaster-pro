@@ -161,7 +161,7 @@
 
 /* Multi-level grouped headers */
 .tmp-th-grouped {
-    text-align: center !important;
+    text-align: left !important;
     border-right: none;
     border-bottom: none;
 }
@@ -210,6 +210,7 @@
     border-top: 1px solid var(--tmp-border, #e0e0e0);
     vertical-align: middle;
     color: inherit;
+    text-align: left;
 }
 
 .tmp-type-data.tmp-odd {
