@@ -37,8 +37,8 @@ class TableMaster_Shortcode {
 
         if ( $use_translation ) {
             $context  = TableMaster_WPML::get_context( $id );
-            $settings = self::translate_settings( $settings, $context );
-            $data     = self::translate_data( $data, $context );
+            $settings = self::translate_settings( $settings, $context, $lang );
+            $data     = self::translate_data( $data, $context, $lang );
         }
 
         ob_start();
@@ -46,23 +46,25 @@ class TableMaster_Shortcode {
         return ob_get_clean();
     }
 
-    private static function translate_settings( $settings, $context ) {
+    private static function translate_settings( $settings, $context, $lang ) {
         if ( ! empty( $settings['caption'] ) ) {
             $settings['caption'] = TableMaster_WPML::translate_string(
                 $context,
                 'caption',
-                $settings['caption']
+                $settings['caption'],
+                $lang
             );
         }
         return $settings;
     }
 
-    private static function translate_data( $data, $context ) {
+    private static function translate_data( $data, $context, $lang ) {
         foreach ( $data['columns'] as &$col ) {
             $col->label = TableMaster_WPML::translate_string(
                 $context,
                 'col_' . $col->id . '_label',
-                $col->label
+                $col->label,
+                $lang
             );
         }
         unset( $col );
@@ -73,7 +75,8 @@ class TableMaster_Shortcode {
                 $content = TableMaster_WPML::translate_string(
                     $context,
                     'row_' . $row->id . '_col_' . $col_id,
-                    $content
+                    $content,
+                    $lang
                 );
             }
             unset( $content );

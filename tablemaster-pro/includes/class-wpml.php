@@ -37,8 +37,8 @@ class TableMaster_WPML {
         do_action( 'wpml_register_single_string', $context, $name, $value );
     }
 
-    private static function wpml_translate_string( $value, $context, $name ) {
-        return apply_filters( 'wpml_translate_single_string', $value, $context, $name );
+    private static function wpml_translate_string( $value, $context, $name, $lang = false ) {
+        return apply_filters( 'wpml_translate_single_string', $value, $context, $name, $lang );
     }
 
     private static function wpml_get_active_languages() {
@@ -139,11 +139,14 @@ class TableMaster_WPML {
         }
     }
 
-    public static function translate_string( $context, $name, $value ) {
-        $translated = self::wpml_translate_string( $value, $context, $name );
+    public static function translate_string( $context, $name, $value, $lang = '' ) {
+        if ( ! $lang ) {
+            $lang = self::get_current_language();
+        }
+
+        $translated = self::wpml_translate_string( $value, $context, $name, $lang );
 
         if ( $translated === $value && self::is_string_translation_active() ) {
-            $lang = self::get_current_language();
             if ( $lang && $lang !== self::get_default_language() ) {
                 $db_translation = self::get_translation_from_db( $context, $name, $lang );
                 if ( $db_translation !== '' ) {
