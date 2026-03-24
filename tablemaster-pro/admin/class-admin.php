@@ -174,4 +174,55 @@ class TableMaster_Admin {
         }
         include TMP_PLUGIN_DIR . 'admin/views/settings.php';
     }
+
+    public function maybe_export_csv() {
+        if ( ! isset( $_GET['tablemaster_export_csv'] ) ) {
+            return;
+        }
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'Geen toegang.', TMP_TEXT_DOMAIN ) );
+        }
+        if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'tablemaster_export_csv' ) ) {
+            wp_die( esc_html__( 'Beveiligingscontrole mislukt.', TMP_TEXT_DOMAIN ) );
+        }
+
+        $table_id = intval( $_GET['tablemaster_export_csv'] );
+        $table    = TableMaster_DB::get_table( $table_id );
+        if ( ! $table ) {
+            wp_die( esc_html__( 'Tabel niet gevonden.', TMP_TEXT_DOMAIN ) );
+        }
+
+        $data    = TableMaster_DB::get_table_data( $table_id, '' );
+        $columns = $data['columns'] ?? array();
+        $rows    = $data['rows']    ?? array();
+
+        $slug     = sanitize_file_name( $table->name );
+        $slug     = $slug ? $slug : 'table-' . $table_id;
+        $filename = $slug . '-' . gmdate( 'Y-m-d' ) . '.csv';
+
+        header( 'Content-Type: text/csv; charset=utf-8' );
+        header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+        header( 'Pragma: no-cache' );
+        header( 'Expires: 0' );
+
+        $output = fopen( 'php://output', 'w' );
+        fprintf( $output, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) );
+
+        $header_row = array();
+        foreach ( $columns as $col ) {
+            $header_row[] = $col->label;
+        }
+        fputcsv( $output, $header_row, ';' );
+
+        foreach ( $rows as $row ) {
+            $csv_row = array();
+            foreach ( $columns as $col ) {
+                $csv_row[] = $row->cells[ $col->id ] ?? '';
+            }
+            fputcsv( $output, $csv_row, ';' );
+        }
+
+        fclose( $output );
+        exit;
+    }
 }

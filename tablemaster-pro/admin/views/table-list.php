@@ -75,6 +75,9 @@ $tables = TableMaster_DB::get_all_tables();
                             <button class="button button-small tmp-duplicate-btn" data-id="<?php echo esc_attr( $t->id ); ?>">
                                 <?php esc_html_e( 'Dupliceren', TMP_TEXT_DOMAIN ); ?>
                             </button>
+                            <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?tablemaster_export_csv=' . $t->id ), 'tablemaster_export_csv' ) ); ?>" class="button button-small" title="<?php esc_attr_e( 'Exporteer als CSV', TMP_TEXT_DOMAIN ); ?>">
+                                <?php esc_html_e( 'CSV', TMP_TEXT_DOMAIN ); ?>
+                            </a>
                             <?php if ( TableMaster_WPML::is_active() ) : ?>
                                 <a href="<?php echo esc_url( TableMaster_WPML::get_translate_url( $t->id ) ); ?>" class="button button-small" title="<?php esc_attr_e( 'Vertaal deze tabel', TMP_TEXT_DOMAIN ); ?>">
                                     <?php esc_html_e( 'Vertalen', TMP_TEXT_DOMAIN ); ?>

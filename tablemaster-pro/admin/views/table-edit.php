@@ -47,6 +47,11 @@ $page_title = $is_new
                 <span class="dashicons dashicons-visibility" style="margin-top:3px;margin-right:3px;"></span>
                 <?php esc_html_e( 'Bekijk op website', TMP_TEXT_DOMAIN ); ?>
             </a>
+            <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?tablemaster_export_csv=' . $table_id ), 'tablemaster_export_csv' ) ); ?>"
+               class="button button-small" style="margin-left:8px;">
+                <span class="dashicons dashicons-download" style="margin-top:3px;margin-right:3px;"></span>
+                <?php esc_html_e( 'CSV exporteren', TMP_TEXT_DOMAIN ); ?>
+            </a>
         </div>
     <?php endif; ?>
 
