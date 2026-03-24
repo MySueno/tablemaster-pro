@@ -260,7 +260,7 @@ if ( $has_cell_rows ) {
                     $has_value  = ( $translated !== '' );
                     $row_class  = 'tmp-translate-row';
                     if ( $has_value && ! $is_prefilled ) $row_class .= ' tmp-translate-done';
-                    if ( $is_prefilled ) $row_class .= ' tmp-translate-prefilled';
+                    if ( $is_prefilled && $has_value ) $row_class .= ' tmp-translate-prefilled';
                 ?>
                 <tr class="<?php echo esc_attr( $row_class ); ?>">
                     <td class="tmp-translate-context">
@@ -314,19 +314,21 @@ if ( $has_cell_rows ) {
 
     function updateProgress() {
         var count = 0;
-        $('.tmp-translate-input').each(function() {
-            if ($(this).val().trim() !== '') count++;
-        });
-        $('#tmp-progress-count').text(count);
-
         $('.tmp-translate-row').each(function() {
-            var $input = $(this).find('.tmp-translate-input');
-            if ($input.val().trim() !== '') {
-                $(this).addClass('tmp-translate-done');
+            var $row   = $(this);
+            var $input = $row.find('.tmp-translate-input');
+            if (!$input.length) return;
+            var filled = $input.val().trim() !== '';
+            if (filled && !$row.hasClass('tmp-translate-prefilled')) {
+                $row.addClass('tmp-translate-done');
+                count++;
+            } else if (filled && $row.hasClass('tmp-translate-prefilled')) {
+                // prefilled: don't count
             } else {
-                $(this).removeClass('tmp-translate-done');
+                $row.removeClass('tmp-translate-done tmp-translate-prefilled');
             }
         });
+        $('#tmp-progress-count').text(count);
     }
 
     function propagateTranslation($source) {
@@ -345,12 +347,17 @@ if ( $has_cell_rows ) {
         });
     }
 
-    $('.tmp-translate-input').on('input change', function() {
+    $('.tmp-translate-input').on('input', function() {
         isDirty = true;
+        var $row = $(this).closest('.tmp-translate-row');
+        if ($row.hasClass('tmp-translate-prefilled')) {
+            $row.removeClass('tmp-translate-prefilled');
+        }
         updateProgress();
     });
 
     $('.tmp-translate-input').on('change', function() {
+        isDirty = true;
         propagateTranslation($(this));
         updateProgress();
     });
