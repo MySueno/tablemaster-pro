@@ -20,15 +20,44 @@ class TableMaster_Settings {
     }
 
     public static function save( $data ) {
+        $allowed_themes = array( 'green', 'red', 'blue', 'grey', 'custom' );
+        $theme = sanitize_text_field( $data['default_theme'] ?? 'green' );
+        if ( ! in_array( $theme, $allowed_themes, true ) ) {
+            $theme = 'green';
+        }
         $clean = array(
-            'default_theme'    => sanitize_text_field( $data['default_theme']    ?? 'green' ),
-            'default_per_page' => intval( $data['default_per_page']               ?? 10 ),
+            'default_theme'    => $theme,
+            'default_per_page' => min( 500, max( 1, intval( $data['default_per_page'] ?? 10 ) ) ),
             'enable_export'    => ! empty( $data['enable_export'] ),
-            'border_radius'    => max( 0, intval( $data['border_radius'] ?? 4 ) ),
+            'border_radius'    => min( 50, max( 0, intval( $data['border_radius'] ?? 4 ) ) ),
             'update_url'       => esc_url_raw( $data['update_url'] ?? '' ),
         );
         update_option( 'tablemaster_settings', $clean );
         delete_transient( 'tmp_update_check' );
+    }
+
+    public static function sanitize_hex_color( $color, $default = '#000000' ) {
+        if ( preg_match( '/^#([A-Fa-f0-9]{3}){1,2}$/', $color ) ) {
+            return $color;
+        }
+        return $default;
+    }
+
+    public static function sanitize_colors( $colors ) {
+        $defaults = array(
+            'header_bg'    => '#D32637', 'header_text'  => '#ffffff',
+            'group1_bg'    => '#D32637', 'group1_text'  => '#ffffff',
+            'group2_bg'    => '#F9E6E7', 'group2_text'  => '#D32637',
+            'group3_bg'    => '#ffffff', 'group3_text'  => '#1a1a1a',
+            'odd_bg'       => '#F8F8F8', 'even_bg'      => '#ffffff',
+            'hover_bg'     => '#fce4e4', 'border_color' => '#e8e8e8',
+            'accent_color' => '#D32637',
+        );
+        $safe = array();
+        foreach ( $defaults as $key => $fallback ) {
+            $safe[ $key ] = self::sanitize_hex_color( $colors[ $key ] ?? '', $fallback );
+        }
+        return $safe;
     }
 
     public static function get_color_presets() {

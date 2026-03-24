@@ -1,36 +1,40 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-$colors   = $settings['colors']         ?? array();
-$table_uid = 'tmp-' . $table->id . '-' . wp_rand( 1000, 9999 );
+$colors   = TableMaster_Settings::sanitize_colors( $settings['colors'] ?? array() );
+$table_uid = 'tmp-' . intval( $table->id ) . '-' . wp_rand( 1000, 9999 );
 $global_settings = TableMaster_Settings::get();
-$border_radius   = intval( $global_settings['border_radius'] ?? 4 );
+$border_radius   = min( 50, max( 0, intval( $global_settings['border_radius'] ?? 4 ) ) );
 
-$header_bg    = esc_attr( $colors['header_bg']    ?? '#D32637' );
-$header_text  = esc_attr( $colors['header_text']  ?? '#ffffff' );
-$group1_bg    = esc_attr( $colors['group1_bg']    ?? '#D32637' );
-$group1_text  = esc_attr( $colors['group1_text']  ?? '#ffffff' );
-$group2_bg    = esc_attr( $colors['group2_bg']    ?? '#F9E6E7' );
-$group2_text  = esc_attr( $colors['group2_text']  ?? '#D32637' );
-$group3_bg    = esc_attr( $colors['group3_bg']    ?? '#ffffff' );
-$group3_text  = esc_attr( $colors['group3_text']  ?? '#1a1a1a' );
-$odd_bg       = esc_attr( $colors['odd_bg']       ?? '#F8F8F8' );
-$even_bg      = esc_attr( $colors['even_bg']      ?? '#ffffff' );
-$hover_bg     = esc_attr( $colors['hover_bg']     ?? '#fce4e4' );
-$border_color = esc_attr( $colors['border_color'] ?? '#e8e8e8' );
-$accent_color = esc_attr( $colors['accent_color'] ?? '#D32637' );
+$header_bg    = $colors['header_bg'];
+$header_text  = $colors['header_text'];
+$group1_bg    = $colors['group1_bg'];
+$group1_text  = $colors['group1_text'];
+$group2_bg    = $colors['group2_bg'];
+$group2_text  = $colors['group2_text'];
+$group3_bg    = $colors['group3_bg'];
+$group3_text  = $colors['group3_text'];
+$odd_bg       = $colors['odd_bg'];
+$even_bg      = $colors['even_bg'];
+$hover_bg     = $colors['hover_bg'];
+$border_color = $colors['border_color'];
+$accent_color = $colors['accent_color'];
+
+$allowed_search_pos = array( 'left', 'right', 'top', 'bottom' );
+$allowed_mobile     = array( 'scroll', 'card' );
+$allowed_sort_dir   = array( 'asc', 'desc' );
 
 $show_search       = ! empty( $settings['search'] );
-$search_pos        = $settings['search_position']   ?? 'right';
+$search_pos        = in_array( $settings['search_position'] ?? '', $allowed_search_pos, true ) ? $settings['search_position'] : 'right';
 $show_pagination   = ! empty( $settings['pagination'] );
-$per_page          = intval( $settings['per_page']   ?? 10 );
+$per_page          = min( 500, max( -1, intval( $settings['per_page'] ?? 10 ) ) );
 $show_pp_selector  = ! empty( $settings['per_page_selector'] );
 $collapsible       = ! empty( $settings['collapsible_groups'] );
-$mobile_mode       = $settings['mobile_mode']        ?? 'scroll';
+$mobile_mode       = in_array( $settings['mobile_mode'] ?? '', $allowed_mobile, true ) ? $settings['mobile_mode'] : 'scroll';
 $show_col_filters  = ! empty( $settings['column_filters'] );
-$caption           = $settings['caption']             ?? '';
-$default_sort_col  = $settings['default_sort_col']    ?? '';
-$default_sort_dir  = $settings['default_sort_dir']    ?? 'asc';
+$caption           = sanitize_text_field( $settings['caption'] ?? '' );
+$default_sort_col  = sanitize_text_field( $settings['default_sort_col'] ?? '' );
+$default_sort_dir  = in_array( $settings['default_sort_dir'] ?? '', $allowed_sort_dir, true ) ? $settings['default_sort_dir'] : 'asc';
 $inline_html       = ! empty( $settings['inline_html'] );
 $sticky_first_col  = ! empty( $settings['sticky_first_col'] );
 
@@ -155,11 +159,14 @@ $rows    = $data['rows'];
                     <?php if ( $collapsible ) : ?>
                         <th class="tmp-toggle-col" aria-hidden="true"></th>
                     <?php endif; ?>
-                    <?php foreach ( $col_meta as $cm ) :
+                    <?php
+                    $valid_aligns = array( 'left', 'center', 'right' );
+                    foreach ( $col_meta as $cm ) :
                         $cs     = $cm['cs'];
                         $col    = $cm['col'];
                         $width  = $cs['width'] ?? 'auto';
-                        $align  = $cs['align'] ?? 'left';
+                        if ( $width !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $width ) ) $width = 'auto';
+                        $align  = in_array( $cs['align'] ?? 'left', $valid_aligns, true ) ? $cs['align'] : 'left';
                         $sort   = ! empty( $cs['sortable'] );
                         $hide_m = ! empty( $cs['hide_mobile'] );
                         $th_class = 'tmp-th';
@@ -381,9 +388,9 @@ $rows    = $data['rows'];
 
                             <?php foreach ( $columns as $col ) :
                                 $cs       = json_decode( $col->settings, true );
-                                $align    = $cs['align']       ?? 'left';
+                                $align    = in_array( $cs['align'] ?? 'left', $valid_aligns, true ) ? $cs['align'] : 'left';
                                 $hide_m   = ! empty( $cs['hide_mobile'] );
-                                $col_type = $col->type;
+                                $col_type = sanitize_text_field( $col->type );
                                 $td_class = 'tmp-td';
                                 if ( $hide_m ) $td_class .= ' tmp-hide-mobile';
 

@@ -520,15 +520,19 @@ class TableMaster_DB {
     }
 
     public static function flush_table_cache( $table_id ) {
-        global $wpdb;
-        $wpdb->query( $wpdb->prepare(
-            "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
-            '_transient_tmp_data_' . intval( $table_id ) . '_%'
-        ) );
-        $wpdb->query( $wpdb->prepare(
-            "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
-            '_transient_timeout_tmp_data_' . intval( $table_id ) . '_%'
-        ) );
+        $table_id = intval( $table_id );
+        $langs = array( 'default', 'en', 'nl', 'fr', 'de', 'es', 'it', 'pt', 'pl', 'ru', 'ja', 'zh', 'ko', 'ar', 'tr', 'sv', 'da', 'no', 'fi' );
+        foreach ( $langs as $lang ) {
+            delete_transient( 'tmp_data_' . $table_id . '_' . $lang );
+        }
+        if ( function_exists( 'icl_get_languages' ) ) {
+            $wpml_langs = icl_get_languages( 'skip_missing=0' );
+            if ( is_array( $wpml_langs ) ) {
+                foreach ( array_keys( $wpml_langs ) as $code ) {
+                    delete_transient( 'tmp_data_' . $table_id . '_' . sanitize_key( $code ) );
+                }
+            }
+        }
     }
 
     public static function get_table_data( $table_id, $lang = '' ) {
@@ -602,12 +606,20 @@ class TableMaster_DB {
 
         $col_id_map = array();
         foreach ( $columns_data as $order_index => $col ) {
+            $allowed_aligns = array( 'left', 'center', 'right' );
+            $raw_align = sanitize_text_field( $col['settings']['align'] ?? 'left' );
+            $raw_width = sanitize_text_field( $col['settings']['width'] ?? 'auto' );
+            if ( $raw_width !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $raw_width ) ) {
+                $raw_width = 'auto';
+            }
             $col_settings = array(
-                'width'       => sanitize_text_field( $col['settings']['width']       ?? 'auto' ),
-                'align'       => sanitize_text_field( $col['settings']['align']       ?? 'left' ),
-                'sortable'    => ! empty( $col['settings']['sortable'] ),
-                'filterable'  => ! empty( $col['settings']['filterable'] ),
-                'hide_mobile' => ! empty( $col['settings']['hide_mobile'] ),
+                'width'         => $raw_width,
+                'align'         => in_array( $raw_align, $allowed_aligns, true ) ? $raw_align : 'left',
+                'sortable'      => ! empty( $col['settings']['sortable'] ),
+                'filterable'    => ! empty( $col['settings']['filterable'] ),
+                'hide_mobile'   => ! empty( $col['settings']['hide_mobile'] ),
+                'header_group1' => mb_substr( sanitize_text_field( $col['settings']['header_group1'] ?? '' ), 0, 200 ),
+                'header_group2' => mb_substr( sanitize_text_field( $col['settings']['header_group2'] ?? '' ), 0, 200 ),
             );
             $temp_key = sanitize_text_field( $col['temp_key'] ?? '' );
 

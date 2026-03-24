@@ -36,6 +36,14 @@ class TableMaster_Ajax {
         if ( ! $name ) {
             wp_send_json_error( array( 'message' => __( 'Naam is verplicht.', TMP_TEXT_DOMAIN ) ) );
         }
+        if ( mb_strlen( $name ) > 200 ) {
+            wp_send_json_error( array( 'message' => __( 'Naam is te lang (max 200 tekens).', TMP_TEXT_DOMAIN ) ) );
+        }
+        if ( ! is_array( $settings ) ) {
+            $settings = array();
+        }
+
+        $settings = self::sanitize_table_settings( $settings );
 
         $new_id = TableMaster_DB::save_table( array(
             'id'       => $id,
@@ -47,17 +55,55 @@ class TableMaster_Ajax {
         wp_send_json_success( array( 'id' => $new_id ) );
     }
 
+    private static function sanitize_table_settings( $settings ) {
+        $allowed_themes      = array( 'green', 'red', 'blue', 'grey', 'custom' );
+        $allowed_search_pos  = array( 'left', 'right', 'top', 'bottom' );
+        $allowed_mobile      = array( 'scroll', 'card' );
+        $allowed_sort_dir    = array( 'asc', 'desc' );
+
+        $clean = array();
+        $clean['caption']            = isset( $settings['caption'] ) ? sanitize_text_field( $settings['caption'] ) : '';
+        $clean['search']             = ! empty( $settings['search'] );
+        $clean['search_position']    = in_array( $settings['search_position'] ?? '', $allowed_search_pos, true ) ? $settings['search_position'] : 'right';
+        $clean['pagination']         = ! empty( $settings['pagination'] );
+        $clean['per_page']           = min( 500, max( -1, intval( $settings['per_page'] ?? 10 ) ) );
+        $clean['per_page_selector']  = ! empty( $settings['per_page_selector'] );
+        $clean['collapsible_groups'] = ! empty( $settings['collapsible_groups'] );
+        $clean['mobile_mode']        = in_array( $settings['mobile_mode'] ?? '', $allowed_mobile, true ) ? $settings['mobile_mode'] : 'scroll';
+        $clean['default_sort_col']   = sanitize_text_field( $settings['default_sort_col'] ?? '' );
+        $clean['default_sort_dir']   = in_array( $settings['default_sort_dir'] ?? '', $allowed_sort_dir, true ) ? $settings['default_sort_dir'] : 'asc';
+        $clean['inline_html']        = ! empty( $settings['inline_html'] );
+        $clean['column_filters']     = ! empty( $settings['column_filters'] );
+        $clean['sticky_first_col']   = ! empty( $settings['sticky_first_col'] );
+        $clean['theme']              = in_array( $settings['theme'] ?? '', $allowed_themes, true ) ? $settings['theme'] : 'custom';
+
+        if ( isset( $settings['colors'] ) && is_array( $settings['colors'] ) ) {
+            $clean['colors'] = TableMaster_Settings::sanitize_colors( $settings['colors'] );
+        }
+
+        return $clean;
+    }
+
     public function delete_table() {
         $this->verify_nonce();
         $id = intval( $_POST['id'] ?? 0 );
+        if ( ! $id || ! TableMaster_DB::get_table( $id ) ) {
+            wp_send_json_error( array( 'message' => __( 'Tabel niet gevonden.', TMP_TEXT_DOMAIN ) ), 404 );
+        }
         TableMaster_DB::delete_table( $id );
         wp_send_json_success();
     }
 
     public function duplicate_table() {
         $this->verify_nonce();
-        $id     = intval( $_POST['id'] ?? 0 );
+        $id = intval( $_POST['id'] ?? 0 );
+        if ( ! $id || ! TableMaster_DB::get_table( $id ) ) {
+            wp_send_json_error( array( 'message' => __( 'Tabel niet gevonden.', TMP_TEXT_DOMAIN ) ), 404 );
+        }
         $new_id = TableMaster_DB::duplicate_table( $id );
+        if ( ! $new_id ) {
+            wp_send_json_error( array( 'message' => __( 'Dupliceren mislukt.', TMP_TEXT_DOMAIN ) ) );
+        }
         wp_send_json_success( array( 'id' => $new_id ) );
     }
 
@@ -65,13 +111,35 @@ class TableMaster_Ajax {
         $this->verify_nonce();
 
         $table_id    = intval( $_POST['table_id'] ?? 0 );
-        $columns     = json_decode( wp_unslash( $_POST['columns'] ?? '[]' ), true );
-        $rows        = json_decode( wp_unslash( $_POST['rows']    ?? '[]' ), true );
+        $columns_raw = wp_unslash( $_POST['columns'] ?? '[]' );
+        $rows_raw    = wp_unslash( $_POST['rows']    ?? '[]' );
+
+        if ( strlen( $columns_raw ) > 1048576 || strlen( $rows_raw ) > 10485760 ) {
+            wp_send_json_error( array( 'message' => __( 'Data te groot.', TMP_TEXT_DOMAIN ) ), 413 );
+        }
+
+        $columns     = json_decode( $columns_raw, true );
+        $rows        = json_decode( $rows_raw, true );
         $lang        = sanitize_text_field( wp_unslash( $_POST['lang'] ?? '' ) );
 
-        if ( ! $table_id ) {
-            wp_send_json_error( array( 'message' => 'Geen tabel ID.' ) );
+        if ( ! $table_id || ! TableMaster_DB::get_table( $table_id ) ) {
+            wp_send_json_error( array( 'message' => __( 'Tabel niet gevonden.', TMP_TEXT_DOMAIN ) ), 404 );
         }
+        if ( ! is_array( $columns ) || ! is_array( $rows ) ) {
+            wp_send_json_error( array( 'message' => __( 'Ongeldige data.', TMP_TEXT_DOMAIN ) ) );
+        }
+        if ( count( $columns ) > 100 ) {
+            wp_send_json_error( array( 'message' => __( 'Te veel kolommen (max 100).', TMP_TEXT_DOMAIN ) ) );
+        }
+        if ( count( $rows ) > 10000 ) {
+            wp_send_json_error( array( 'message' => __( 'Te veel rijen (max 10.000).', TMP_TEXT_DOMAIN ) ) );
+        }
+
+        foreach ( $columns as &$col ) {
+            $col['label'] = isset( $col['label'] ) ? mb_substr( sanitize_text_field( $col['label'] ), 0, 200 ) : '';
+            $col['type']  = isset( $col['type'] ) ? sanitize_text_field( $col['type'] ) : 'text';
+        }
+        unset( $col );
 
         TableMaster_DB::save_table_structure( $table_id, $columns, $rows, $lang );
         do_action( 'tablemaster_after_save_structure', $table_id );

@@ -75,9 +75,8 @@ class TableMaster {
             TMP_VERSION,
             true
         );
-        wp_localize_script( 'tablemaster-frontend-js', 'tableMasterAjax', array(
-            'ajaxurl' => admin_url( 'admin-ajax.php' ),
-            'nonce'   => wp_create_nonce( 'tablemaster_frontend' ),
+        wp_localize_script( 'tablemaster-frontend-js', 'tableMasterFrontend', array(
+            'version' => TMP_VERSION,
         ) );
     }
 }

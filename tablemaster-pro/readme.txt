@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,20 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.2.4 =
+* Beveiliging: Strikte hex-kleur validatie — voorkomt CSS injection via kleurinstellingen
+* Beveiliging: Alle tabelinstellingen worden nu diep gesanitized (whitelist thema's, posities, modi)
+* Beveiliging: Input lengtebeperkingen — tabelnaam max 200, kolom labels max 200, max 100 kolommen, max 10.000 rijen
+* Beveiliging: Kolombreedte-validatie via regex — alleen geldige CSS waarden geaccepteerd
+* Beveiliging: Alignment validatie met whitelist (left/center/right)
+* Beveiliging: Delete en duplicate valideren nu of de tabel bestaat vóór actie
+* Beveiliging: Ongebruikte frontend nonce verwijderd (geen onnodige server-side overhead)
+* Beveiliging: Payload-grootte limieten op structuur-opslag (1MB kolommen, 10MB rijen)
+* Performance: Cache flush gebruikt nu specifieke delete_transient() i.p.v. trage LIKE queries
+* Performance: Per-page waarden begrensd (max 500) om memory-problemen te voorkomen
+* Verbeterd: Uninstall ruimt nu alle transients en WPML-registratie op
+* Verbeterd: Header group velden worden nu ook correct gesanitized bij opslaan
 
 = 1.2.3 =
 * Nieuw: Eigen Elementor widget — sleep "TableMaster Pro" vanuit het Elementor paneel direct op je pagina
