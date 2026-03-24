@@ -10,8 +10,8 @@ $table_name= $table ? $table->name : '';
 
 $colors        = $settings['colors'] ?? array();
 $presets       = TableMaster_Settings::get_color_presets();
-$active_theme  = $settings['theme'] ?? 'green';
-$default_colors= $presets['green'];
+$active_theme  = $settings['theme'] ?? 'red';
+$default_colors= $presets['red'];
 
 $c = array_merge( $default_colors, $colors );
 
