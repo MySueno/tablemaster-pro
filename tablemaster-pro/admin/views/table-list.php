@@ -39,7 +39,7 @@ $tables = TableMaster_DB::get_all_tables();
                     $theme    = $settings['theme'] ?? 'custom';
                     $dot_color = '';
                     switch ( $theme ) {
-                        case 'green': $dot_color = '#2e7d32'; break;
+                        case 'green': $dot_color = '#D32637'; break;
                         case 'red':   $dot_color = '#c62828'; break;
                         case 'blue':  $dot_color = '#1565c0'; break;
                         case 'grey':  $dot_color = '#424242'; break;

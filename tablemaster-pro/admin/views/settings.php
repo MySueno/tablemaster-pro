@@ -14,7 +14,7 @@ $s = TableMaster_Settings::get();
                 <th><?php esc_html_e( 'Standaard kleurthema', TMP_TEXT_DOMAIN ); ?></th>
                 <td>
                     <select name="default_theme">
-                        <?php foreach ( array( 'green', 'red', 'blue', 'grey' ) as $t ) : ?>
+                        <?php foreach ( array( 'red', 'blue', 'grey' ) as $t ) : ?>
                             <option value="<?php echo esc_attr( $t ); ?>" <?php selected( $s['default_theme'], $t ); ?>>
                                 <?php echo esc_html( ucfirst( $t ) ); ?>
                             </option>

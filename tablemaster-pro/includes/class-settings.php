@@ -5,7 +5,7 @@ class TableMaster_Settings {
 
     public static function get( $key = null ) {
         $defaults = array(
-            'default_theme'   => 'green',
+            'default_theme'   => 'red',
             'default_per_page'=> 10,
             'enable_export'   => false,
             'border_radius'   => '15',
@@ -20,10 +20,10 @@ class TableMaster_Settings {
     }
 
     public static function save( $data ) {
-        $allowed_themes = array( 'green', 'red', 'blue', 'grey', 'custom' );
-        $theme = sanitize_text_field( $data['default_theme'] ?? 'green' );
+        $allowed_themes = array( 'red', 'blue', 'grey', 'custom' );
+        $theme = sanitize_text_field( $data['default_theme'] ?? 'red' );
         if ( ! in_array( $theme, $allowed_themes, true ) ) {
-            $theme = 'green';
+            $theme = 'red';
         }
         $clean = array(
             'default_theme'    => $theme,
@@ -63,16 +63,6 @@ class TableMaster_Settings {
 
     public static function get_color_presets() {
         return array(
-            'green' => array(
-                'header_bg'    => '#2e7d32', 'header_text'  => '#ffffff',
-                'group1_bg'    => '#4caf50', 'group1_text'  => '#ffffff',
-                'group2_bg'    => '#81c784', 'group2_text'  => '#1a1a1a',
-                'group3_bg'    => '#c8e6c9', 'group3_text'  => '#1a1a1a',
-                'footer_bg'   => '#2e7d32', 'footer_text'  => '#ffffff',
-                'odd_bg'       => '#ffffff', 'even_bg'      => '#f1f8e9',
-                'hover_bg'     => '#dcedc8', 'border_color' => '#a5d6a7',
-                'accent_color' => '#2e7d32',
-            ),
             'red' => array(
                 'header_bg'    => '#D32637', 'header_text'  => '#ffffff',
                 'group1_bg'    => '#D32637', 'group1_text'  => '#ffffff',
