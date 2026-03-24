@@ -141,6 +141,69 @@ foreach ( $translate_rows as $tr ) {
     }
 }
 
+if ( ! function_exists( 'tmp_get_global_translations' ) ) {
+    function tmp_get_global_translations( $originals, $target_lang ) {
+        global $wpdb;
+        if ( ! defined( 'WPML_ST_VERSION' ) || empty( $originals ) ) return array();
+
+        $strings_table      = $wpdb->prefix . 'icl_strings';
+        $translations_table = $wpdb->prefix . 'icl_string_translations';
+
+        if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $strings_table ) ) !== $strings_table ) return array();
+
+        $placeholders = implode( ',', array_fill( 0, count( $originals ), '%s' ) );
+        $query_args   = array_merge( $originals, array( $target_lang ) );
+
+        $results = $wpdb->get_results( $wpdb->prepare(
+            "SELECT s.value AS original, t.value AS translation
+             FROM {$strings_table} s
+             INNER JOIN {$translations_table} t ON t.string_id = s.id
+             WHERE s.context LIKE 'tablemaster_pro_table_%'
+               AND s.value IN ({$placeholders})
+               AND t.language = %s
+               AND t.status = 10
+               AND t.value != ''
+             GROUP BY s.value",
+            $query_args
+        ) );
+
+        $map = array();
+        if ( $results ) {
+            foreach ( $results as $r ) {
+                $map[ $r->original ] = $r->translation;
+            }
+        }
+        return $map;
+    }
+}
+
+$all_originals = array();
+foreach ( $translate_rows as $tr ) {
+    if ( isset( $tr['original'] ) && $tr['original'] !== '' && ! isset( $known_translations[ $tr['original'] ] ) ) {
+        $all_originals[] = $tr['original'];
+    }
+}
+
+$all_originals_cells = array();
+foreach ( $rows as $row ) {
+    foreach ( $columns as $col ) {
+        $content = $row->cells[ $col->id ] ?? '';
+        if ( trim( $content ) !== '' && ! isset( $known_translations[ $content ] ) ) {
+            $all_originals_cells[] = $content;
+        }
+    }
+}
+$all_originals = array_unique( array_merge( $all_originals, $all_originals_cells ) );
+
+if ( ! empty( $all_originals ) ) {
+    $global_translations = tmp_get_global_translations( $all_originals, $target_lang );
+    foreach ( $global_translations as $orig => $trans ) {
+        if ( ! isset( $known_translations[ $orig ] ) ) {
+            $known_translations[ $orig ] = $trans;
+        }
+    }
+}
+
 $has_cell_rows = false;
 $cell_rows     = array();
 foreach ( $rows as $row ) {
@@ -257,8 +320,9 @@ if ( $has_cell_rows ) {
                     $translated  = tmp_get_translation( $context, $tr_row['name'], $target_lang );
                     $is_prefilled = ! empty( $tr_row['prefilled'] );
 
-                    if ( $is_prefilled && $translated === '' && isset( $known_translations[ $tr_row['original'] ] ) ) {
+                    if ( $translated === '' && isset( $known_translations[ $tr_row['original'] ] ) ) {
                         $translated = $known_translations[ $tr_row['original'] ];
+                        $is_prefilled = true;
                     }
 
                     $has_value  = ( $translated !== '' );
