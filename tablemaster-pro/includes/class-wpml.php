@@ -141,7 +141,35 @@ class TableMaster_WPML {
     }
 
     public static function translate_string( $context, $name, $value ) {
-        return self::wpml_translate_string( $value, $context, $name );
+        $translated = self::wpml_translate_string( $value, $context, $name );
+
+        if ( $translated === $value && self::is_string_translation_active() ) {
+            $lang = self::get_current_language();
+            if ( $lang && $lang !== self::get_default_language() ) {
+                $db_translation = self::get_translation_from_db( $context, $name, $lang );
+                if ( $db_translation !== '' ) {
+                    return $db_translation;
+                }
+            }
+        }
+
+        return $translated;
+    }
+
+    private static function get_translation_from_db( $context, $name, $lang ) {
+        global $wpdb;
+
+        $strings_table      = $wpdb->prefix . 'icl_strings';
+        $translations_table = $wpdb->prefix . 'icl_string_translations';
+
+        $translation = $wpdb->get_var( $wpdb->prepare(
+            "SELECT t.value FROM {$strings_table} s
+             INNER JOIN {$translations_table} t ON t.string_id = s.id
+             WHERE s.context = %s AND s.name = %s AND t.language = %s AND t.status = 10 AND t.value != ''",
+            $context, $name, $lang
+        ) );
+
+        return $translation !== null ? $translation : '';
     }
 
     public static function get_translation_progress( $table_id, $lang ) {
