@@ -288,6 +288,98 @@ class TableMaster_DB {
                 ) );
             }
         }
+
+        $anato_settings = json_encode( array(
+            'caption'            => 'Tabel 3 | Anatomopathologie',
+            'search'             => true,
+            'search_position'    => 'right',
+            'pagination'         => false,
+            'per_page'           => -1,
+            'per_page_selector'  => false,
+            'collapsible_groups' => false,
+            'mobile_mode'        => 'card',
+            'default_sort_col'   => '',
+            'default_sort_dir'   => 'asc',
+            'inline_html'        => false,
+            'theme'              => 'red',
+            'colors'             => array(
+                'header_bg'    => '#c62828',
+                'header_text'  => '#ffffff',
+                'group1_bg'    => '#c62828',
+                'group1_text'  => '#ffffff',
+                'group2_bg'    => '#ef9a9a',
+                'group2_text'  => '#1a1a1a',
+                'group3_bg'    => '#ffcdd2',
+                'group3_text'  => '#1a1a1a',
+                'odd_bg'       => '#ffffff',
+                'even_bg'      => '#fafafa',
+                'hover_bg'     => '#fce4ec',
+                'border_color' => '#e0e0e0',
+                'accent_color' => '#c62828',
+            ),
+        ) );
+
+        $wpdb->insert(
+            "{$wpdb->prefix}tablemaster_tables",
+            array(
+                'name'       => 'Anatomopathologie (Kiemen)',
+                'slug'       => 'anatomopathologie-kiemen',
+                'settings'   => $anato_settings,
+                'created_at' => $now,
+                'updated_at' => $now,
+                'created_by' => 1,
+            )
+        );
+        $t3 = $wpdb->insert_id;
+
+        $cols3 = array(
+            array( 'label' => 'Kiemen',               'type' => 'text',   'order_index' => 0,
+                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left',   'sortable' => true,  'filterable' => true,  'hide_mobile' => false ) ) ),
+            array( 'label' => 'Percentage 2024-2025',  'type' => 'text',   'order_index' => 1,
+                   'settings' => json_encode( array( 'width' => '200px','align' => 'left',   'sortable' => true,  'filterable' => false, 'hide_mobile' => false ) ) ),
+            array( 'label' => 'Percentage 2018',       'type' => 'text',   'order_index' => 2,
+                   'settings' => json_encode( array( 'width' => '200px','align' => 'left',   'sortable' => true,  'filterable' => false, 'hide_mobile' => false ) ) ),
+        );
+
+        $col_ids3 = array();
+        foreach ( $cols3 as $col ) {
+            $wpdb->insert( "{$wpdb->prefix}tablemaster_columns", array_merge( array( 'table_id' => $t3 ), $col ) );
+            $col_ids3[] = $wpdb->insert_id;
+        }
+
+        $demo3 = array(
+            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Campylobacter spp.',      '63,8%', '71,7%' ) ),
+            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Campylobacter jejuni',    '77,5%', '86,8%' ) ),
+            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Campylobacter coli',      '11,3%', '11,6%' ) ),
+            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Campylobacter andere',    '11,2%', '1,6%'  ) ),
+            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Aeromonas spp.',          '14,0%', '11,8%' ) ),
+            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Salmonella spp.',         '10,5%', '11,4%' ) ),
+            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Shigella spp.',           '2,1%',  '2,0%'  ) ),
+            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Yersinia enterocolitica', '5,4%',  '2,0%'  ) ),
+            array( 'type' => 'data',    'parent' => null, 'data' => array( 'E.coli O157',             '0,3%',  '0,1%'  ) ),
+            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Andere',                  '3,9%',  '1,0%'  ) ),
+            array( 'type' => 'group_1', 'parent' => null, 'data' => array( 'Som',                     '100%',  '100%'  ) ),
+        );
+
+        foreach ( $demo3 as $idx => $r ) {
+            $wpdb->insert( "{$wpdb->prefix}tablemaster_rows", array(
+                'table_id'    => $t3,
+                'parent_id'   => null,
+                'row_type'    => $r['type'],
+                'order_index' => $idx,
+                'is_collapsed'=> 0,
+            ) );
+            $rid = $wpdb->insert_id;
+            foreach ( $r['data'] as $ci => $content ) {
+                if ( $content === '' ) continue;
+                $wpdb->insert( "{$wpdb->prefix}tablemaster_cells", array(
+                    'row_id'    => $rid,
+                    'column_id' => $col_ids3[$ci],
+                    'content'   => $content,
+                    'lang'      => '',
+                ) );
+            }
+        }
     }
 
     public static function get_all_tables() {
