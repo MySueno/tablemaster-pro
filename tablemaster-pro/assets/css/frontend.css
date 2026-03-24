@@ -182,7 +182,7 @@
 }
 
 .tmp-sort-icon::after {
-    content: '↕';
+    content: '';
 }
 
 .tmp-th.tmp-sort-asc .tmp-sort-icon::after {
