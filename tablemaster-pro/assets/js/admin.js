@@ -299,8 +299,13 @@
         var cellInputs = columns.map(function (col) {
             var key     = col.temp_key || col.id;
             var content = row.cells[key] !== undefined ? row.cells[key] : '';
-            return '<td><textarea class="tmp-cell-input" data-col-key="' + escAttr(key + '') + '" rows="1">' +
-                escHtml(content) + '</textarea></td>';
+            var fmtBtns = '<div class="tmp-cell-fmt">' +
+                '<button type="button" class="tmp-fmt-btn tmp-fmt-bold" title="Vet (Ctrl+B)"><b>B</b></button>' +
+                '<button type="button" class="tmp-fmt-btn tmp-fmt-link" title="Link invoegen">&#128279;</button>' +
+                '</div>';
+            return '<td><div class="tmp-cell-wrap">' + fmtBtns +
+                '<textarea class="tmp-cell-input" data-col-key="' + escAttr(key + '') + '" rows="1">' +
+                escHtml(content) + '</textarea></div></td>';
         }).join('');
 
         var $tr = $('<tr class="' + escAttr(typeClass) + '" data-temp-id="' + escAttr(row.temp_id) + '">' +
@@ -330,6 +335,43 @@
             rows = rows.filter(function (r) { return r.temp_id + '' !== tempId; });
             $tr.remove();
             isDirty = true;
+        });
+
+        // Bold formatting button
+        $tr.find('.tmp-fmt-bold').on('click', function () {
+            var $area = $(this).closest('.tmp-cell-wrap').find('.tmp-cell-input');
+            var el    = $area[0];
+            var start = el.selectionStart;
+            var end   = el.selectionEnd;
+            var val   = el.value;
+            var sel   = val.substring(start, end) || 'tekst';
+            el.value  = val.substring(0, start) + '<strong>' + sel + '</strong>' + val.substring(end);
+            $area.trigger('input');
+            el.focus();
+            el.setSelectionRange(start + 8, start + 8 + sel.length);
+        });
+
+        // Ctrl+B shortcut in textarea
+        $tr.find('.tmp-cell-input').on('keydown', function (e) {
+            if (e.ctrlKey && e.key === 'b') {
+                e.preventDefault();
+                $(this).closest('.tmp-cell-wrap').find('.tmp-fmt-bold').trigger('click');
+            }
+        });
+
+        // Link formatting button
+        $tr.find('.tmp-fmt-link').on('click', function () {
+            var url = prompt('URL (bijv. https://example.com):');
+            if (!url) return;
+            var $area = $(this).closest('.tmp-cell-wrap').find('.tmp-cell-input');
+            var el    = $area[0];
+            var start = el.selectionStart;
+            var end   = el.selectionEnd;
+            var val   = el.value;
+            var sel   = val.substring(start, end) || url;
+            el.value  = val.substring(0, start) + '<a href="' + url + '">' + sel + '</a>' + val.substring(end);
+            $area.trigger('input');
+            el.focus();
         });
 
         return $tr;
@@ -437,6 +479,7 @@
             mobile_mode:        $('#tmp-mobile-mode').val(),
             column_filters:     $('#tmp-column-filters').is(':checked'),
             inline_html:        $('#tmp-inline-html').is(':checked'),
+            sticky_first_col:   $('#tmp-sticky-first-col').is(':checked'),
             default_sort_col:   $('#tmp-default-sort-col').val(),
             default_sort_dir:   $('#tmp-default-sort-dir').val(),
         };
@@ -544,7 +587,7 @@
         });
 
         // Settings change -> dirty
-        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-mobile-mode, #tmp-column-filters, #tmp-inline-html, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-table-name').on('change input', function () {
+        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-mobile-mode, #tmp-column-filters, #tmp-inline-html, #tmp-sticky-first-col, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-table-name').on('change input', function () {
             isDirty = true;
         });
 

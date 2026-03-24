@@ -575,3 +575,45 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Cell formatting buttons (Bold / Link) */
+.tmp-cell-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.tmp-cell-fmt {
+    display: flex;
+    gap: 3px;
+    opacity: 0;
+    transition: opacity 0.15s;
+    height: 0;
+    overflow: hidden;
+}
+
+.tmp-cell-wrap:focus-within .tmp-cell-fmt,
+.tmp-cell-wrap:hover .tmp-cell-fmt {
+    opacity: 1;
+    height: auto;
+}
+
+.tmp-fmt-btn {
+    background: #f0f0f1;
+    border: 1px solid #c3c4c7;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 11px;
+    line-height: 1.4;
+    cursor: pointer;
+    color: #1d2327;
+}
+
+.tmp-fmt-btn:hover {
+    background: #dcdcde;
+    border-color: #a7aaad;
+}
+
+.tmp-fmt-btn b {
+    font-weight: 700;
+}

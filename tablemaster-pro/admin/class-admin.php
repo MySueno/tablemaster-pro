@@ -54,6 +54,15 @@ class TableMaster_Admin {
             'tablemaster-edit',
             array( $this, 'page_edit' )
         );
+
+        add_submenu_page(
+            null,
+            __( 'Tabel Preview', TMP_TEXT_DOMAIN ),
+            __( 'Tabel Preview', TMP_TEXT_DOMAIN ),
+            'manage_options',
+            'tablemaster-preview',
+            array( $this, 'page_preview' )
+        );
     }
 
     public function enqueue_assets( $hook ) {
@@ -126,6 +135,10 @@ class TableMaster_Admin {
 
     public function page_edit() {
         include TMP_PLUGIN_DIR . 'admin/views/table-edit.php';
+    }
+
+    public function page_preview() {
+        include TMP_PLUGIN_DIR . 'admin/views/table-preview.php';
     }
 
     public function page_settings() {

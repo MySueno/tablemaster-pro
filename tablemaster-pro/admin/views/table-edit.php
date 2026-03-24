@@ -36,6 +36,11 @@ $page_title = $is_new
             <button class="button button-small tmp-copy-btn" data-shortcode='[tablemaster id="<?php echo esc_attr( $table_id ); ?>"]'>
                 <?php esc_html_e( 'Kopiëren', TMP_TEXT_DOMAIN ); ?>
             </button>
+            <a href="<?php echo esc_url( admin_url( 'admin.php?page=tablemaster-preview&id=' . $table_id ) ); ?>"
+               class="button button-small" target="_blank" style="margin-left:8px;">
+                <span class="dashicons dashicons-visibility" style="margin-top:3px;margin-right:3px;"></span>
+                <?php esc_html_e( 'Bekijk op website', TMP_TEXT_DOMAIN ); ?>
+            </a>
         </div>
     <?php endif; ?>
 
@@ -255,6 +260,13 @@ $page_title = $is_new
                         <?php esc_html_e( 'Inline HTML toestaan in cellen', TMP_TEXT_DOMAIN ); ?>
                     </label>
                     <p class="description"><?php esc_html_e( 'Laat HTML-opmaak toe in celinhoud. Gebruik alleen als u de inhoud vertrouwt.', TMP_TEXT_DOMAIN ); ?></p>
+                </div>
+                <div class="tmp-form-group">
+                    <label>
+                        <input type="checkbox" id="tmp-sticky-first-col" <?php checked( $settings['sticky_first_col'] ?? false ); ?>>
+                        <?php esc_html_e( 'Eerste kolom vastzetten bij horizontaal scrollen', TMP_TEXT_DOMAIN ); ?>
+                    </label>
+                    <p class="description"><?php esc_html_e( 'De eerste kolom blijft zichtbaar als de tabel horizontaal gescrolld wordt (scroll-modus).', TMP_TEXT_DOMAIN ); ?></p>
                 </div>
                 <div class="tmp-form-group">
                     <label for="tmp-default-sort-col"><?php esc_html_e( 'Standaard sorteerkolom (index, 0 = eerste):', TMP_TEXT_DOMAIN ); ?></label>

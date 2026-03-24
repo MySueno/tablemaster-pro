@@ -30,6 +30,7 @@ $caption           = $settings['caption']             ?? '';
 $default_sort_col  = $settings['default_sort_col']    ?? '';
 $default_sort_dir  = $settings['default_sort_dir']    ?? 'asc';
 $inline_html       = ! empty( $settings['inline_html'] );
+$sticky_first_col  = ! empty( $settings['sticky_first_col'] );
 
 $columns = $data['columns'];
 $rows    = $data['rows'];
@@ -53,7 +54,7 @@ $rows    = $data['rows'];
 </style>
 
 <div id="<?php echo esc_attr( $table_uid ); ?>"
-     class="tmp-wrapper tmp-mobile-<?php echo esc_attr( $mobile_mode ); ?>"
+     class="tmp-wrapper tmp-mobile-<?php echo esc_attr( $mobile_mode ); ?><?php echo $sticky_first_col ? ' tmp-sticky-first' : ''; ?>"
      data-table-id="<?php echo esc_attr( $table->id ); ?>"
      data-per-page="<?php echo esc_attr( $per_page ); ?>"
      data-collapsible="<?php echo $collapsible ? '1' : '0'; ?>"
