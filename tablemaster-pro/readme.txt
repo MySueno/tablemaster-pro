@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,11 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.1.2 =
+* Fix: WPML strings worden nu automatisch geregistreerd bij plugin-update (geen handmatig opslaan meer nodig)
+* Fix: "Vertalen" knop linkt nu correct naar de WPML String Translation pagina met juiste context-filter
+* Tabelnaam wordt nu ook als vertaalbare string geregistreerd
 
 = 1.1.1 =
 * Fix: Elementor-compatibiliteit — kleuren en stijlen worden nu correct geladen in Elementor editor en frontend
