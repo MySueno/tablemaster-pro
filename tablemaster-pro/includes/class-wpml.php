@@ -18,15 +18,7 @@ class TableMaster_WPML {
     }
 
     public static function get_translate_url( $table_id ) {
-        $context = self::get_context( $table_id );
-
-        if ( self::is_string_translation_active() ) {
-            return admin_url(
-                'admin.php?page=wpml-string-translation/menu/string-translation.php&context=' . urlencode( $context )
-            );
-        }
-
-        return admin_url( 'admin.php?page=sitepress-multilingual-cms/menu/languages.php' );
+        return admin_url( 'admin.php?page=tablemaster-translate&id=' . intval( $table_id ) );
     }
 
     private static function get_context( $table_id ) {

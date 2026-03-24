@@ -5,11 +5,12 @@ class TableMaster_Ajax {
 
     public function register() {
         $actions = array(
-            'tablemaster_save_table'      => 'save_table',
-            'tablemaster_delete_table'    => 'delete_table',
-            'tablemaster_duplicate_table' => 'duplicate_table',
-            'tablemaster_save_structure'  => 'save_structure',
-            'tablemaster_get_structure'   => 'get_structure',
+            'tablemaster_save_table'        => 'save_table',
+            'tablemaster_delete_table'      => 'delete_table',
+            'tablemaster_duplicate_table'   => 'duplicate_table',
+            'tablemaster_save_structure'    => 'save_structure',
+            'tablemaster_get_structure'     => 'get_structure',
+            'tablemaster_save_translations' => 'save_translations',
         );
 
         foreach ( $actions as $hook => $method ) {
@@ -158,5 +159,83 @@ class TableMaster_Ajax {
         $lang     = sanitize_text_field( wp_unslash( $_POST['lang'] ?? '' ) );
         $data     = TableMaster_DB::get_table_data( $table_id, $lang );
         wp_send_json_success( $data );
+    }
+
+    public function save_translations() {
+        $this->verify_nonce();
+
+        if ( ! defined( 'WPML_ST_VERSION' ) ) {
+            wp_send_json_error( array( 'message' => 'WPML String Translation is niet actief.' ) );
+        }
+
+        global $wpdb;
+
+        $table_id     = intval( $_POST['table_id'] ?? 0 );
+        $lang         = sanitize_text_field( wp_unslash( $_POST['lang'] ?? '' ) );
+        $translations = json_decode( wp_unslash( $_POST['translations'] ?? '{}' ), true );
+
+        if ( ! $table_id || ! $lang || ! is_array( $translations ) ) {
+            wp_send_json_error( array( 'message' => 'Ongeldige data.' ) );
+        }
+
+        if ( ! TableMaster_DB::get_table( $table_id ) ) {
+            wp_send_json_error( array( 'message' => 'Tabel niet gevonden.' ), 404 );
+        }
+
+        $active_langs = apply_filters( 'wpml_active_languages', array() );
+        $valid_codes  = is_array( $active_langs ) ? array_keys( $active_langs ) : array();
+        if ( ! empty( $valid_codes ) && ! in_array( $lang, $valid_codes, true ) ) {
+            wp_send_json_error( array( 'message' => 'Ongeldige doeltaal.' ) );
+        }
+
+        $context = 'tablemaster-pro - Table ' . $table_id;
+
+        $saved = 0;
+        foreach ( $translations as $name => $value ) {
+            $name = sanitize_text_field( $name );
+            if ( strpos( $name, 'row_' ) === 0 ) {
+                $value = wp_kses_post( $value );
+            } else {
+                $value = sanitize_text_field( $value );
+            }
+
+            $string_id = $wpdb->get_var( $wpdb->prepare(
+                "SELECT id FROM {$wpdb->prefix}icl_strings WHERE context = %s AND name = %s",
+                $context, $name
+            ) );
+
+            if ( ! $string_id ) continue;
+
+            $existing = $wpdb->get_var( $wpdb->prepare(
+                "SELECT id FROM {$wpdb->prefix}icl_string_translations WHERE string_id = %d AND language = %s",
+                $string_id, $lang
+            ) );
+
+            if ( $existing ) {
+                $wpdb->update(
+                    $wpdb->prefix . 'icl_string_translations',
+                    array( 'value' => $value, 'status' => 10 ),
+                    array( 'id' => $existing ),
+                    array( '%s', '%d' ),
+                    array( '%d' )
+                );
+            } else {
+                $wpdb->insert(
+                    $wpdb->prefix . 'icl_string_translations',
+                    array(
+                        'string_id'        => $string_id,
+                        'language'         => $lang,
+                        'value'            => $value,
+                        'status'           => 10,
+                        'translator_id'    => get_current_user_id(),
+                        'translation_date' => current_time( 'mysql' ),
+                    ),
+                    array( '%d', '%s', '%s', '%d', '%d', '%s' )
+                );
+            }
+            $saved++;
+        }
+
+        wp_send_json_success( array( 'saved' => $saved ) );
     }
 }

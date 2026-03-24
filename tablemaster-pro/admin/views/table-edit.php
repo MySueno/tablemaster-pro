@@ -27,8 +27,9 @@ $page_title = $is_new
                 &larr; <?php esc_html_e( 'Alle Tabellen', TMP_TEXT_DOMAIN ); ?>
             </a>
             <?php if ( TableMaster_WPML::is_active() ) : ?>
-                <a href="<?php echo esc_url( TableMaster_WPML::get_translate_url( $table_id ) ); ?>" class="page-title-action" target="_blank" rel="noopener">
-                    <?php esc_html_e( 'Vertalen (WPML)', TMP_TEXT_DOMAIN ); ?>
+                <a href="<?php echo esc_url( TableMaster_WPML::get_translate_url( $table_id ) ); ?>" class="page-title-action">
+                    <span class="dashicons dashicons-translation" style="margin-top:3px;margin-right:2px;font-size:16px;"></span>
+                    <?php esc_html_e( 'Vertalen', TMP_TEXT_DOMAIN ); ?>
                 </a>
             <?php endif; ?>
         <?php endif; ?>

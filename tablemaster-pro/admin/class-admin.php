@@ -75,6 +75,15 @@ class TableMaster_Admin {
             'tablemaster-preview',
             array( $this, 'page_preview' )
         );
+
+        add_submenu_page(
+            null,
+            __( 'Tabel Vertalen', TMP_TEXT_DOMAIN ),
+            __( 'Tabel Vertalen', TMP_TEXT_DOMAIN ),
+            'manage_options',
+            'tablemaster-translate',
+            array( $this, 'page_translate' )
+        );
     }
 
     public function enqueue_assets( $hook ) {
@@ -83,6 +92,7 @@ class TableMaster_Admin {
             'tablemaster_page_tablemaster-new',
             'tablemaster_page_tablemaster-settings',
             'admin_page_tablemaster-edit',
+            'admin_page_tablemaster-translate',
         );
 
         if ( ! in_array( $hook, $tm_pages, true ) ) {
@@ -148,6 +158,10 @@ class TableMaster_Admin {
 
     public function page_preview() {
         include TMP_PLUGIN_DIR . 'admin/views/table-preview.php';
+    }
+
+    public function page_translate() {
+        include TMP_PLUGIN_DIR . 'admin/views/table-translate.php';
     }
 
     public function page_settings() {

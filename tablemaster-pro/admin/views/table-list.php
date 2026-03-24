@@ -76,7 +76,7 @@ $tables = TableMaster_DB::get_all_tables();
                                 <?php esc_html_e( 'Dupliceren', TMP_TEXT_DOMAIN ); ?>
                             </button>
                             <?php if ( TableMaster_WPML::is_active() ) : ?>
-                                <a href="<?php echo esc_url( TableMaster_WPML::get_translate_url( $t->id ) ); ?>" class="button button-small" target="_blank" rel="noopener" title="<?php esc_attr_e( 'Vertaal deze tabel via WPML String Translation', TMP_TEXT_DOMAIN ); ?>">
+                                <a href="<?php echo esc_url( TableMaster_WPML::get_translate_url( $t->id ) ); ?>" class="button button-small" title="<?php esc_attr_e( 'Vertaal deze tabel', TMP_TEXT_DOMAIN ); ?>">
                                     <?php esc_html_e( 'Vertalen', TMP_TEXT_DOMAIN ); ?>
                                 </a>
                             <?php endif; ?>
