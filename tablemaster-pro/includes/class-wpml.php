@@ -56,39 +56,53 @@ class TableMaster_WPML {
         $context  = self::get_context( $table_id );
         $settings = json_decode( $table->settings, true );
 
-        icl_register_string(
-            $context,
-            'table_name',
-            $table->name
-        );
+        $current_names = array();
+
+        icl_register_string( $context, 'table_name', $table->name );
+        $current_names[] = 'table_name';
 
         if ( ! empty( $settings['caption'] ) ) {
-            icl_register_string(
-                $context,
-                'caption',
-                $settings['caption']
-            );
+            icl_register_string( $context, 'caption', $settings['caption'] );
+            $current_names[] = 'caption';
         }
 
         $data = TableMaster_DB::get_table_data( $table_id, '' );
 
         foreach ( $data['columns'] as $col ) {
-            icl_register_string(
-                $context,
-                'col_' . $col->id . '_label',
-                $col->label
-            );
+            $name = 'col_' . $col->id . '_label';
+            icl_register_string( $context, $name, $col->label );
+            $current_names[] = $name;
         }
 
         foreach ( $data['rows'] as $row ) {
             foreach ( $row->cells as $col_id => $content ) {
                 if ( trim( $content ) === '' ) continue;
-                icl_register_string(
-                    $context,
-                    'row_' . $row->id . '_col_' . $col_id,
-                    $content
-                );
+                $name = 'row_' . $row->id . '_col_' . $col_id;
+                icl_register_string( $context, $name, $content );
+                $current_names[] = $name;
             }
+        }
+
+        self::cleanup_orphaned_strings( $context, $current_names );
+    }
+
+    private static function cleanup_orphaned_strings( $context, $current_names ) {
+        global $wpdb;
+
+        if ( empty( $current_names ) ) return;
+
+        $placeholders = implode( ',', array_fill( 0, count( $current_names ), '%s' ) );
+        $args = array_merge( array( $context ), $current_names );
+
+        $orphaned_ids = $wpdb->get_col( $wpdb->prepare(
+            "SELECT id FROM {$wpdb->prefix}icl_strings WHERE context = %s AND name NOT IN ($placeholders)",
+            $args
+        ) );
+
+        if ( ! empty( $orphaned_ids ) ) {
+            $in = implode( ',', array_map( 'intval', $orphaned_ids ) );
+            $wpdb->query( "DELETE FROM {$wpdb->prefix}icl_string_translations WHERE string_id IN ($in)" );
+            $wpdb->query( "DELETE FROM {$wpdb->prefix}icl_strings WHERE id IN ($in)" );
         }
     }
 
