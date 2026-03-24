@@ -460,7 +460,6 @@ $rows    = $data['rows'];
     </div>
 
     <div class="tmp-controls tmp-controls-bottom">
-        <div class="tmp-info-text" aria-live="polite" aria-atomic="true"></div>
         <?php if ( $show_pagination ) : ?>
             <nav class="tmp-pagination" aria-label="<?php esc_attr_e( 'Tabel paginering', TMP_TEXT_DOMAIN ); ?>"></nav>
         <?php endif; ?>
