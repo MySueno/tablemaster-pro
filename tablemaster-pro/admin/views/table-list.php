@@ -78,11 +78,34 @@ $tables = TableMaster_DB::get_all_tables();
                             <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?tablemaster_export_csv=' . $t->id ), 'tablemaster_export_csv' ) ); ?>" class="button button-small" title="<?php esc_attr_e( 'Exporteer als CSV', TMP_TEXT_DOMAIN ); ?>">
                                 <?php esc_html_e( 'CSV', TMP_TEXT_DOMAIN ); ?>
                             </a>
-                            <?php if ( TableMaster_WPML::is_active() ) : ?>
+                            <?php if ( TableMaster_WPML::is_active() ) :
+                                $non_default = TableMaster_WPML::get_non_default_languages();
+                                if ( ! empty( $non_default ) ) :
+                                    foreach ( $non_default as $lcode => $linfo ) :
+                                        $prog = TableMaster_WPML::get_translation_progress( $t->id, $lcode );
+                                        $lang_label = strtoupper( $lcode );
+                                        if ( $prog['percent'] >= 100 ) {
+                                            $badge_style = 'background:#46b450;color:#fff;';
+                                            $badge_icon  = '&#10003;';
+                                        } elseif ( $prog['translated'] > 0 ) {
+                                            $badge_style = 'background:#ffb900;color:#fff;';
+                                            $badge_icon  = $prog['percent'] . '%';
+                                        } else {
+                                            $badge_style = 'background:#dc3232;color:#fff;';
+                                            $badge_icon  = '&#10005;';
+                                        }
+                            ?>
+                                <a href="<?php echo esc_url( TableMaster_WPML::get_translate_url( $t->id ) . '&lang=' . $lcode ); ?>" class="button button-small" title="<?php echo esc_attr( sprintf( __( 'Vertalen naar %s — %d%%', TMP_TEXT_DOMAIN ), $linfo['native_name'], $prog['percent'] ) ); ?>" style="position:relative;">
+                                    <?php echo esc_html( $lang_label ); ?>
+                                    <span style="<?php echo esc_attr( $badge_style ); ?>display:inline-block;font-size:10px;line-height:1;padding:2px 4px;border-radius:3px;margin-left:3px;"><?php echo $badge_icon; ?></span>
+                                </a>
+                                    <?php endforeach;
+                                else : ?>
                                 <a href="<?php echo esc_url( TableMaster_WPML::get_translate_url( $t->id ) ); ?>" class="button button-small" title="<?php esc_attr_e( 'Vertaal deze tabel', TMP_TEXT_DOMAIN ); ?>">
                                     <?php esc_html_e( 'Vertalen', TMP_TEXT_DOMAIN ); ?>
                                 </a>
-                            <?php endif; ?>
+                                <?php endif;
+                            endif; ?>
                             <button class="button button-small button-link-delete tmp-delete-btn" data-id="<?php echo esc_attr( $t->id ); ?>">
                                 <?php esc_html_e( 'Verwijderen', TMP_TEXT_DOMAIN ); ?>
                             </button>

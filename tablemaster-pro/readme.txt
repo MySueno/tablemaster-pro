@@ -38,6 +38,9 @@ Functies:
 * Verbeterd: Groepsrijen met samengevoegde cellen gebruiken links-uitlijning in plaats van gecentreerd
 * Nieuw: Databescherming — tabeldata blijft bewaard bij verwijderen en herinstalleren van de plugin (standaard ingeschakeld)
 * Nieuw: Optionele instelling om data te verwijderen bij deïnstallatie (standaard uitgeschakeld)
+* Nieuw: Vertaalstatus per taal zichtbaar in tabeloverzicht (groen = compleet, geel = bezig, rood = niet gestart)
+* Verbeterd: Onvolledige vertalingen vallen terug op de standaardtaal — bezoekers zien altijd een complete tabel
+* Verbeterd: Duidelijke melding in vertaaleditor of de vertaling compleet is
 
 = 1.2.7 =
 * Nieuw: Admin CSV-export — exporteer tabellen als CSV-bestand vanuit de bewerkpagina en het tabeloverzicht

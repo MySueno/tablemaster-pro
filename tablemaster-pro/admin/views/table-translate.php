@@ -226,6 +226,16 @@ if ( $has_cell_rows ) {
         </div>
     </div>
 
+    <div id="tmp-translate-incomplete-notice" class="notice notice-warning inline" style="margin:10px 0;<?php echo $translated_fields >= $total_fields ? 'display:none;' : ''; ?>">
+        <p><strong><?php esc_html_e( 'Let op:', TMP_TEXT_DOMAIN ); ?></strong>
+        <?php esc_html_e( 'De vertaling is nog niet compleet. Zolang niet alle velden zijn vertaald, zal de tabel op de frontend in de standaardtaal worden getoond. Pas als 100% is vertaald, wordt de vertaalde versie getoond aan bezoekers.', TMP_TEXT_DOMAIN ); ?></p>
+    </div>
+
+    <div id="tmp-translate-complete-notice" class="notice notice-success inline" style="margin:10px 0;<?php echo $translated_fields >= $total_fields ? '' : 'display:none;'; ?>">
+        <p><strong>&#10003; <?php esc_html_e( 'Vertaling compleet!', TMP_TEXT_DOMAIN ); ?></strong>
+        <?php esc_html_e( 'Alle velden zijn vertaald. De vertaalde tabel wordt getoond aan bezoekers die de site in deze taal bekijken.', TMP_TEXT_DOMAIN ); ?></p>
+    </div>
+
     <div class="tmp-translate-table-wrap">
         <table class="tmp-translate-table">
             <thead>
@@ -314,6 +324,7 @@ if ( $has_cell_rows ) {
 
     function updateProgress() {
         var count = 0;
+        var allFilled = true;
         $('.tmp-translate-row').each(function() {
             var $row   = $(this);
             var $input = $row.find('.tmp-translate-input');
@@ -326,9 +337,13 @@ if ( $has_cell_rows ) {
                 // prefilled: don't count
             } else {
                 $row.removeClass('tmp-translate-done tmp-translate-prefilled');
+                allFilled = false;
             }
         });
         $('#tmp-progress-count').text(count);
+        var isComplete = (count >= totalFields);
+        $('#tmp-translate-incomplete-notice').toggle(!isComplete);
+        $('#tmp-translate-complete-notice').toggle(isComplete);
     }
 
     function propagateTranslation($source) {
