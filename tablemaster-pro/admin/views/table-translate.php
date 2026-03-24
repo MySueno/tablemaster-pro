@@ -318,11 +318,10 @@ if ( $has_cell_rows ) {
                     if ( ! isset( $tr_row['name'] ) ) continue;
 
                     $translated  = tmp_get_translation( $context, $tr_row['name'], $target_lang );
-                    $is_prefilled = ! empty( $tr_row['prefilled'] );
+                    $is_prefilled = false;
 
                     if ( $translated === '' && isset( $known_translations[ $tr_row['original'] ] ) ) {
                         $translated = $known_translations[ $tr_row['original'] ];
-                        $is_prefilled = true;
                     }
 
                     $has_value  = ( $translated !== '' );
