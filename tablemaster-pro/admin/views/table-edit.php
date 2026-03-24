@@ -241,6 +241,13 @@ $page_title = $is_new
                     </label>
                 </div>
                 <div class="tmp-form-group">
+                    <label>
+                        <input type="checkbox" id="tmp-collapsible" <?php checked( $settings['collapsible_groups'] ?? false ); ?>>
+                        <?php esc_html_e( 'Groepen in-/uitklapbaar maken', TMP_TEXT_DOMAIN ); ?>
+                    </label>
+                    <p class="description"><?php esc_html_e( 'Groepsrijen (G1/G2/G3) kunnen worden in- en uitgeklapt door bezoekers.', TMP_TEXT_DOMAIN ); ?></p>
+                </div>
+                <div class="tmp-form-group">
                     <label for="tmp-default-col-width"><?php esc_html_e( 'Standaard kolombreedte:', TMP_TEXT_DOMAIN ); ?></label>
                     <input type="text" id="tmp-default-col-width" value="<?php echo esc_attr( $settings['default_col_width'] ?? '' ); ?>" class="small-text" placeholder="auto" style="width:100px;">
                     <p class="description"><?php esc_html_e( 'Bijv. 150px, 10%, 8em. Kolommen met een eigen breedte-instelling overschrijven deze waarde.', TMP_TEXT_DOMAIN ); ?></p>

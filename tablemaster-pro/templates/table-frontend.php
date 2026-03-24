@@ -243,8 +243,18 @@ foreach ( $font_css_map as $fk => $selector ) :
                             if ( $uw !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $uw ) ) $uw = 'auto';
                             if ( $uw === 'auto' && $default_col_w !== '' ) $uw = $default_col_w;
                             $us  = $uw !== 'auto' ? 'width:' . esc_attr( $uw ) . ';' : '';
+                            $ug_sort = ! empty( $table_sortable );
+                            $ug_class = 'tmp-th tmp-th-grouped';
+                            if ( $ug_sort ) $ug_class .= ' tmp-sortable';
                         ?>
-                            <th class="tmp-th tmp-th-grouped" rowspan="<?php echo $max_depth; ?>"<?php if ( $us ) echo ' style="' . esc_attr( $us ) . '"'; ?>><?php echo esc_html( $cm['col']->label ); ?></th>
+                            <th class="<?php echo esc_attr( $ug_class ); ?>" rowspan="<?php echo $max_depth; ?>"
+                                data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
+                                data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
+                                <?php if ( $us ) echo 'style="' . esc_attr( $us ) . '"'; ?>
+                                <?php echo $ug_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
+                                <?php echo esc_html( $cm['col']->label ); ?>
+                                <?php if ( $ug_sort ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
+                            </th>
                         <?php elseif ( $cm['g1'] !== $prev_g1 ) :
                             $colspan = count( $g1_groups[ $cm['g1'] ] );
                         ?>
@@ -263,7 +273,6 @@ foreach ( $font_css_map as $fk => $selector ) :
                         if ( $lw !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $lw ) ) $lw = 'auto';
                         if ( $lw === 'auto' && $default_col_w !== '' ) $lw = $default_col_w;
                         $ls  = $lw !== 'auto' ? 'width:' . esc_attr( $lw ) . ';' : '';
-                        <?php
                         $sort_r2 = ! empty( $table_sortable );
                         if ( $cm['g2'] === '' && $max_depth === 2 ) :
                             $th2_class = 'tmp-th tmp-th-grouped';

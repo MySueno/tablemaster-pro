@@ -561,12 +561,10 @@
         if (!table) return;
 
         var rows  = [];
-        var ths   = table.querySelectorAll('thead .tmp-th');
+        var ths   = table.querySelectorAll('thead .tmp-th[data-col-id]');
         var hRow  = [];
         ths.forEach(function (th) {
-            if (!th.classList.contains('tmp-toggle-col')) {
-                hRow.push('"' + th.textContent.replace(/"/g, '""').trim() + '"');
-            }
+            hRow.push('"' + th.textContent.replace(/"/g, '""').trim() + '"');
         });
         rows.push(hRow.join(','));
 
