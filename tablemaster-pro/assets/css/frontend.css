@@ -113,10 +113,10 @@
 /* Table scroll wrapper */
 .tmp-table-scroll-wrapper {
     overflow-x: auto;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     border: 1px solid var(--tmp-border, #ccc);
     border-radius: var(--tmp-radius, 4px);
-    overflow: hidden;
 }
 
 /* The table */
