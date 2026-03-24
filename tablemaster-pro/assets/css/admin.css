@@ -859,6 +859,16 @@
     white-space: nowrap;
 }
 
+.tmp-translate-export {
+    margin-left: 12px;
+}
+
+.tmp-translate-export .button .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
 .tmp-translate-progress-count {
     font-weight: 700;
     color: #2271b1;

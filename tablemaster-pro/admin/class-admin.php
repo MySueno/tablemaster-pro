@@ -8,6 +8,7 @@ class TableMaster_Admin {
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
         add_action( 'admin_init',            array( $this, 'maybe_render_preview' ) );
         add_action( 'admin_init',            array( $this, 'maybe_export_csv' ) );
+        add_action( 'admin_init',            array( $this, 'maybe_export_translated_csv' ) );
     }
 
     public function maybe_render_preview() {
@@ -242,5 +243,85 @@ class TableMaster_Admin {
 
         fclose( $output );
         exit;
+    }
+
+    public function maybe_export_translated_csv() {
+        if ( ! isset( $_GET['tablemaster_export_translated_csv'] ) ) {
+            return;
+        }
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'Geen toegang.', TMP_TEXT_DOMAIN ) );
+        }
+        if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'tablemaster_export_translated_csv' ) ) {
+            wp_die( esc_html__( 'Beveiligingscontrole mislukt.', TMP_TEXT_DOMAIN ) );
+        }
+
+        $table_id    = intval( $_GET['tablemaster_export_translated_csv'] );
+        $target_lang = isset( $_GET['lang'] ) ? sanitize_text_field( $_GET['lang'] ) : '';
+
+        $table = TableMaster_DB::get_table( $table_id );
+        if ( ! $table ) {
+            wp_die( esc_html__( 'Tabel niet gevonden.', TMP_TEXT_DOMAIN ) );
+        }
+        if ( ! $target_lang ) {
+            wp_die( esc_html__( 'Geen doeltaal opgegeven.', TMP_TEXT_DOMAIN ) );
+        }
+
+        $data    = TableMaster_DB::get_table_data( $table_id, '' );
+        $columns = $data['columns'] ?? array();
+        $rows    = $data['rows']    ?? array();
+        $context = TableMaster_WPML::get_context( $table_id );
+
+        $slug     = sanitize_file_name( $table->name );
+        $slug     = $slug ? $slug : 'table-' . $table_id;
+        $filename = $slug . '-' . $target_lang . '-' . gmdate( 'Y-m-d' ) . '.csv';
+
+        header( 'Content-Type: text/csv; charset=utf-8' );
+        header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+        header( 'Pragma: no-cache' );
+        header( 'Expires: 0' );
+
+        $output = fopen( 'php://output', 'w' );
+        fprintf( $output, chr( 0xEF ) . chr( 0xBB ) . chr( 0xBF ) );
+
+        $header_row = array();
+        foreach ( $columns as $col ) {
+            $translated_label = $this->get_wpml_translation( $context, 'col_' . $col->id . '_label', $target_lang );
+            $header_row[] = $translated_label !== '' ? $translated_label : $col->label;
+        }
+        fputcsv( $output, $header_row, ';' );
+
+        foreach ( $rows as $row ) {
+            $csv_row = array();
+            foreach ( $columns as $col ) {
+                $original   = $row->cells[ $col->id ] ?? '';
+                $translated = $this->get_wpml_translation( $context, 'row_' . $row->id . '_col_' . $col->id, $target_lang );
+                $csv_row[]  = $translated !== '' ? $translated : $original;
+            }
+            fputcsv( $output, $csv_row, ';' );
+        }
+
+        fclose( $output );
+        exit;
+    }
+
+    private function get_wpml_translation( $context, $name, $lang ) {
+        global $wpdb;
+        if ( ! defined( 'WPML_ST_VERSION' ) ) return '';
+
+        $strings_table      = $wpdb->prefix . 'icl_strings';
+        $translations_table = $wpdb->prefix . 'icl_string_translations';
+
+        $string_id = $wpdb->get_var( $wpdb->prepare(
+            "SELECT id FROM {$strings_table} WHERE context = %s AND name = %s",
+            $context, $name
+        ) );
+        if ( ! $string_id ) return '';
+
+        $translation = $wpdb->get_var( $wpdb->prepare(
+            "SELECT value FROM {$translations_table} WHERE string_id = %d AND language = %s AND status = 10",
+            $string_id, $lang
+        ) );
+        return $translation !== null ? $translation : '';
     }
 }

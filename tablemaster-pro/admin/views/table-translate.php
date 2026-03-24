@@ -281,6 +281,12 @@ if ( $has_cell_rows ) {
             / <?php echo intval( $total_fields ); ?>
             <span class="tmp-translate-progress-label"><?php esc_html_e( 'vertaald', TMP_TEXT_DOMAIN ); ?></span>
         </div>
+        <div class="tmp-translate-export">
+            <a id="tmp-export-translated-csv" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?tablemaster_export_translated_csv=' . $table_id . '&lang=' . $target_lang ), 'tablemaster_export_translated_csv' ) ); ?>" class="button button-secondary">
+                <span class="dashicons dashicons-download" style="vertical-align:middle;margin-right:4px;"></span>
+                <?php esc_html_e( 'CSV exporteren (vertaald)', TMP_TEXT_DOMAIN ); ?>
+            </a>
+        </div>
     </div>
 
     <div id="tmp-translate-incomplete-notice" class="notice notice-warning inline" style="margin:10px 0;<?php echo $translated_fields >= $total_fields ? 'display:none;' : ''; ?>">
