@@ -382,38 +382,21 @@ $rows    = $data['rows'];
                                     </td>
                                 <?php endif;
 
-                                $merged = array();
-                                $ci = 0;
                                 $col_arr = array_values( (array) $columns );
                                 $total_c = count( $col_arr );
-                                while ( $ci < $total_c ) {
-                                    $content = trim( $row->cells[ $col_arr[ $ci ]->id ] ?? '' );
-                                    if ( $content !== '' ) {
-                                        $span = 1;
-                                        while ( $ci + $span < $total_c && trim( $row->cells[ $col_arr[ $ci + $span ]->id ] ?? '' ) === '' ) {
-                                            $span++;
-                                        }
-                                        $merged[] = array( 'col' => $col_arr[ $ci ], 'content' => $content, 'colspan' => $span, 'idx' => $ci );
-                                        $ci += $span;
-                                    } else {
-                                        $merged[] = array( 'col' => $col_arr[ $ci ], 'content' => '', 'colspan' => 1, 'idx' => $ci );
-                                        $ci++;
-                                    }
-                                }
 
-                                foreach ( $merged as $mc ) :
-                                    $cs_g    = json_decode( $mc['col']->settings, true );
-                                    $align_g = $cs_g['align'] ?? 'left';
-                                    if ( $mc['colspan'] > 1 && ( $cs_g['align'] ?? '' ) === '' ) $align_g = 'left';
-                                    $pad = '';
-                                    if ( $mc['idx'] === 0 ) {
+                                foreach ( $col_arr as $gi2 => $gcol2 ) :
+                                    $gc_content = trim( $row->cells[ $gcol2->id ] ?? '' );
+                                    $cs_g       = json_decode( $gcol2->settings, true );
+                                    $align_g    = $cs_g['align'] ?? 'left';
+                                    $pad        = '';
+                                    if ( $gi2 === 0 ) {
                                         $pad = 'padding-left:' . ( $indent_lvl * 24 + 12 ) . 'px;';
                                     }
                             ?>
                                 <td class="tmp-td tmp-group-cell"
-                                    style="text-align:<?php echo esc_attr( $align_g ); ?>;<?php echo $pad; ?>"
-                                    <?php echo $mc['colspan'] > 1 ? 'colspan="' . esc_attr( $mc['colspan'] ) . '"' : ''; ?>>
-                                    <?php echo wp_kses_post( $mc['content'] ); ?>
+                                    style="text-align:<?php echo esc_attr( $align_g ); ?>;<?php echo $pad; ?>">
+                                    <?php echo wp_kses_post( $gc_content ); ?>
                                 </td>
                             <?php endforeach;
                             endif; ?>
