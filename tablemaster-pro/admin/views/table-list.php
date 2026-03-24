@@ -1,0 +1,84 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! current_user_can( 'manage_options' ) ) wp_die( esc_html__( 'Geen toegang.', TMP_TEXT_DOMAIN ) );
+
+$tables = TableMaster_DB::get_all_tables();
+?>
+<div class="wrap tmp-wrap">
+    <h1 class="wp-heading-inline">
+        <?php esc_html_e( 'TableMaster Pro', TMP_TEXT_DOMAIN ); ?>
+    </h1>
+    <a href="<?php echo esc_url( admin_url( 'admin.php?page=tablemaster-new' ) ); ?>" class="page-title-action">
+        <?php esc_html_e( 'Nieuwe Tabel', TMP_TEXT_DOMAIN ); ?>
+    </a>
+    <hr class="wp-header-end">
+
+    <?php if ( empty( $tables ) ) : ?>
+        <div class="tmp-empty-state">
+            <span class="dashicons dashicons-editor-table tmp-empty-icon"></span>
+            <h2><?php esc_html_e( 'Nog geen tabellen.', TMP_TEXT_DOMAIN ); ?></h2>
+            <p><?php esc_html_e( 'Maak uw eerste tabel aan om te beginnen.', TMP_TEXT_DOMAIN ); ?></p>
+            <a href="<?php echo esc_url( admin_url( 'admin.php?page=tablemaster-new' ) ); ?>" class="button button-primary button-hero">
+                <?php esc_html_e( 'Eerste tabel aanmaken', TMP_TEXT_DOMAIN ); ?>
+            </a>
+        </div>
+    <?php else : ?>
+        <table class="wp-list-table widefat fixed striped tmp-table-list">
+            <thead>
+                <tr>
+                    <th><?php esc_html_e( 'Naam', TMP_TEXT_DOMAIN ); ?></th>
+                    <th><?php esc_html_e( 'Shortcode', TMP_TEXT_DOMAIN ); ?></th>
+                    <th><?php esc_html_e( 'Thema', TMP_TEXT_DOMAIN ); ?></th>
+                    <th><?php esc_html_e( 'Aangemaakt op', TMP_TEXT_DOMAIN ); ?></th>
+                    <th><?php esc_html_e( 'Acties', TMP_TEXT_DOMAIN ); ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ( $tables as $t ) :
+                    $settings = json_decode( $t->settings, true );
+                    $theme    = $settings['theme'] ?? 'custom';
+                    $dot_color = '';
+                    switch ( $theme ) {
+                        case 'green': $dot_color = '#2e7d32'; break;
+                        case 'red':   $dot_color = '#c62828'; break;
+                        case 'blue':  $dot_color = '#1565c0'; break;
+                        case 'grey':  $dot_color = '#424242'; break;
+                        default:      $dot_color = $settings['colors']['header_bg'] ?? '#888888';
+                    }
+                ?>
+                    <tr>
+                        <td>
+                            <strong>
+                                <a href="<?php echo esc_url( admin_url( 'admin.php?page=tablemaster-edit&id=' . $t->id ) ); ?>">
+                                    <?php echo esc_html( $t->name ); ?>
+                                </a>
+                            </strong>
+                        </td>
+                        <td>
+                            <code class="tmp-shortcode-display"><?php echo esc_html( '[tablemaster id="' . $t->id . '"]' ); ?></code>
+                            <button class="button button-small tmp-copy-btn" data-shortcode='[tablemaster id="<?php echo esc_attr( $t->id ); ?>"]'>
+                                <?php esc_html_e( 'Kopiëren', TMP_TEXT_DOMAIN ); ?>
+                            </button>
+                        </td>
+                        <td>
+                            <span class="tmp-theme-dot" style="background:<?php echo esc_attr( $dot_color ); ?>"></span>
+                            <?php echo esc_html( ucfirst( $theme ) ); ?>
+                        </td>
+                        <td><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $t->created_at ) ) ); ?></td>
+                        <td class="tmp-actions">
+                            <a href="<?php echo esc_url( admin_url( 'admin.php?page=tablemaster-edit&id=' . $t->id ) ); ?>" class="button button-small">
+                                <?php esc_html_e( 'Bewerken', TMP_TEXT_DOMAIN ); ?>
+                            </a>
+                            <button class="button button-small tmp-duplicate-btn" data-id="<?php echo esc_attr( $t->id ); ?>">
+                                <?php esc_html_e( 'Dupliceren', TMP_TEXT_DOMAIN ); ?>
+                            </button>
+                            <button class="button button-small button-link-delete tmp-delete-btn" data-id="<?php echo esc_attr( $t->id ); ?>">
+                                <?php esc_html_e( 'Verwijderen', TMP_TEXT_DOMAIN ); ?>
+                            </button>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+</div>

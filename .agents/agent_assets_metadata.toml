@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "1nnwkidNWpFLPJbk71kWg"
+uri = "file://tablemaster-pro.zip"
+type = "unspecified"
+title = "TableMaster Pro - WordPress Plugin (v1.0.0)"
