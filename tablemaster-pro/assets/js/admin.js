@@ -433,19 +433,13 @@
             }
         });
 
-        // Link formatting button
         $tr.find('.tmp-fmt-link').on('click', function () {
-            var url = prompt('URL (bijv. https://example.com):');
-            if (!url) return;
             var $area = $(this).closest('.tmp-cell-wrap').find('.tmp-cell-input');
             var el    = $area[0];
             var start = el.selectionStart;
             var end   = el.selectionEnd;
-            var val   = el.value;
-            var sel   = val.substring(start, end) || url;
-            el.value  = val.substring(0, start) + '<a href="' + url + '">' + sel + '</a>' + val.substring(end);
-            $area.trigger('input');
-            el.focus();
+            var sel   = el.value.substring(start, end);
+            openLinkModal($area, el, start, end, sel);
         });
 
         return $tr;
@@ -459,6 +453,149 @@
             if (existing) newOrder.push(existing);
         });
         rows = newOrder;
+    }
+
+    /* ===== LINK MODAL ===== */
+    var siteDomains = cfg.site_domains || [];
+
+    function isInternalUrl(url) {
+        if (!url) return false;
+        if (url.charAt(0) === '/' || url.charAt(0) === '#') return true;
+        try {
+            var parsed = new URL(url, window.location.origin);
+            var host   = parsed.hostname.toLowerCase();
+            for (var i = 0; i < siteDomains.length; i++) {
+                if (host === siteDomains[i].toLowerCase()) return true;
+            }
+            return host === window.location.hostname.toLowerCase();
+        } catch (e) {
+            return false;
+        }
+    }
+
+    var linkSearchTimer = null;
+
+    function openLinkModal($area, el, start, end, selectedText) {
+        closeLinkModal();
+
+        var $overlay = $('<div class="tmp-link-overlay"></div>');
+        var $modal = $(
+            '<div class="tmp-link-modal">' +
+                '<div class="tmp-link-modal-header">' +
+                    '<span>Link invoegen</span>' +
+                    '<button type="button" class="tmp-link-modal-close">&times;</button>' +
+                '</div>' +
+                '<div class="tmp-link-modal-tabs">' +
+                    '<button type="button" class="tmp-link-tab active" data-tab="url">URL</button>' +
+                    '<button type="button" class="tmp-link-tab" data-tab="search">Post / Pagina zoeken</button>' +
+                '</div>' +
+                '<div class="tmp-link-tab-content tmp-link-tab-url active">' +
+                    '<div class="tmp-link-field">' +
+                        '<label>URL</label>' +
+                        '<input type="text" class="tmp-link-url" placeholder="https://example.com" value="">' +
+                    '</div>' +
+                '</div>' +
+                '<div class="tmp-link-tab-content tmp-link-tab-search">' +
+                    '<div class="tmp-link-field">' +
+                        '<label>Zoek een post of pagina</label>' +
+                        '<input type="text" class="tmp-link-search-input" placeholder="Typ om te zoeken...">' +
+                    '</div>' +
+                    '<div class="tmp-link-search-results"></div>' +
+                '</div>' +
+                '<div class="tmp-link-field">' +
+                    '<label>Linktekst</label>' +
+                    '<input type="text" class="tmp-link-text" placeholder="Weergavetekst" value="' + escAttr(selectedText) + '">' +
+                '</div>' +
+                '<div class="tmp-link-option">' +
+                    '<label><input type="checkbox" class="tmp-link-newtab"> Open in nieuw tabblad</label>' +
+                '</div>' +
+                '<div class="tmp-link-modal-footer">' +
+                    '<button type="button" class="button tmp-link-cancel">Annuleren</button>' +
+                    '<button type="button" class="button button-primary tmp-link-insert">Link invoegen</button>' +
+                '</div>' +
+            '</div>'
+        );
+
+        $('body').append($overlay).append($modal);
+
+        $modal.find('.tmp-link-tab').on('click', function () {
+            var tab = $(this).data('tab');
+            $modal.find('.tmp-link-tab').removeClass('active');
+            $(this).addClass('active');
+            $modal.find('.tmp-link-tab-content').removeClass('active');
+            $modal.find('.tmp-link-tab-' + tab).addClass('active');
+        });
+
+        $modal.find('.tmp-link-url').on('input', function () {
+            var url = $(this).val().trim();
+            var internal = isInternalUrl(url);
+            $modal.find('.tmp-link-newtab').prop('checked', !internal);
+        });
+
+        $modal.find('.tmp-link-search-input').on('input', function () {
+            var q = $(this).val().trim();
+            var $results = $modal.find('.tmp-link-search-results');
+            if (linkSearchTimer) clearTimeout(linkSearchTimer);
+            if (q.length < 2) {
+                $results.empty();
+                return;
+            }
+            linkSearchTimer = setTimeout(function () {
+                $results.html('<div class="tmp-link-searching">Zoeken...</div>');
+                $.post(ajaxurl, {
+                    action: 'tablemaster_search_posts',
+                    nonce:  nonce,
+                    search: q,
+                }, function (res) {
+                    $results.empty();
+                    if (!res.success || !res.data.results.length) {
+                        $results.html('<div class="tmp-link-no-results">Geen resultaten gevonden.</div>');
+                        return;
+                    }
+                    res.data.results.forEach(function (item) {
+                        var typeLabel = item.type === 'page' ? 'Pagina' : 'Bericht';
+                        var $item = $('<div class="tmp-link-result-item">' +
+                            '<span class="tmp-link-result-title">' + escHtml(item.title) + '</span>' +
+                            '<span class="tmp-link-result-type">' + escHtml(typeLabel) + '</span>' +
+                        '</div>');
+                        $item.on('click', function () {
+                            $modal.find('.tmp-link-url').val(item.url);
+                            if (!$modal.find('.tmp-link-text').val().trim()) {
+                                $modal.find('.tmp-link-text').val(item.title);
+                            }
+                            $modal.find('.tmp-link-newtab').prop('checked', false);
+                            $results.find('.tmp-link-result-item').removeClass('selected');
+                            $item.addClass('selected');
+                        });
+                        $results.append($item);
+                    });
+                });
+            }, 300);
+        });
+
+        function doInsert() {
+            var url  = $modal.find('.tmp-link-url').val().trim();
+            if (!url) return;
+            var text    = $modal.find('.tmp-link-text').val().trim() || url;
+            var newTab  = $modal.find('.tmp-link-newtab').is(':checked');
+            var val     = el.value;
+            var tag     = '<a href="' + url + '"' + (newTab ? ' target="_blank" rel="noopener"' : '') + '>' + text + '</a>';
+            el.value    = val.substring(0, start) + tag + val.substring(end);
+            $area.trigger('input');
+            el.focus();
+            closeLinkModal();
+        }
+
+        $modal.find('.tmp-link-insert').on('click', doInsert);
+        $modal.find('.tmp-link-cancel, .tmp-link-modal-close').on('click', closeLinkModal);
+        $overlay.on('click', closeLinkModal);
+
+        $modal.find('.tmp-link-url').focus();
+    }
+
+    function closeLinkModal() {
+        $('.tmp-link-overlay, .tmp-link-modal').remove();
+        if (linkSearchTimer) clearTimeout(linkSearchTimer);
     }
 
     /* ===== LOAD STRUCTURE ===== */

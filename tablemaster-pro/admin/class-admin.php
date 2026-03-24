@@ -120,16 +120,34 @@ class TableMaster_Admin {
         $table_id  = intval( $_GET['id'] ?? 0 );
         $table     = $table_id ? TableMaster_DB::get_table( $table_id ) : null;
         $settings  = $table ? json_decode( $table->settings, true ) : array();
+        $site_domains = array( wp_parse_url( home_url(), PHP_URL_HOST ) );
+        if ( function_exists( 'icl_get_languages' ) ) {
+            $wpml_langs = icl_get_languages( 'skip_missing=0' );
+            if ( is_array( $wpml_langs ) ) {
+                foreach ( $wpml_langs as $lang_info ) {
+                    if ( ! empty( $lang_info['url'] ) ) {
+                        $host = wp_parse_url( $lang_info['url'], PHP_URL_HOST );
+                        if ( $host ) {
+                            $site_domains[] = $host;
+                        }
+                    }
+                }
+            }
+        }
+        $site_domains = array_values( array_unique( $site_domains ) );
+
         wp_localize_script( 'tablemaster-admin', 'tableMasterAdmin', array(
-            'ajaxurl'    => admin_url( 'admin-ajax.php' ),
-            'nonce'      => wp_create_nonce( 'tablemaster_admin' ),
-            'table_id'   => $table_id,
-            'table_name' => $table ? $table->name : '',
-            'settings'   => $settings,
-            'list_url'   => admin_url( 'admin.php?page=tablemaster' ),
-            'edit_url'   => admin_url( 'admin.php?page=tablemaster-edit&id=' ),
-            'lang'       => TableMaster_WPML::get_current_language(),
-            'i18n'       => array(
+            'ajaxurl'      => admin_url( 'admin-ajax.php' ),
+            'nonce'        => wp_create_nonce( 'tablemaster_admin' ),
+            'table_id'     => $table_id,
+            'table_name'   => $table ? $table->name : '',
+            'settings'     => $settings,
+            'list_url'     => admin_url( 'admin.php?page=tablemaster' ),
+            'edit_url'     => admin_url( 'admin.php?page=tablemaster-edit&id=' ),
+            'lang'         => TableMaster_WPML::get_current_language(),
+            'site_url'     => home_url(),
+            'site_domains' => $site_domains,
+            'i18n'         => array(
                 'confirm_delete'    => __( 'Weet je zeker dat je deze tabel wilt verwijderen? Dit kan niet ongedaan worden gemaakt.', TMP_TEXT_DOMAIN ),
                 'saved'             => __( 'Opgeslagen!', TMP_TEXT_DOMAIN ),
                 'error'             => __( 'Er is een fout opgetreden.', TMP_TEXT_DOMAIN ),

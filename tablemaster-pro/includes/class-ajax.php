@@ -11,6 +11,7 @@ class TableMaster_Ajax {
             'tablemaster_save_structure'    => 'save_structure',
             'tablemaster_get_structure'     => 'get_structure',
             'tablemaster_save_translations' => 'save_translations',
+            'tablemaster_search_posts'      => 'search_posts',
         );
 
         foreach ( $actions as $hook => $method ) {
@@ -264,5 +265,37 @@ class TableMaster_Ajax {
         TableMaster_DB::flush_table_cache( $table_id );
 
         wp_send_json_success( array( 'saved' => $saved, 'cleared' => $cleared ) );
+    }
+
+    public function search_posts() {
+        $this->verify_nonce();
+
+        $search = sanitize_text_field( wp_unslash( $_POST['search'] ?? '' ) );
+        if ( strlen( $search ) < 2 ) {
+            wp_send_json_success( array( 'results' => array() ) );
+        }
+
+        $args = array(
+            'post_type'      => array( 'post', 'page' ),
+            'post_status'    => 'publish',
+            's'              => $search,
+            'posts_per_page' => 10,
+            'orderby'        => 'relevance',
+            'order'          => 'DESC',
+        );
+
+        $query   = new WP_Query( $args );
+        $results = array();
+
+        foreach ( $query->posts as $post ) {
+            $results[] = array(
+                'id'    => $post->ID,
+                'title' => $post->post_title ?: __( '(geen titel)', TMP_TEXT_DOMAIN ),
+                'type'  => $post->post_type,
+                'url'   => get_permalink( $post->ID ),
+            );
+        }
+
+        wp_send_json_success( array( 'results' => $results ) );
     }
 }
