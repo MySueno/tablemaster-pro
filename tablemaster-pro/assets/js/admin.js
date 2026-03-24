@@ -227,45 +227,14 @@
         var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
         if (!col) return;
 
-        var typeOptions = ['text','number','date','link','image','html'].map(function(t) {
-            return '<option value="' + t + '"' + (col.type === t ? ' selected' : '') + '>' + t + '</option>';
-        }).join('');
-        var alignOptions = [['left','Links'],['center','Midden'],['right','Rechts']].map(function(a) {
-            return '<option value="' + a[0] + '"' + (col.settings.align === a[0] ? ' selected' : '') + '>' + a[1] + '</option>';
-        }).join('');
-
         var $pop = $('<div class="tmp-col-popover" data-col-key="' + escAttr(colKey) + '">' +
             '<div class="tmp-pop-field">' +
                 '<label>Kolomnaam</label>' +
                 '<input type="text" class="tmp-pop-label" value="' + escAttr(col.label) + '">' +
             '</div>' +
-            '<div class="tmp-pop-row">' +
-                '<div class="tmp-pop-field tmp-pop-half">' +
-                    '<label>Type</label>' +
-                    '<select class="tmp-pop-type">' + typeOptions + '</select>' +
-                '</div>' +
-                '<div class="tmp-pop-field tmp-pop-half">' +
-                    '<label>Uitlijning</label>' +
-                    '<select class="tmp-pop-align">' + alignOptions + '</select>' +
-                '</div>' +
-            '</div>' +
-            '<div class="tmp-pop-field">' +
-                '<label>Breedte</label>' +
-                '<input type="text" class="tmp-pop-width" value="' + escAttr(col.settings.width || 'auto') + '" placeholder="auto (bijv. 120px, 15%)">' +
-            '</div>' +
             '<div class="tmp-pop-checks">' +
                 '<label><input type="checkbox" class="tmp-pop-sortable" ' + (col.settings.sortable ? 'checked' : '') + '> Sorteerbaar</label>' +
                 '<label><input type="checkbox" class="tmp-pop-filterable" ' + (col.settings.filterable ? 'checked' : '') + '> Filterbaar</label>' +
-            '</div>' +
-            '<div class="tmp-pop-row">' +
-                '<div class="tmp-pop-field tmp-pop-half">' +
-                    '<label>Header groep 1</label>' +
-                    '<input type="text" class="tmp-pop-hg1" value="' + escAttr(col.settings.header_group1 || '') + '" placeholder="Bijv. E. coli">' +
-                '</div>' +
-                '<div class="tmp-pop-field tmp-pop-half">' +
-                    '<label>Header groep 2</label>' +
-                    '<input type="text" class="tmp-pop-hg2" value="' + escAttr(col.settings.header_group2 || '') + '" placeholder="Bijv. Ambulant">' +
-                '</div>' +
             '</div>' +
             '<div class="tmp-pop-actions">' +
                 '<button type="button" class="button button-small tmp-pop-delete" style="color:#dc3232;">Kolom verwijderen</button>' +
@@ -287,13 +256,8 @@
 
         $pop.find('input, select').on('change input', function () {
             col.label    = $pop.find('.tmp-pop-label').val().trim();
-            col.type     = $pop.find('.tmp-pop-type').val();
-            col.settings.align      = $pop.find('.tmp-pop-align').val();
-            col.settings.width      = $pop.find('.tmp-pop-width').val().trim() || 'auto';
             col.settings.sortable   = $pop.find('.tmp-pop-sortable').is(':checked');
             col.settings.filterable = $pop.find('.tmp-pop-filterable').is(':checked');
-            col.settings.header_group1 = $pop.find('.tmp-pop-hg1').val().trim();
-            col.settings.header_group2 = $pop.find('.tmp-pop-hg2').val().trim();
             $th.find('.tmp-col-header-label').text(col.label || 'Kolom');
             isDirty = true;
         });
