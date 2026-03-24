@@ -8,6 +8,7 @@ class TableMaster_Settings {
             'default_theme'   => 'green',
             'default_per_page'=> 10,
             'enable_export'   => false,
+            'update_url'      => '',
         );
         $options = get_option( 'tablemaster_settings', array() );
         $merged  = wp_parse_args( $options, $defaults );
@@ -22,8 +23,10 @@ class TableMaster_Settings {
             'default_theme'    => sanitize_text_field( $data['default_theme']    ?? 'green' ),
             'default_per_page' => intval( $data['default_per_page']               ?? 10 ),
             'enable_export'    => ! empty( $data['enable_export'] ),
+            'update_url'       => esc_url_raw( $data['update_url'] ?? '' ),
         );
         update_option( 'tablemaster_settings', $clean );
+        delete_transient( 'tmp_update_check' );
     }
 
     public static function get_color_presets() {

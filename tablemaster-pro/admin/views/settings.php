@@ -43,6 +43,13 @@ $s = TableMaster_Settings::get();
                     </label>
                 </td>
             </tr>
+            <tr>
+                <th><?php esc_html_e( 'Update Server URL', TMP_TEXT_DOMAIN ); ?></th>
+                <td>
+                    <input type="url" name="update_url" value="<?php echo esc_attr( $s['update_url'] ); ?>" class="regular-text" placeholder="https://uw-replit-domein.replit.app">
+                    <p class="description"><?php esc_html_e( 'URL van de Replit update-server. Als dit is ingevuld, controleert WordPress automatisch op nieuwe versies.', TMP_TEXT_DOMAIN ); ?></p>
+                </td>
+            </tr>
         </table>
         <?php submit_button( __( 'Instellingen opslaan', TMP_TEXT_DOMAIN ) ); ?>
     </form>
@@ -50,4 +57,9 @@ $s = TableMaster_Settings::get();
     <h2><?php esc_html_e( 'Plugin Info', TMP_TEXT_DOMAIN ); ?></h2>
     <p><?php printf( esc_html__( 'Versie: %s', TMP_TEXT_DOMAIN ), esc_html( TMP_VERSION ) ); ?></p>
     <p><?php printf( esc_html__( 'Database versie: %s', TMP_TEXT_DOMAIN ), esc_html( get_option( 'tablemaster_db_version', 'n/a' ) ) ); ?></p>
+    <?php if ( ! empty( $s['update_url'] ) ) : ?>
+        <p><?php printf( esc_html__( 'Update server: %s', TMP_TEXT_DOMAIN ), esc_html( $s['update_url'] ) ); ?> ✅</p>
+    <?php else : ?>
+        <p><?php esc_html_e( 'Update server: niet geconfigureerd', TMP_TEXT_DOMAIN ); ?></p>
+    <?php endif; ?>
 </div>

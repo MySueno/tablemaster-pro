@@ -57,10 +57,23 @@ Express 5 API server. Routes live in `src/routes/` and use `@workspace/api-zod` 
 - Entry: `src/index.ts` — reads `PORT`, starts Express
 - App setup: `src/app.ts` — mounts CORS, JSON/urlencoded parsing, routes at `/api`
 - Routes: `src/routes/index.ts` mounts sub-routers; `src/routes/health.ts` exposes `GET /health` (full path: `/api/health`)
+- WordPress update server: `src/routes/wp-update.ts` — serves plugin version info and ZIP download
+  - `GET /api/wp-update/info` — returns plugin metadata (name, version, download_url, changelog)
+  - `GET /api/wp-update/version` — returns minimal version check
+  - `GET /api/wp-update/download` — serves the latest `tablemaster-pro.zip`
 - Depends on: `@workspace/db`, `@workspace/api-zod`
 - `pnpm --filter @workspace/api-server run dev` — run the dev server
 - `pnpm --filter @workspace/api-server run build` — production esbuild bundle (`dist/index.cjs`)
 - Build bundles an allowlist of deps (express, cors, pg, drizzle-orm, zod, etc.) and externalizes the rest
+
+### TableMaster Pro (WordPress Plugin)
+
+WordPress plugin in `tablemaster-pro/` folder. ZIP built at root as `tablemaster-pro.zip`.
+
+- 22 files, ~42KB ZIP
+- Features: unlimited tables, 3-level grouping, color theming (green/red/blue/grey/custom), search/sort/pagination, responsive (scroll + card modes), shortcode `[tablemaster id="X"]`, Gutenberg block, WPML, auto-updates
+- Auto-update: plugin checks API server's `/api/wp-update/info` endpoint; update URL configured in WP admin under TableMaster > Instellingen
+- Key files: `tablemaster-pro.php` (main), `includes/class-updater.php` (auto-update checker), `templates/table-frontend.php` (frontend rendering), `assets/css/frontend.css` (styling)
 
 ### `lib/db` (`@workspace/db`)
 
