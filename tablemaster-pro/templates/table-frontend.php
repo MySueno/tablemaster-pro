@@ -390,9 +390,6 @@ $rows    = $data['rows'];
                                     $cs_g       = json_decode( $gcol2->settings, true );
                                     $align_g    = $cs_g['align'] ?? 'left';
                                     $pad        = '';
-                                    if ( $gi2 === 0 ) {
-                                        $pad = 'padding-left:' . ( $indent_lvl * 24 + 12 ) . 'px;';
-                                    }
                             ?>
                                 <td class="tmp-td tmp-group-cell"
                                     style="text-align:<?php echo esc_attr( $align_g ); ?>;<?php echo $pad; ?>">
