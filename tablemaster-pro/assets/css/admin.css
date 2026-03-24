@@ -622,6 +622,11 @@
     font-weight: 700;
 }
 
+.tmp-fmt-btn i {
+    font-style: italic;
+    font-family: Georgia, serif;
+}
+
 /* ===================== */
 /* Link Modal            */
 /* ===================== */

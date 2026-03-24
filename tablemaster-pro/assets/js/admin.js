@@ -336,6 +336,7 @@
             var placeholder = isGroup ? 'Leeg = samenvoegen \u2192' : '';
             var fmtBtns = '<div class="tmp-cell-fmt">' +
                 '<button type="button" class="tmp-fmt-btn tmp-fmt-bold" title="Vet (Ctrl+B)"><b>B</b></button>' +
+                '<button type="button" class="tmp-fmt-btn tmp-fmt-italic" title="Cursief (Ctrl+I)"><i>I</i></button>' +
                 '<button type="button" class="tmp-fmt-btn tmp-fmt-link" title="Link invoegen">&#128279;</button>' +
                 '</div>';
             return '<td><div class="tmp-cell-wrap">' + fmtBtns +
@@ -425,11 +426,27 @@
             el.setSelectionRange(start + 8, start + 8 + sel.length);
         });
 
-        // Ctrl+B shortcut in textarea
+        $tr.find('.tmp-fmt-italic').on('click', function () {
+            var $area = $(this).closest('.tmp-cell-wrap').find('.tmp-cell-input');
+            var el    = $area[0];
+            var start = el.selectionStart;
+            var end   = el.selectionEnd;
+            var val   = el.value;
+            var sel   = val.substring(start, end) || 'tekst';
+            el.value  = val.substring(0, start) + '<em>' + sel + '</em>' + val.substring(end);
+            $area.trigger('input');
+            el.focus();
+            el.setSelectionRange(start + 4, start + 4 + sel.length);
+        });
+
         $tr.find('.tmp-cell-input').on('keydown', function (e) {
             if (e.ctrlKey && e.key === 'b') {
                 e.preventDefault();
                 $(this).closest('.tmp-cell-wrap').find('.tmp-fmt-bold').trigger('click');
+            }
+            if (e.ctrlKey && e.key === 'i') {
+                e.preventDefault();
+                $(this).closest('.tmp-cell-wrap').find('.tmp-fmt-italic').trigger('click');
             }
         });
 
