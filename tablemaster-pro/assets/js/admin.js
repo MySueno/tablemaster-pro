@@ -518,7 +518,7 @@
         var tableSettings = {
             theme:              activeTheme,
             colors:             colors,
-            caption:            $('#tmp-caption').val(),
+            caption:            '',
             search:             $('#tmp-search').is(':checked'),
             search_position:    $('#tmp-search-position').val(),
             pagination:         $('#tmp-pagination').is(':checked'),

@@ -73,10 +73,6 @@ $rows    = $data['rows'];
      data-default-sort-dir="<?php echo esc_attr( $default_sort_dir ); ?>"
      data-mobile-mode="<?php echo esc_attr( $mobile_mode ); ?>">
 
-    <?php if ( $caption ) : ?>
-        <div class="tmp-caption"><?php echo esc_html( $caption ); ?></div>
-    <?php endif; ?>
-
     <?php if ( $show_search && $search_pos === 'top' ) : ?>
         <div class="tmp-controls tmp-controls-top tmp-search-center">
             <div class="tmp-search-wrap">

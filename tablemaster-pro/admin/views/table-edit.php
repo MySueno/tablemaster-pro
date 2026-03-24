@@ -204,10 +204,6 @@ $page_title = $is_new
             <!-- DISPLAY TAB -->
             <div class="tmp-tab-content" id="tmp-tab-display">
                 <div class="tmp-form-group">
-                    <label for="tmp-caption"><?php esc_html_e( 'Tabel caption/titel (optioneel):', TMP_TEXT_DOMAIN ); ?></label>
-                    <input type="text" id="tmp-caption" value="<?php echo esc_attr( $settings['caption'] ?? '' ); ?>" class="regular-text" placeholder="<?php esc_attr_e( 'Bijv. Productenlijst 2026', TMP_TEXT_DOMAIN ); ?>">
-                </div>
-                <div class="tmp-form-group">
                     <label>
                         <input type="checkbox" id="tmp-search" <?php checked( $settings['search'] ?? true ); ?>>
                         <?php esc_html_e( 'Zoekbalk tonen', TMP_TEXT_DOMAIN ); ?>
