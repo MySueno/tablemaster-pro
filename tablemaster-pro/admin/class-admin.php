@@ -7,6 +7,7 @@ class TableMaster_Admin {
         add_action( 'admin_menu',            array( $this, 'add_menu' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
         add_action( 'admin_init',            array( $this, 'maybe_render_preview' ) );
+        add_action( 'admin_init',            array( $this, 'maybe_export_csv' ) );
     }
 
     public function maybe_render_preview() {
