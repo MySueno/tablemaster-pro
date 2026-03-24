@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.1.2
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,13 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.2.0 =
+* Nieuw: Multi-level kolomheaders (3 niveaus) — maak tabellen met groepskoppen zoals E. coli > Ambulant > 2024-2025
+* Per kolom twee optionele velden: "Header groep 1" en "Header groep 2" voor automatische colspan/rowspan berekening
+* Rood kleurthema verfijnd: exacte kleuren afgestemd op branding (zachtere randen, neutrale even-rijen)
+* Standaard border-radius verhoogd naar 12px
+* Verticale celranden verwijderd voor een schoner uiterlijk
 
 = 1.1.2 =
 * Fix: WPML strings worden nu automatisch geregistreerd bij plugin-update (geen handmatig opslaan meer nodig)

@@ -126,23 +126,48 @@ $rows    = $data['rows'];
 
     <div class="tmp-table-scroll-wrapper">
         <table class="tmp-table" role="grid" aria-label="<?php echo esc_attr( $caption ?: $table->name ); ?>">
+            <?php
+            $has_groups = false;
+            $col_meta   = array();
+            foreach ( $columns as $col ) {
+                $cs = json_decode( $col->settings, true );
+                $g1 = trim( $cs['header_group1'] ?? '' );
+                $g2 = trim( $cs['header_group2'] ?? '' );
+                if ( $g1 !== '' ) $has_groups = true;
+                $col_meta[] = array(
+                    'col'   => $col,
+                    'cs'    => $cs,
+                    'g1'    => $g1,
+                    'g2'    => $g2,
+                );
+            }
+            $max_depth = 1;
+            if ( $has_groups ) {
+                $max_depth = 2;
+                foreach ( $col_meta as $cm ) {
+                    if ( $cm['g2'] !== '' ) { $max_depth = 3; break; }
+                }
+            }
+            ?>
             <thead>
+            <?php if ( $max_depth === 1 ) : ?>
                 <tr class="tmp-header-row">
                     <?php if ( $collapsible ) : ?>
                         <th class="tmp-toggle-col" aria-hidden="true"></th>
                     <?php endif; ?>
-                    <?php foreach ( $columns as $col ) :
-                        $cs      = json_decode( $col->settings, true );
-                        $width   = $cs['width'] ?? 'auto';
-                        $align   = $cs['align'] ?? 'left';
-                        $sort    = ! empty( $cs['sortable'] );
-                        $hide_m  = ! empty( $cs['hide_mobile'] );
+                    <?php foreach ( $col_meta as $cm ) :
+                        $cs     = $cm['cs'];
+                        $col    = $cm['col'];
+                        $width  = $cs['width'] ?? 'auto';
+                        $align  = $cs['align'] ?? 'left';
+                        $sort   = ! empty( $cs['sortable'] );
+                        $hide_m = ! empty( $cs['hide_mobile'] );
                         $th_class = 'tmp-th';
                         if ( $sort )   $th_class .= ' tmp-sortable';
                         if ( $hide_m ) $th_class .= ' tmp-hide-mobile';
-                        $style   = '';
+                        $style  = '';
                         if ( $width !== 'auto' ) $style = 'width:' . esc_attr( $width ) . ';';
-                        $style  .= 'text-align:' . esc_attr( $align ) . ';';
+                        $style .= 'text-align:' . esc_attr( $align ) . ';';
                     ?>
                         <th class="<?php echo esc_attr( $th_class ); ?>"
                             style="<?php echo esc_attr( $style ); ?>"
@@ -156,6 +181,93 @@ $rows    = $data['rows'];
                         </th>
                     <?php endforeach; ?>
                 </tr>
+            <?php else :
+                $g1_groups = array();
+                $g2_groups = array();
+                $ungrouped = array();
+                foreach ( $col_meta as $idx => $cm ) {
+                    if ( $cm['g1'] === '' ) {
+                        $ungrouped[] = $idx;
+                    } else {
+                        $g1_groups[ $cm['g1'] ][] = $idx;
+                        if ( $cm['g2'] !== '' ) {
+                            $g2_groups[ $cm['g1'] . '|||' . $cm['g2'] ][] = $idx;
+                        }
+                    }
+                }
+            ?>
+                <tr class="tmp-header-row tmp-header-row-1">
+                    <?php if ( $collapsible ) : ?>
+                        <th class="tmp-toggle-col" rowspan="<?php echo $max_depth; ?>" aria-hidden="true"></th>
+                    <?php endif; ?>
+                    <?php
+                    $prev_g1 = null;
+                    foreach ( $col_meta as $idx => $cm ) :
+                        if ( $cm['g1'] === '' ) : ?>
+                            <th class="tmp-th tmp-th-grouped" rowspan="<?php echo $max_depth; ?>"><?php echo esc_html( $cm['col']->label ); ?></th>
+                        <?php elseif ( $cm['g1'] !== $prev_g1 ) :
+                            $colspan = count( $g1_groups[ $cm['g1'] ] );
+                        ?>
+                            <th class="tmp-th tmp-th-grouped" colspan="<?php echo $colspan; ?>"><?php echo esc_html( $cm['g1'] ); ?></th>
+                        <?php endif;
+                        $prev_g1 = $cm['g1'];
+                    endforeach; ?>
+                </tr>
+                <?php if ( $max_depth >= 2 ) : ?>
+                <tr class="tmp-header-row tmp-header-row-2">
+                    <?php
+                    $prev_g2_key = null;
+                    foreach ( $col_meta as $idx => $cm ) :
+                        if ( $cm['g1'] === '' ) continue;
+                        if ( $cm['g2'] === '' && $max_depth === 2 ) : ?>
+                            <th class="tmp-th tmp-th-grouped"
+                                data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
+                                data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>">
+                                <?php echo esc_html( $cm['col']->label ); ?>
+                            </th>
+                        <?php elseif ( $cm['g2'] === '' && $max_depth === 3 ) : ?>
+                            <th class="tmp-th tmp-th-grouped" rowspan="2"
+                                data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
+                                data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>">
+                                <?php echo esc_html( $cm['col']->label ); ?>
+                            </th>
+                        <?php else :
+                            $g2_key = $cm['g1'] . '|||' . $cm['g2'];
+                            if ( $g2_key !== $prev_g2_key ) :
+                                $g2_colspan = count( $g2_groups[ $g2_key ] );
+                        ?>
+                            <th class="tmp-th tmp-th-grouped" colspan="<?php echo $g2_colspan; ?>"><?php echo esc_html( $cm['g2'] ); ?></th>
+                        <?php endif;
+                            $prev_g2_key = $g2_key;
+                        endif;
+                    endforeach; ?>
+                </tr>
+                <?php endif; ?>
+                <?php if ( $max_depth === 3 ) : ?>
+                <tr class="tmp-header-row tmp-header-row-3">
+                    <?php foreach ( $col_meta as $idx => $cm ) :
+                        if ( $cm['g1'] === '' ) continue;
+                        if ( $cm['g2'] === '' ) continue;
+                        $cs     = $cm['cs'];
+                        $sort   = ! empty( $cs['sortable'] );
+                        $hide_m = ! empty( $cs['hide_mobile'] );
+                        $th_class = 'tmp-th tmp-th-grouped';
+                        if ( $sort )   $th_class .= ' tmp-sortable';
+                        if ( $hide_m ) $th_class .= ' tmp-hide-mobile';
+                    ?>
+                        <th class="<?php echo esc_attr( $th_class ); ?>"
+                            data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
+                            data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
+                            <?php echo $sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
+                            <?php echo esc_html( $cm['col']->label ); ?>
+                            <?php if ( $sort ) : ?>
+                                <span class="tmp-sort-icon" aria-hidden="true"></span>
+                            <?php endif; ?>
+                        </th>
+                    <?php endforeach; ?>
+                </tr>
+                <?php endif; ?>
+            <?php endif; ?>
             </thead>
             <tbody class="tmp-tbody">
                 <?php

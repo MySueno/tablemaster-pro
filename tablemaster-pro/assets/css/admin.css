@@ -173,6 +173,29 @@
     background: #fde8e8;
 }
 
+.tmp-column-groups {
+    display: flex;
+    gap: 6px;
+    width: 100%;
+    margin-top: 4px;
+}
+
+.tmp-column-groups input {
+    flex: 1;
+    padding: 3px 6px;
+    border: 1px dashed #ccc;
+    border-radius: 3px;
+    font-size: 0.82em;
+    color: #555;
+    background: #fcfcfc;
+}
+
+.tmp-column-groups input:focus {
+    border-style: solid;
+    border-color: #0073aa;
+    background: #fff;
+}
+
 /* Row buttons */
 .tmp-row-buttons {
     display: flex;

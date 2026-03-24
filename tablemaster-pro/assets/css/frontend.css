@@ -162,6 +162,18 @@
     outline-offset: -2px;
 }
 
+/* Multi-level grouped headers */
+.tmp-th-grouped {
+    text-align: center !important;
+    border-right: 1px solid rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.tmp-header-row-1 .tmp-th-grouped,
+.tmp-header-row-2 .tmp-th-grouped {
+    font-weight: 700;
+}
+
 .tmp-sort-icon {
     position: absolute;
     right: 8px;

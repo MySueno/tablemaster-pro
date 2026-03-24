@@ -154,8 +154,10 @@
             temp_key: tempKey,
             label:    i18n.add_column + ' ' + (columns.length + 1),
             type:     'text',
-            settings: { width: 'auto', align: 'left', sortable: true, filterable: true, hide_mobile: false }
+            settings: { width: 'auto', align: 'left', sortable: true, filterable: true, hide_mobile: false, header_group1: '', header_group2: '' }
         }, colData || {});
+        if (!col.settings.header_group1) col.settings.header_group1 = '';
+        if (!col.settings.header_group2) col.settings.header_group2 = '';
 
         columns.push(col);
         renderColumnItem(col);
@@ -176,6 +178,9 @@
             return '<option value="' + a + '"' + (col.settings.align === a ? ' selected' : '') + '>' + a + '</option>';
         }).join('');
 
+        var hg1 = col.settings.header_group1 || '';
+        var hg2 = col.settings.header_group2 || '';
+
         var $item = $('<div class="tmp-column-item" data-temp-key="' + escAttr(col.temp_key || col.id) + '">' +
             '<span class="tmp-column-drag dashicons dashicons-menu" title="Slepen"></span>' +
             '<input type="text" class="tmp-column-label-input" value="' + escAttr(col.label) + '" placeholder="Kolomnaam">' +
@@ -188,6 +193,10 @@
                 '<label><input type="checkbox" class="tmp-col-hidemobile" ' + (col.settings.hide_mobile ? 'checked' : '') + '> Verberg mob.</label>' +
             '</div>' +
             '<button type="button" class="tmp-col-delete dashicons dashicons-trash" title="' + escAttr(i18n.delete_col) + '"></button>' +
+            '<div class="tmp-column-groups">' +
+                '<input type="text" class="tmp-col-hg1" value="' + escAttr(hg1) + '" placeholder="Header groep 1 (bijv. E. coli)">' +
+                '<input type="text" class="tmp-col-hg2" value="' + escAttr(hg2) + '" placeholder="Header groep 2 (bijv. Ambulant)">' +
+            '</div>' +
         '</div>');
 
         $container.append($item);
@@ -224,11 +233,13 @@
                 label:    $item.find('.tmp-column-label-input').val().trim(),
                 type:     $item.find('.tmp-column-type-select').val(),
                 settings: {
-                    width:       $item.find('.tmp-column-width-input').val().trim() || 'auto',
-                    align:       $item.find('.tmp-column-align-select').val(),
-                    sortable:    $item.find('.tmp-col-sortable').is(':checked'),
-                    filterable:  $item.find('.tmp-col-filterable').is(':checked'),
-                    hide_mobile: $item.find('.tmp-col-hidemobile').is(':checked'),
+                    width:         $item.find('.tmp-column-width-input').val().trim() || 'auto',
+                    align:         $item.find('.tmp-column-align-select').val(),
+                    sortable:      $item.find('.tmp-col-sortable').is(':checked'),
+                    filterable:    $item.find('.tmp-col-filterable').is(':checked'),
+                    hide_mobile:   $item.find('.tmp-col-hidemobile').is(':checked'),
+                    header_group1: $item.find('.tmp-col-hg1').val().trim(),
+                    header_group2: $item.find('.tmp-col-hg2').val().trim(),
                 }
             });
         });
