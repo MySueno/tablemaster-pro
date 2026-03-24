@@ -459,16 +459,22 @@
     background: var(--tmp-header-bg, #D32637);
 }
 
-.tmp-wrapper.tmp-sticky-first .tmp-type-group_1 td:first-child {
-    background: var(--tmp-group1-bg, #D32637);
+.tmp-wrapper.tmp-sticky-first .tmp-type-group_1 td:first-child,
+.tmp-wrapper.tmp-sticky-first .tmp-type-group_1 .tmp-group-cell:first-child {
+    background: var(--tmp-group1-bg, #D32637) !important;
+    z-index: 2;
 }
 
-.tmp-wrapper.tmp-sticky-first .tmp-type-group_2 td:first-child {
-    background: var(--tmp-group2-bg, #F9E6E7);
+.tmp-wrapper.tmp-sticky-first .tmp-type-group_2 td:first-child,
+.tmp-wrapper.tmp-sticky-first .tmp-type-group_2 .tmp-group-cell:first-child {
+    background: var(--tmp-group2-bg, #F9E6E7) !important;
+    z-index: 2;
 }
 
-.tmp-wrapper.tmp-sticky-first .tmp-type-group_3 td:first-child {
-    background: var(--tmp-group3-bg, #ffffff);
+.tmp-wrapper.tmp-sticky-first .tmp-type-group_3 td:first-child,
+.tmp-wrapper.tmp-sticky-first .tmp-type-group_3 .tmp-group-cell:first-child {
+    background: var(--tmp-group3-bg, #ffffff) !important;
+    z-index: 2;
 }
 
 .tmp-wrapper.tmp-sticky-first .tmp-odd td:first-child {
