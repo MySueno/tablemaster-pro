@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.4
+Stable tag: 1.3.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,14 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.7 =
+* Fix: Kritieke PHP parse error opgelost — geneste <?php tag in gegroepeerde header veroorzaakte site crash
+* Fix: Collapsible groups instelling werd niet opgeslagen — checkbox toegevoegd aan Display tab en saveAll() gecorrigeerd
+* Fix: Frontend CSV export bevatte groep- en footer-rijen — alleen data-rijen worden nu geëxporteerd
+* Fix: CSV export pakte ook groepsheader-cellen mee als kolommen — nu alleen headers met data-col-id
+* Fix: Ongegroepeerde kolommen in gegroepeerde tabellen misten data-col-id en sorteerattributen — sortering en export werken nu correct voor alle kolomtypes
+* GPL-2.0 licentie volledig toegevoegd (LICENSE bestand + header)
 
 = 1.3.2 =
 * Fix: Vertaalde tabel werd niet getoond op de frontend — WPML-detectie werkte alleen in admin, nu ook op publieke pagina's
