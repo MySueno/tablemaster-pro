@@ -40,6 +40,7 @@ $default_sort_dir  = in_array( $settings['default_sort_dir'] ?? '', $allowed_sor
 $inline_html       = ! empty( $settings['inline_html'] );
 $sticky_first_col  = ! empty( $settings['sticky_first_col'] );
 $sticky_header     = ! empty( $settings['sticky_header'] );
+$fonts             = $settings['fonts'] ?? array();
 
 $columns = $data['columns'];
 $rows    = $data['rows'];
@@ -63,6 +64,24 @@ $rows    = $data['rows'];
     --tmp-accent:       <?php echo esc_attr( $accent_color ); ?>;
     --tmp-radius:       <?php echo intval( $border_radius ); ?>px;
 }
+<?php
+$font_css_map = array(
+    'group_1' => '.tmp-type-group_1 td',
+    'group_2' => '.tmp-type-group_2 td',
+    'group_3' => '.tmp-type-group_3 td',
+    'footer'  => '.tmp-type-footer td',
+    'data'    => '.tmp-type-data td',
+);
+foreach ( $font_css_map as $fk => $selector ) :
+    $f = $fonts[ $fk ] ?? array();
+    $rules = array();
+    if ( ! empty( $f['size'] ) )   $rules[] = 'font-size:' . esc_attr( $f['size'] );
+    if ( ! empty( $f['bold'] ) )   $rules[] = 'font-weight:bold';
+    if ( ! empty( $f['italic'] ) ) $rules[] = 'font-style:italic';
+    if ( ! empty( $rules ) ) :
+?>
+#<?php echo esc_attr( $table_uid ); ?> <?php echo $selector; ?> { <?php echo implode( ';', $rules ); ?>; }
+<?php endif; endforeach; ?>
 </style>
 
 <div id="<?php echo esc_attr( $table_uid ); ?>"

@@ -721,6 +721,25 @@
             default_sort_col:   $('#tmp-default-sort-col').val(),
             default_sort_dir:   $('#tmp-default-sort-dir').val(),
             default_col_width:  $('#tmp-default-col-width').val().trim(),
+            fonts:              (function () {
+                var f = {};
+                $('.tmp-font-size').each(function () {
+                    var k = $(this).data('font-key');
+                    if (!f[k]) f[k] = {};
+                    f[k].size = $(this).val();
+                });
+                $('.tmp-font-bold').each(function () {
+                    var k = $(this).data('font-key');
+                    if (!f[k]) f[k] = {};
+                    f[k].bold = $(this).is(':checked');
+                });
+                $('.tmp-font-italic').each(function () {
+                    var k = $(this).data('font-key');
+                    if (!f[k]) f[k] = {};
+                    f[k].italic = $(this).is(':checked');
+                });
+                return f;
+            })(),
         };
 
         setStatus('loading');
@@ -827,7 +846,7 @@
         });
 
         // Settings change -> dirty
-        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-column-filters, #tmp-inline-html, #tmp-sticky-first-col, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-default-col-width, #tmp-table-name').on('change input', function () {
+        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-column-filters, #tmp-inline-html, #tmp-sticky-first-col, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-default-col-width, #tmp-table-name, .tmp-font-size, .tmp-font-bold, .tmp-font-italic').on('change input', function () {
             isDirty = true;
         });
 

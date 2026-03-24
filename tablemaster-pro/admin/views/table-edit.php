@@ -103,6 +103,7 @@ $page_title = $is_new
             <div class="tmp-tabs">
                 <button class="tmp-tab active" data-tab="colors"><?php esc_html_e( 'Kleuren', TMP_TEXT_DOMAIN ); ?></button>
                 <button class="tmp-tab" data-tab="display"><?php esc_html_e( 'Weergave', TMP_TEXT_DOMAIN ); ?></button>
+                <button class="tmp-tab" data-tab="font"><?php esc_html_e( 'Font', TMP_TEXT_DOMAIN ); ?></button>
                 <button class="tmp-tab" data-tab="advanced"><?php esc_html_e( 'Geavanceerd', TMP_TEXT_DOMAIN ); ?></button>
             </div>
 
@@ -244,6 +245,41 @@ $page_title = $is_new
                     <input type="text" id="tmp-default-col-width" value="<?php echo esc_attr( $settings['default_col_width'] ?? '' ); ?>" class="small-text" placeholder="auto" style="width:100px;">
                     <p class="description"><?php esc_html_e( 'Bijv. 150px, 10%, 8em. Kolommen met een eigen breedte-instelling overschrijven deze waarde.', TMP_TEXT_DOMAIN ); ?></p>
                 </div>
+            </div>
+
+            <!-- FONT TAB -->
+            <div class="tmp-tab-content" id="tmp-tab-font">
+                <?php
+                $fonts = $settings['fonts'] ?? array();
+                $font_rows = array(
+                    'group_1'    => __( 'Groep 1 (G1)', TMP_TEXT_DOMAIN ),
+                    'group_2'    => __( 'Groep 2 (G2)', TMP_TEXT_DOMAIN ),
+                    'group_3'    => __( 'Groep 3 (G3)', TMP_TEXT_DOMAIN ),
+                    'footer'     => __( 'Afsluitrij', TMP_TEXT_DOMAIN ),
+                    'data'       => __( 'Datarijen', TMP_TEXT_DOMAIN ),
+                );
+                $font_sizes = array( '10', '11', '12', '13', '14', '16', '18', '20', '22', '24' );
+                foreach ( $font_rows as $fkey => $flabel ) :
+                    $f = $fonts[ $fkey ] ?? array();
+                ?>
+                <div class="tmp-form-group tmp-font-row" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:6px 0;border-bottom:1px solid #eee;">
+                    <strong style="min-width:120px;"><?php echo esc_html( $flabel ); ?></strong>
+                    <select class="tmp-font-size" data-font-key="<?php echo esc_attr( $fkey ); ?>" style="width:70px;">
+                        <option value=""><?php esc_html_e( 'Auto', TMP_TEXT_DOMAIN ); ?></option>
+                        <?php foreach ( $font_sizes as $fs ) : ?>
+                            <option value="<?php echo esc_attr( $fs ); ?>px" <?php selected( $f['size'] ?? '', $fs . 'px' ); ?>><?php echo esc_html( $fs ); ?>px</option>
+                        <?php endforeach; ?>
+                    </select>
+                    <label style="display:flex;align-items:center;gap:4px;">
+                        <input type="checkbox" class="tmp-font-bold" data-font-key="<?php echo esc_attr( $fkey ); ?>" <?php checked( $f['bold'] ?? false ); ?>>
+                        <strong>B</strong>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:4px;">
+                        <input type="checkbox" class="tmp-font-italic" data-font-key="<?php echo esc_attr( $fkey ); ?>" <?php checked( $f['italic'] ?? false ); ?>>
+                        <em>I</em>
+                    </label>
+                </div>
+                <?php endforeach; ?>
             </div>
 
             <!-- ADVANCED TAB -->

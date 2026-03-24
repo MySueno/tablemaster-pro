@@ -90,6 +90,20 @@ class TableMaster_Ajax {
             $clean['colors'] = TableMaster_Settings::sanitize_colors( $settings['colors'] );
         }
 
+        $allowed_font_keys  = array( 'group_1', 'group_2', 'group_3', 'footer', 'data' );
+        $allowed_font_sizes = array( '', '10px', '11px', '12px', '13px', '14px', '16px', '18px', '20px', '22px', '24px' );
+        $clean['fonts'] = array();
+        if ( isset( $settings['fonts'] ) && is_array( $settings['fonts'] ) ) {
+            foreach ( $settings['fonts'] as $fk => $fv ) {
+                if ( ! in_array( $fk, $allowed_font_keys, true ) || ! is_array( $fv ) ) continue;
+                $clean['fonts'][ $fk ] = array(
+                    'size'   => in_array( $fv['size'] ?? '', $allowed_font_sizes, true ) ? $fv['size'] : '',
+                    'bold'   => ! empty( $fv['bold'] ),
+                    'italic' => ! empty( $fv['italic'] ),
+                );
+            }
+        }
+
         return $clean;
     }
 
