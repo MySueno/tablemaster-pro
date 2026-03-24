@@ -158,17 +158,13 @@ $page_title = $is_new
                     <div id="tmp-color-preview" class="tmp-color-preview-table">
                         <table>
                             <thead>
-                                <tr class="tmp-prev-header">
-                                    <th><?php esc_html_e( 'Kolom A', TMP_TEXT_DOMAIN ); ?></th>
-                                    <th><?php esc_html_e( 'Kolom B', TMP_TEXT_DOMAIN ); ?></th>
-                                    <th><?php esc_html_e( 'Kolom C', TMP_TEXT_DOMAIN ); ?></th>
-                                </tr>
+                                <tr class="tmp-prev-header" id="tmp-prev-header-row"></tr>
                             </thead>
                             <tbody>
-                                <tr class="tmp-prev-group1"><td colspan="3"><?php esc_html_e( '▼ Groep 1', TMP_TEXT_DOMAIN ); ?></td></tr>
-                                <tr class="tmp-prev-group2"><td colspan="3">&nbsp;&nbsp;<?php esc_html_e( '▼ Subgroep 1.1', TMP_TEXT_DOMAIN ); ?></td></tr>
-                                <tr class="tmp-prev-odd"><td><?php esc_html_e( 'Waarde A', TMP_TEXT_DOMAIN ); ?></td><td><?php esc_html_e( 'Waarde B', TMP_TEXT_DOMAIN ); ?></td><td><?php esc_html_e( 'Waarde C', TMP_TEXT_DOMAIN ); ?></td></tr>
-                                <tr class="tmp-prev-even"><td><?php esc_html_e( 'Waarde A', TMP_TEXT_DOMAIN ); ?></td><td><?php esc_html_e( 'Waarde B', TMP_TEXT_DOMAIN ); ?></td><td><?php esc_html_e( 'Waarde C', TMP_TEXT_DOMAIN ); ?></td></tr>
+                                <tr class="tmp-prev-group1"><td id="tmp-prev-group1-cell" colspan="3"><?php esc_html_e( '▼ Groep 1', TMP_TEXT_DOMAIN ); ?></td></tr>
+                                <tr class="tmp-prev-group2"><td id="tmp-prev-group2-cell" colspan="3">&nbsp;&nbsp;<?php esc_html_e( '▼ Subgroep 1.1', TMP_TEXT_DOMAIN ); ?></td></tr>
+                                <tr class="tmp-prev-odd" id="tmp-prev-odd-row"></tr>
+                                <tr class="tmp-prev-even" id="tmp-prev-even-row"></tr>
                             </tbody>
                         </table>
                     </div>
