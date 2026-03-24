@@ -484,9 +484,11 @@
             isDirty = true;
         });
 
-        // Bold formatting button
         $tr.find('.tmp-fmt-bold').on('click', function () {
-            var $area = $(this).closest('.tmp-cell-wrap').find('.tmp-cell-input');
+            var $wrap = $(this).closest('.tmp-cell-wrap');
+            var $area = $wrap.find('.tmp-cell-input');
+            $wrap.find('.tmp-cell-preview').hide();
+            $area.removeClass('tmp-cell-hidden');
             var el    = $area[0];
             var start = el.selectionStart;
             var end   = el.selectionEnd;
@@ -499,7 +501,10 @@
         });
 
         $tr.find('.tmp-fmt-italic').on('click', function () {
-            var $area = $(this).closest('.tmp-cell-wrap').find('.tmp-cell-input');
+            var $wrap = $(this).closest('.tmp-cell-wrap');
+            var $area = $wrap.find('.tmp-cell-input');
+            $wrap.find('.tmp-cell-preview').hide();
+            $area.removeClass('tmp-cell-hidden');
             var el    = $area[0];
             var start = el.selectionStart;
             var end   = el.selectionEnd;
@@ -523,7 +528,10 @@
         });
 
         $tr.find('.tmp-fmt-link').on('click', function () {
-            var $area = $(this).closest('.tmp-cell-wrap').find('.tmp-cell-input');
+            var $wrap = $(this).closest('.tmp-cell-wrap');
+            var $area = $wrap.find('.tmp-cell-input');
+            $wrap.find('.tmp-cell-preview').hide();
+            $area.removeClass('tmp-cell-hidden');
             var el    = $area[0];
             var start = el.selectionStart;
             var end   = el.selectionEnd;

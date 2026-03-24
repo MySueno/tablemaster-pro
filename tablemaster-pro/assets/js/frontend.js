@@ -51,8 +51,7 @@
     TableMasterInstance.prototype.init = function () {
         var self = this;
 
-        // Collect headers
-        this.headers = Array.prototype.slice.call(this.thead.querySelectorAll('.tmp-th'));
+        this.headers = Array.prototype.slice.call(this.thead.querySelectorAll('.tmp-th[data-col-id]'));
 
         // Collect all rows
         this.allRows = Array.prototype.slice.call(this.tbody.querySelectorAll('.tmp-row'));
@@ -325,8 +324,10 @@
         this.allRows.forEach(function (row) {
             if (row.getAttribute('data-row-type') === 'data') {
                 row.classList.remove('tmp-odd', 'tmp-even');
-                row.classList.add(idx % 2 === 0 ? 'tmp-odd' : 'tmp-even');
-                idx++;
+                if (!row.classList.contains('tmp-row-filtered') && !row.classList.contains('tmp-row-hidden')) {
+                    row.classList.add(idx % 2 === 0 ? 'tmp-odd' : 'tmp-even');
+                    idx++;
+                }
             }
         });
     };

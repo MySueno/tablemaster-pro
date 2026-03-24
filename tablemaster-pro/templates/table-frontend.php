@@ -178,6 +178,11 @@ foreach ( $font_css_map as $fk => $selector ) :
                 }
             }
             ?>
+            <?php
+            $valid_aligns    = array( 'left', 'center', 'right' );
+            $default_col_w   = $settings['default_col_width'] ?? '';
+            if ( $default_col_w !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $default_col_w ) ) $default_col_w = '';
+            ?>
             <thead>
             <?php if ( $max_depth === 1 ) : ?>
                 <tr class="tmp-header-row">
@@ -185,9 +190,6 @@ foreach ( $font_css_map as $fk => $selector ) :
                         <th class="tmp-toggle-col" aria-hidden="true"></th>
                     <?php endif; ?>
                     <?php
-                    $valid_aligns    = array( 'left', 'center', 'right' );
-                    $default_col_w   = $settings['default_col_width'] ?? '';
-                    if ( $default_col_w !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $default_col_w ) ) $default_col_w = '';
                     foreach ( $col_meta as $cm ) :
                         $cs     = $cm['cs'];
                         $col    = $cm['col'];
@@ -261,19 +263,31 @@ foreach ( $font_css_map as $fk => $selector ) :
                         if ( $lw !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $lw ) ) $lw = 'auto';
                         if ( $lw === 'auto' && $default_col_w !== '' ) $lw = $default_col_w;
                         $ls  = $lw !== 'auto' ? 'width:' . esc_attr( $lw ) . ';' : '';
-                        if ( $cm['g2'] === '' && $max_depth === 2 ) : ?>
-                            <th class="tmp-th tmp-th-grouped"
+                        <?php
+                        $sort_r2 = ! empty( $table_sortable );
+                        if ( $cm['g2'] === '' && $max_depth === 2 ) :
+                            $th2_class = 'tmp-th tmp-th-grouped';
+                            if ( $sort_r2 ) $th2_class .= ' tmp-sortable';
+                        ?>
+                            <th class="<?php echo esc_attr( $th2_class ); ?>"
                                 data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
                                 data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
-                                <?php if ( $ls ) echo 'style="' . esc_attr( $ls ) . '"'; ?>>
+                                <?php if ( $ls ) echo 'style="' . esc_attr( $ls ) . '"'; ?>
+                                <?php echo $sort_r2 ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
                                 <?php echo esc_html( $cm['col']->label ); ?>
+                                <?php if ( $sort_r2 ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
                             </th>
-                        <?php elseif ( $cm['g2'] === '' && $max_depth === 3 ) : ?>
-                            <th class="tmp-th tmp-th-grouped" rowspan="2"
+                        <?php elseif ( $cm['g2'] === '' && $max_depth === 3 ) :
+                            $th2_class = 'tmp-th tmp-th-grouped';
+                            if ( $sort_r2 ) $th2_class .= ' tmp-sortable';
+                        ?>
+                            <th class="<?php echo esc_attr( $th2_class ); ?>" rowspan="2"
                                 data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
                                 data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
-                                <?php if ( $ls ) echo 'style="' . esc_attr( $ls ) . '"'; ?>>
+                                <?php if ( $ls ) echo 'style="' . esc_attr( $ls ) . '"'; ?>
+                                <?php echo $sort_r2 ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
                                 <?php echo esc_html( $cm['col']->label ); ?>
+                                <?php if ( $sort_r2 ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
                             </th>
                         <?php else :
                             $g2_key = $cm['g1'] . '|||' . $cm['g2'];
