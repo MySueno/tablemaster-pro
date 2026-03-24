@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,14 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.2 =
+* Fix: Vertaalde tabel werd niet getoond op de frontend — WPML-detectie werkte alleen in admin, nu ook op publieke pagina's
+* Fix: Taalcode wordt nu expliciet doorgegeven door de hele vertaalchain — betrouwbaar voor alle talen
+* Fix: Directe database-fallback toegevoegd wanneer WPML's vertaalfilter de vertaling niet vindt
+* Verbeterd: Hover-effect kleurt nu de volledige rij (inclusief alle cellen)
+* Verbeterd: Standaard font ingesteld op Calibri Regular (400) met semi-bold (600) voor kolomkoppen
+* Fix: Standaard sorteer-pijltjes verborgen — alleen zichtbaar bij actief sorteren
 
 = 1.3.1 =
 * Fix: Vertaalvoortgang telt nu alle ingevulde velden mee (inclusief automatisch ingevulde)
