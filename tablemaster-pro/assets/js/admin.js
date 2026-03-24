@@ -154,31 +154,57 @@
         }).join('');
 
         var alignOptions = ['left','center','right'].map(function(a) {
-            return '<option value="' + a + '"' + (col.settings.align === a ? ' selected' : '') + '>' + a + '</option>';
+            var labels = { left: 'Links', center: 'Midden', right: 'Rechts' };
+            return '<option value="' + a + '"' + (col.settings.align === a ? ' selected' : '') + '>' + labels[a] + '</option>';
         }).join('');
 
         var hg1 = col.settings.header_group1 || '';
         var hg2 = col.settings.header_group2 || '';
 
         var $item = $('<div class="tmp-column-item" data-temp-key="' + escAttr(col.temp_key || col.id) + '">' +
-            '<span class="tmp-column-drag dashicons dashicons-menu" title="Slepen"></span>' +
-            '<input type="text" class="tmp-column-label-input" value="' + escAttr(col.label) + '" placeholder="Kolomnaam">' +
-            '<select class="tmp-column-type-select">' + typeOptions + '</select>' +
-            '<select class="tmp-column-align-select">' + alignOptions + '</select>' +
-            '<input type="text" class="tmp-column-width-input" value="' + escAttr(col.settings.width || 'auto') + '" placeholder="breedte" style="width:70px;">' +
-            '<div class="tmp-column-checkboxes">' +
-                '<label><input type="checkbox" class="tmp-col-sortable" ' + (col.settings.sortable ? 'checked' : '') + '> Sorteer</label>' +
-                '<label><input type="checkbox" class="tmp-col-filterable" ' + (col.settings.filterable ? 'checked' : '') + '> Filter</label>' +
-                '<label><input type="checkbox" class="tmp-col-hidemobile" ' + (col.settings.hide_mobile ? 'checked' : '') + '> Verberg mob.</label>' +
+            '<div class="tmp-col-main-row">' +
+                '<span class="tmp-column-drag dashicons dashicons-menu" title="Slepen"></span>' +
+                '<input type="text" class="tmp-column-label-input" value="' + escAttr(col.label) + '" placeholder="Kolomnaam">' +
+                '<select class="tmp-column-type-select">' + typeOptions + '</select>' +
+                '<button type="button" class="tmp-col-toggle dashicons dashicons-admin-generic" title="Instellingen"></button>' +
+                '<button type="button" class="tmp-col-delete dashicons dashicons-trash" title="' + escAttr(i18n.delete_col) + '"></button>' +
             '</div>' +
-            '<button type="button" class="tmp-col-delete dashicons dashicons-trash" title="' + escAttr(i18n.delete_col) + '"></button>' +
-            '<div class="tmp-column-groups">' +
-                '<input type="text" class="tmp-col-hg1" value="' + escAttr(hg1) + '" placeholder="Header groep 1 (bijv. E. coli)">' +
-                '<input type="text" class="tmp-col-hg2" value="' + escAttr(hg2) + '" placeholder="Header groep 2 (bijv. Ambulant)">' +
+            '<div class="tmp-col-settings" style="display:none;">' +
+                '<div class="tmp-col-settings-row">' +
+                    '<div class="tmp-col-setting-field">' +
+                        '<label>Uitlijning</label>' +
+                        '<select class="tmp-column-align-select">' + alignOptions + '</select>' +
+                    '</div>' +
+                    '<div class="tmp-col-setting-field">' +
+                        '<label>Breedte</label>' +
+                        '<input type="text" class="tmp-column-width-input" value="' + escAttr(col.settings.width || 'auto') + '" placeholder="auto">' +
+                    '</div>' +
+                    '<div class="tmp-col-setting-field tmp-col-setting-checks">' +
+                        '<label><input type="checkbox" class="tmp-col-sortable" ' + (col.settings.sortable ? 'checked' : '') + '> Sorteerbaar</label>' +
+                        '<label><input type="checkbox" class="tmp-col-filterable" ' + (col.settings.filterable ? 'checked' : '') + '> Filterbaar</label>' +
+                        '<label><input type="checkbox" class="tmp-col-hidemobile" ' + (col.settings.hide_mobile ? 'checked' : '') + '> Verbergen op mobiel</label>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="tmp-col-settings-row">' +
+                    '<div class="tmp-col-setting-field">' +
+                        '<label>Header groep 1</label>' +
+                        '<input type="text" class="tmp-col-hg1" value="' + escAttr(hg1) + '" placeholder="Bijv. E. coli">' +
+                    '</div>' +
+                    '<div class="tmp-col-setting-field">' +
+                        '<label>Header groep 2</label>' +
+                        '<input type="text" class="tmp-col-hg2" value="' + escAttr(hg2) + '" placeholder="Bijv. Ambulant">' +
+                    '</div>' +
+                '</div>' +
             '</div>' +
         '</div>');
 
         $container.append($item);
+
+        $item.find('.tmp-col-toggle').on('click', function () {
+            var $settings = $item.find('.tmp-col-settings');
+            $settings.slideToggle(150);
+            $(this).toggleClass('tmp-col-toggle-open');
+        });
 
         $item.find('input, select').on('change input', function () {
             syncColumnsFromDOM();
