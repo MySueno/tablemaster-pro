@@ -115,16 +115,22 @@
     margin-right: 4px;
 }
 
-.tmp-col-header-gear {
-    font-size: 12px;
-    color: #999;
+.tmp-col-delete-btn {
+    font-size: 14px;
+    color: #cc0000;
     vertical-align: middle;
     opacity: 0;
     transition: opacity 0.15s;
+    cursor: pointer;
+    margin-left: 2px;
 }
 
-.tmp-col-header-cell:hover .tmp-col-header-gear {
-    opacity: 1;
+.tmp-col-header-cell:hover .tmp-col-delete-btn {
+    opacity: 0.6;
+}
+
+.tmp-col-delete-btn:hover {
+    opacity: 1 !important;
 }
 
 /* Column settings popover */

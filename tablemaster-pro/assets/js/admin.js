@@ -186,7 +186,7 @@
             var key = col.temp_key || col.id;
             return '<th class="tmp-col-header-cell" data-col-key="' + escAttr(key + '') + '" data-col-idx="' + ci + '" draggable="true">' +
                 '<span class="tmp-col-header-label">' + escHtml(col.label || 'Kolom') + '</span>' +
-                '<span class="tmp-col-header-gear dashicons dashicons-admin-generic"></span>' +
+                '<span class="tmp-col-delete-btn dashicons dashicons-no-alt" title="Kolom verwijderen"></span>' +
             '</th>';
         }).join('');
 
@@ -204,14 +204,50 @@
         var $wrap = $('<div class="tmp-admin-table-wrap"></div>').append($table);
         $wrapper.append($wrap);
 
+        $thead.find('.tmp-col-delete-btn').on('click', function (e) {
+            e.stopPropagation();
+            var $th = $(this).closest('.tmp-col-header-cell');
+            var colKey = $th.data('col-key') + '';
+            if (confirm('Kolom verwijderen?')) {
+                columns = columns.filter(function(c) { return (c.temp_key || c.id) + '' !== colKey; });
+                isDirty = true;
+                rebuildRowTable();
+            }
+        });
+
         $thead.find('.tmp-col-header-cell').on('click', function (e) {
             e.stopPropagation();
+            if ($(e.target).hasClass('tmp-col-delete-btn')) return;
             if ($(this).hasClass('tmp-col-just-dragged')) {
                 $(this).removeClass('tmp-col-just-dragged');
                 return;
             }
-            var colKey = $(this).data('col-key') + '';
-            openColumnPopover($(this), colKey);
+            var $th = $(this);
+            var colKey = $th.data('col-key') + '';
+            if ($th.find('.tmp-col-inline-edit').length) return;
+            var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
+            if (!col) return;
+            var $label = $th.find('.tmp-col-header-label');
+            var $delBtn = $th.find('.tmp-col-delete-btn');
+            $label.hide();
+            $delBtn.hide();
+            var $input = $('<input type="text" class="tmp-col-inline-edit" value="' + escAttr(col.label) + '" style="width:100%;box-sizing:border-box;font-weight:bold;font-size:inherit;padding:2px 4px;border:1px solid #0073aa;border-radius:3px;">');
+            $th.append($input);
+            $input.focus().select();
+            $input.on('input', function () {
+                col.label = $(this).val().trim();
+                isDirty = true;
+            });
+            function finishEdit() {
+                $label.text(col.label || 'Kolom').show();
+                $delBtn.show();
+                $input.remove();
+            }
+            $input.on('blur', finishEdit);
+            $input.on('keydown', function (ev) {
+                if (ev.key === 'Enter') { ev.preventDefault(); finishEdit(); }
+                if (ev.key === 'Escape') { col.label = $label.text(); finishEdit(); }
+            });
         });
 
         (function initColDrag() {
