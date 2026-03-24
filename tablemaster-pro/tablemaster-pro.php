@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'TMP_VERSION',     '1.2.6' );
+define( 'TMP_VERSION',     '1.2.9' );
 define( 'TMP_PLUGIN_FILE', __FILE__ );
 define( 'TMP_PLUGIN_DIR',  plugin_dir_path( __FILE__ ) );
 define( 'TMP_PLUGIN_URL',  plugin_dir_url( __FILE__ ) );
