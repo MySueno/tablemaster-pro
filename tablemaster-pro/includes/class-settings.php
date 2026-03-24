@@ -8,7 +8,7 @@ class TableMaster_Settings {
             'default_theme'   => 'green',
             'default_per_page'=> 10,
             'enable_export'   => false,
-            'border_radius'   => '4',
+            'border_radius'   => '12',
             'update_url'      => '',
         );
         $options = get_option( 'tablemaster_settings', array() );
@@ -43,13 +43,13 @@ class TableMaster_Settings {
                 'accent_color' => '#2e7d32',
             ),
             'red' => array(
-                'header_bg'    => '#c62828', 'header_text'  => '#ffffff',
-                'group1_bg'    => '#e53935', 'group1_text'  => '#ffffff',
-                'group2_bg'    => '#ef9a9a', 'group2_text'  => '#1a1a1a',
-                'group3_bg'    => '#ffcdd2', 'group3_text'  => '#1a1a1a',
-                'odd_bg'       => '#ffffff', 'even_bg'      => '#fce4ec',
-                'hover_bg'     => '#f8bbd0', 'border_color' => '#ef9a9a',
-                'accent_color' => '#c62828',
+                'header_bg'    => '#c0392b', 'header_text'  => '#ffffff',
+                'group1_bg'    => '#c0392b', 'group1_text'  => '#ffffff',
+                'group2_bg'    => '#e8a0a0', 'group2_text'  => '#1a1a1a',
+                'group3_bg'    => '#f5c6c6', 'group3_text'  => '#1a1a1a',
+                'odd_bg'       => '#ffffff', 'even_bg'      => '#f9f9f9',
+                'hover_bg'     => '#fce4e4', 'border_color' => '#e8e8e8',
+                'accent_color' => '#c0392b',
             ),
             'blue' => array(
                 'header_bg'    => '#1565c0', 'header_text'  => '#ffffff',

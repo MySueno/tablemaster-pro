@@ -290,8 +290,8 @@ class TableMaster_DB {
         }
 
         $anato_settings = json_encode( array(
-            'caption'            => 'Tabel 3 | Anatomopathologie',
-            'search'             => true,
+            'caption'            => '',
+            'search'             => false,
             'search_position'    => 'right',
             'pagination'         => false,
             'per_page'           => -1,
@@ -303,19 +303,19 @@ class TableMaster_DB {
             'inline_html'        => false,
             'theme'              => 'red',
             'colors'             => array(
-                'header_bg'    => '#c62828',
+                'header_bg'    => '#c0392b',
                 'header_text'  => '#ffffff',
-                'group1_bg'    => '#c62828',
+                'group1_bg'    => '#c0392b',
                 'group1_text'  => '#ffffff',
-                'group2_bg'    => '#ef9a9a',
+                'group2_bg'    => '#e8a0a0',
                 'group2_text'  => '#1a1a1a',
-                'group3_bg'    => '#ffcdd2',
+                'group3_bg'    => '#f5c6c6',
                 'group3_text'  => '#1a1a1a',
                 'odd_bg'       => '#ffffff',
-                'even_bg'      => '#fafafa',
-                'hover_bg'     => '#fce4ec',
-                'border_color' => '#e0e0e0',
-                'accent_color' => '#c62828',
+                'even_bg'      => '#f9f9f9',
+                'hover_bg'     => '#fce4e4',
+                'border_color' => '#e8e8e8',
+                'accent_color' => '#c0392b',
             ),
         ) );
 
