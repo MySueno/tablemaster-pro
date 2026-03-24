@@ -114,16 +114,7 @@
 
     /* ===== COLUMNS ===== */
     function initColumnSortable() {
-        $('#tmp-columns-container').sortable({
-            handle: '.tmp-column-drag',
-            tolerance: 'pointer',
-            update: function () {
-                syncColumnsFromDOM();
-                rebuildRowTable();
-                updatePreview();
-                isDirty = true;
-            }
-        });
+        // Column sorting is no longer needed — columns are managed via table headers
     }
 
     function addColumn(colData) {
@@ -131,7 +122,7 @@
         var col = $.extend({
             id:       0,
             temp_key: tempKey,
-            label:    i18n.add_column + ' ' + (columns.length + 1),
+            label:    (i18n.add_column || 'Kolom') + ' ' + (columns.length + 1),
             type:     'text',
             settings: { width: 'auto', align: 'left', sortable: true, filterable: true, header_group1: '', header_group2: '' }
         }, colData || {});
@@ -139,114 +130,16 @@
         if (!col.settings.header_group2) col.settings.header_group2 = '';
 
         columns.push(col);
-        renderColumnItem(col);
         rebuildRowTable();
-        updatePreview();
         isDirty = true;
     }
 
     function renderColumnItem(col) {
-        var $container = $('#tmp-columns-container');
-        $container.find('.tmp-columns-empty').hide();
-
-        var typeOptions = ['text','number','date','link','image','html'].map(function(t) {
-            return '<option value="' + t + '"' + (col.type === t ? ' selected' : '') + '>' + t + '</option>';
-        }).join('');
-
-        var alignOptions = ['left','center','right'].map(function(a) {
-            var labels = { left: 'Links', center: 'Midden', right: 'Rechts' };
-            return '<option value="' + a + '"' + (col.settings.align === a ? ' selected' : '') + '>' + labels[a] + '</option>';
-        }).join('');
-
-        var hg1 = col.settings.header_group1 || '';
-        var hg2 = col.settings.header_group2 || '';
-
-        var $item = $('<div class="tmp-column-item" data-temp-key="' + escAttr(col.temp_key || col.id) + '">' +
-            '<div class="tmp-col-main-row">' +
-                '<span class="tmp-column-drag dashicons dashicons-menu" title="Slepen"></span>' +
-                '<input type="text" class="tmp-column-label-input" value="' + escAttr(col.label) + '" placeholder="Kolomnaam">' +
-                '<select class="tmp-column-type-select">' + typeOptions + '</select>' +
-                '<button type="button" class="tmp-col-toggle dashicons dashicons-admin-generic" title="Instellingen"></button>' +
-                '<button type="button" class="tmp-col-delete dashicons dashicons-trash" title="' + escAttr(i18n.delete_col) + '"></button>' +
-            '</div>' +
-            '<div class="tmp-col-settings" style="display:none;">' +
-                '<div class="tmp-col-settings-row">' +
-                    '<div class="tmp-col-setting-field">' +
-                        '<label>Uitlijning</label>' +
-                        '<select class="tmp-column-align-select">' + alignOptions + '</select>' +
-                    '</div>' +
-                    '<div class="tmp-col-setting-field">' +
-                        '<label>Breedte</label>' +
-                        '<input type="text" class="tmp-column-width-input" value="' + escAttr(col.settings.width || 'auto') + '" placeholder="auto">' +
-                    '</div>' +
-                    '<div class="tmp-col-setting-field tmp-col-setting-checks">' +
-                        '<label><input type="checkbox" class="tmp-col-sortable" ' + (col.settings.sortable ? 'checked' : '') + '> Sorteerbaar</label>' +
-                        '<label><input type="checkbox" class="tmp-col-filterable" ' + (col.settings.filterable ? 'checked' : '') + '> Filterbaar</label>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="tmp-col-settings-row">' +
-                    '<div class="tmp-col-setting-field">' +
-                        '<label>Header groep 1</label>' +
-                        '<input type="text" class="tmp-col-hg1" value="' + escAttr(hg1) + '" placeholder="Bijv. E. coli">' +
-                    '</div>' +
-                    '<div class="tmp-col-setting-field">' +
-                        '<label>Header groep 2</label>' +
-                        '<input type="text" class="tmp-col-hg2" value="' + escAttr(hg2) + '" placeholder="Bijv. Ambulant">' +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-        '</div>');
-
-        $container.append($item);
-
-        $item.find('.tmp-col-toggle').on('click', function () {
-            var $settings = $item.find('.tmp-col-settings');
-            $settings.slideToggle(150);
-            $(this).toggleClass('tmp-col-toggle-open');
-        });
-
-        $item.find('input, select').on('change input', function () {
-            syncColumnsFromDOM();
-            rebuildRowTable();
-            updatePreview();
-            isDirty = true;
-        });
-
-        $item.find('.tmp-col-delete').on('click', function () {
-            if (!confirm('Kolom verwijderen? Alle data in deze kolom gaat verloren.')) return;
-            var tempKey = $item.data('temp-key') + '';
-            columns = columns.filter(function (c) {
-                return (c.temp_key || c.id) + '' !== tempKey;
-            });
-            $item.remove();
-            rebuildRowTable();
-            updatePreview();
-            isDirty = true;
-        });
+        // No-op: columns are now managed inline in the row table headers
     }
 
     function syncColumnsFromDOM() {
-        var newCols = [];
-        $('#tmp-columns-container .tmp-column-item').each(function () {
-            var $item   = $(this);
-            var tempKey = $item.data('temp-key') + '';
-            var existing= columns.find(function(c) { return (c.temp_key || c.id) + '' === tempKey; });
-            newCols.push({
-                id:       existing ? existing.id : 0,
-                temp_key: tempKey,
-                label:    $item.find('.tmp-column-label-input').val().trim(),
-                type:     $item.find('.tmp-column-type-select').val(),
-                settings: {
-                    width:         $item.find('.tmp-column-width-input').val().trim() || 'auto',
-                    align:         $item.find('.tmp-column-align-select').val(),
-                    sortable:      $item.find('.tmp-col-sortable').is(':checked'),
-                    filterable:    $item.find('.tmp-col-filterable').is(':checked'),
-                    header_group1: $item.find('.tmp-col-hg1').val().trim(),
-                    header_group2: $item.find('.tmp-col-hg2').val().trim(),
-                }
-            });
-        });
-        columns = newCols;
+        // Columns are synced directly via the popover — no DOM scan needed
     }
 
     /* ===== ROWS ===== */
@@ -280,17 +173,21 @@
         $wrapper.find('.tmp-rows-empty').hide();
         $wrapper.find('.tmp-admin-table-wrap').remove();
 
-        if (rows.length === 0 || columns.length === 0) {
-            if (rows.length > 0 && columns.length === 0) {
-                $wrapper.find('.tmp-rows-empty').text(i18n.no_columns).show();
-            } else {
-                $wrapper.find('.tmp-rows-empty').show();
-            }
+        if (columns.length === 0) {
+            $wrapper.find('.tmp-rows-empty').text(i18n.no_columns || 'Klik op "+ Kolom" om te beginnen.').show();
             return;
         }
 
+        if (rows.length === 0) {
+            $wrapper.find('.tmp-rows-empty').text('Nog geen rijen. Voeg rijen toe met de knoppen hierboven.').show();
+        }
+
         var headerCols = columns.map(function (col) {
-            return '<th>' + escHtml(col.label || col.temp_key) + '</th>';
+            var key = col.temp_key || col.id;
+            return '<th class="tmp-col-header-cell" data-col-key="' + escAttr(key + '') + '">' +
+                '<span class="tmp-col-header-label">' + escHtml(col.label || 'Kolom') + '</span>' +
+                '<span class="tmp-col-header-gear dashicons dashicons-admin-generic"></span>' +
+            '</th>';
         }).join('');
 
         var $table = $('<table class="tmp-admin-table"></table>');
@@ -307,7 +204,12 @@
         var $wrap = $('<div class="tmp-admin-table-wrap"></div>').append($table);
         $wrapper.append($wrap);
 
-        // Make rows sortable
+        $thead.find('.tmp-col-header-cell').on('click', function (e) {
+            e.stopPropagation();
+            var colKey = $(this).data('col-key') + '';
+            openColumnPopover($(this), colKey);
+        });
+
         $tbody.sortable({
             handle: '.tmp-drag-handle',
             tolerance: 'pointer',
@@ -318,6 +220,105 @@
         });
 
         updatePreview();
+    }
+
+    function openColumnPopover($th, colKey) {
+        closeColumnPopover();
+        var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
+        if (!col) return;
+
+        var typeOptions = ['text','number','date','link','image','html'].map(function(t) {
+            return '<option value="' + t + '"' + (col.type === t ? ' selected' : '') + '>' + t + '</option>';
+        }).join('');
+        var alignOptions = [['left','Links'],['center','Midden'],['right','Rechts']].map(function(a) {
+            return '<option value="' + a[0] + '"' + (col.settings.align === a[0] ? ' selected' : '') + '>' + a[1] + '</option>';
+        }).join('');
+
+        var $pop = $('<div class="tmp-col-popover" data-col-key="' + escAttr(colKey) + '">' +
+            '<div class="tmp-pop-field">' +
+                '<label>Kolomnaam</label>' +
+                '<input type="text" class="tmp-pop-label" value="' + escAttr(col.label) + '">' +
+            '</div>' +
+            '<div class="tmp-pop-row">' +
+                '<div class="tmp-pop-field tmp-pop-half">' +
+                    '<label>Type</label>' +
+                    '<select class="tmp-pop-type">' + typeOptions + '</select>' +
+                '</div>' +
+                '<div class="tmp-pop-field tmp-pop-half">' +
+                    '<label>Uitlijning</label>' +
+                    '<select class="tmp-pop-align">' + alignOptions + '</select>' +
+                '</div>' +
+            '</div>' +
+            '<div class="tmp-pop-field">' +
+                '<label>Breedte</label>' +
+                '<input type="text" class="tmp-pop-width" value="' + escAttr(col.settings.width || 'auto') + '" placeholder="auto (bijv. 120px, 15%)">' +
+            '</div>' +
+            '<div class="tmp-pop-checks">' +
+                '<label><input type="checkbox" class="tmp-pop-sortable" ' + (col.settings.sortable ? 'checked' : '') + '> Sorteerbaar</label>' +
+                '<label><input type="checkbox" class="tmp-pop-filterable" ' + (col.settings.filterable ? 'checked' : '') + '> Filterbaar</label>' +
+            '</div>' +
+            '<div class="tmp-pop-row">' +
+                '<div class="tmp-pop-field tmp-pop-half">' +
+                    '<label>Header groep 1</label>' +
+                    '<input type="text" class="tmp-pop-hg1" value="' + escAttr(col.settings.header_group1 || '') + '" placeholder="Bijv. E. coli">' +
+                '</div>' +
+                '<div class="tmp-pop-field tmp-pop-half">' +
+                    '<label>Header groep 2</label>' +
+                    '<input type="text" class="tmp-pop-hg2" value="' + escAttr(col.settings.header_group2 || '') + '" placeholder="Bijv. Ambulant">' +
+                '</div>' +
+            '</div>' +
+            '<div class="tmp-pop-actions">' +
+                '<button type="button" class="button button-small tmp-pop-delete" style="color:#dc3232;">Kolom verwijderen</button>' +
+            '</div>' +
+        '</div>');
+
+        $('body').append($pop);
+
+        var thOff = $th.offset();
+        var popW  = 300;
+        var left  = thOff.left + ($th.outerWidth() / 2) - (popW / 2);
+        if (left < 8) left = 8;
+        if (left + popW > $(window).width() - 8) left = $(window).width() - popW - 8;
+
+        $pop.css({
+            top:  thOff.top + $th.outerHeight() + 6,
+            left: left,
+        });
+
+        $pop.find('input, select').on('change input', function () {
+            col.label    = $pop.find('.tmp-pop-label').val().trim();
+            col.type     = $pop.find('.tmp-pop-type').val();
+            col.settings.align      = $pop.find('.tmp-pop-align').val();
+            col.settings.width      = $pop.find('.tmp-pop-width').val().trim() || 'auto';
+            col.settings.sortable   = $pop.find('.tmp-pop-sortable').is(':checked');
+            col.settings.filterable = $pop.find('.tmp-pop-filterable').is(':checked');
+            col.settings.header_group1 = $pop.find('.tmp-pop-hg1').val().trim();
+            col.settings.header_group2 = $pop.find('.tmp-pop-hg2').val().trim();
+            $th.find('.tmp-col-header-label').text(col.label || 'Kolom');
+            isDirty = true;
+        });
+
+        $pop.find('.tmp-pop-delete').on('click', function () {
+            if (!confirm('Kolom verwijderen? Alle data in deze kolom gaat verloren.')) return;
+            columns = columns.filter(function(c) { return (c.temp_key || c.id) + '' !== colKey; });
+            closeColumnPopover();
+            rebuildRowTable();
+            isDirty = true;
+        });
+
+        setTimeout(function () {
+            $(document).on('click.colpop', function (e) {
+                if (!$(e.target).closest('.tmp-col-popover, .tmp-col-header-cell').length) {
+                    closeColumnPopover();
+                    rebuildRowTable();
+                }
+            });
+        }, 50);
+    }
+
+    function closeColumnPopover() {
+        $('.tmp-col-popover').remove();
+        $(document).off('click.colpop');
     }
 
     var rowTypeOrder = ['data', 'group_1', 'group_2', 'group_3', 'footer'];
@@ -485,19 +486,17 @@
                     label:    col.label,
                     type:     col.type,
                     settings: {
-                        width:       colSettings.width       || 'auto',
-                        align:       colSettings.align       || 'left',
-                        sortable:    colSettings.sortable    !== false,
-                        filterable:  colSettings.filterable  !== false,
+                        width:         colSettings.width         || 'auto',
+                        align:         colSettings.align         || 'left',
+                        sortable:      colSettings.sortable      !== false,
+                        filterable:    colSettings.filterable     !== false,
+                        header_group1: colSettings.header_group1 || '',
+                        header_group2: colSettings.header_group2 || '',
                     }
                 });
             });
 
-            $('#tmp-columns-container').empty().append('<div class="tmp-columns-empty tmp-hint" style="display:none;"></div>');
-            columns.forEach(function (col) {
-                renderColumnItem(col);
-            });
-            initColumnSortable();
+            // Columns are rendered inline in the row table headers
 
             rows = [];
             (d.rows || []).forEach(function (row) {
