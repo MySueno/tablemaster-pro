@@ -249,6 +249,10 @@
     color: inherit;
 }
 
+.tmp-table tbody tr:first-child .tmp-td {
+    border-top: none;
+}
+
 /* Footer / closing row */
 .tmp-type-footer {
     background: var(--tmp-footer-bg, #D32637);
