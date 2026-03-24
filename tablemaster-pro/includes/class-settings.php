@@ -8,7 +8,7 @@ class TableMaster_Settings {
             'default_theme'   => 'green',
             'default_per_page'=> 10,
             'enable_export'   => false,
-            'border_radius'   => '12',
+            'border_radius'   => '15',
             'update_url'      => '',
         );
         $options = get_option( 'tablemaster_settings', array() );
