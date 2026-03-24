@@ -299,7 +299,6 @@
         });
 
         $pop.find('.tmp-pop-delete').on('click', function () {
-            if (!confirm('Kolom verwijderen? Alle data in deze kolom gaat verloren.')) return;
             columns = columns.filter(function(c) { return (c.temp_key || c.id) + '' !== colKey; });
             closeColumnPopover();
             rebuildRowTable();
@@ -405,7 +404,6 @@
         });
 
         $tr.find('.tmp-row-delete').on('click', function () {
-            if (!confirm('Rij verwijderen?')) return;
             var tempId = $tr.data('temp-id') + '';
             rows = rows.filter(function (r) { return r.temp_id + '' !== tempId; });
             $tr.remove();
