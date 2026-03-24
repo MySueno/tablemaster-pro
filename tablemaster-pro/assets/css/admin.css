@@ -206,6 +206,7 @@
 .tmp-group1-btn { border-left: 3px solid #4caf50 !important; }
 .tmp-group2-btn { border-left: 3px solid #81c784 !important; }
 .tmp-group3-btn { border-left: 3px solid #c8e6c9 !important; border-color: #388e3c !important; }
+.tmp-footer-btn { border-left: 3px solid #D32637 !important; }
 
 /* Rows wrapper */
 .tmp-rows-wrapper {
@@ -278,6 +279,7 @@
 .tmp-type-badge-group_1 { background: #c8e6c9; color: #1b5e20; }
 .tmp-type-badge-group_2 { background: #dcedc8; color: #33691e; }
 .tmp-type-badge-group_3 { background: #f0f4c3; color: #827717; }
+.tmp-type-badge-footer  { background: #fce4ec; color: #c62828; }
 
 .tmp-admin-row-group_1 .tmp-cell-input::placeholder,
 .tmp-admin-row-group_2 .tmp-cell-input::placeholder,

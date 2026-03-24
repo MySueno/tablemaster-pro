@@ -14,6 +14,8 @@ $group2_bg    = $colors['group2_bg'];
 $group2_text  = $colors['group2_text'];
 $group3_bg    = $colors['group3_bg'];
 $group3_text  = $colors['group3_text'];
+$footer_bg    = $colors['footer_bg'];
+$footer_text  = $colors['footer_text'];
 $odd_bg       = $colors['odd_bg'];
 $even_bg      = $colors['even_bg'];
 $hover_bg     = $colors['hover_bg'];
@@ -51,6 +53,8 @@ $rows    = $data['rows'];
     --tmp-group2-text:  <?php echo $group2_text; ?>;
     --tmp-group3-bg:    <?php echo $group3_bg; ?>;
     --tmp-group3-text:  <?php echo $group3_text; ?>;
+    --tmp-footer-bg:    <?php echo $footer_bg; ?>;
+    --tmp-footer-text:  <?php echo $footer_text; ?>;
     --tmp-odd-bg:       <?php echo $odd_bg; ?>;
     --tmp-even-bg:      <?php echo $even_bg; ?>;
     --tmp-hover-bg:     <?php echo $hover_bg; ?>;
@@ -308,6 +312,7 @@ $rows    = $data['rows'];
                 foreach ( $rows as $row ) :
                     $row_class   = 'tmp-row tmp-type-' . esc_attr( $row->row_type );
                     $is_group    = in_array( $row->row_type, array( 'group_1', 'group_2', 'group_3' ), true );
+                    $is_footer   = $row->row_type === 'footer';
                     $indent_lvl  = 0;
                     switch ( $row->row_type ) {
                         case 'group_2': $indent_lvl = 1; break;
@@ -326,7 +331,20 @@ $rows    = $data['rows'];
                         data-parent-id="<?php echo esc_attr( $row->parent_id ?? '' ); ?>"
                         <?php echo $row->is_collapsed ? 'data-collapsed="1"' : ''; ?>>
 
-                        <?php if ( $is_group ) :
+                        <?php if ( $is_footer ) :
+                            $total_cols_footer = count( $columns );
+                            if ( $collapsible ) $total_cols_footer++;
+                            $footer_content_parts = array();
+                            foreach ( $columns as $fcol ) {
+                                $fc = trim( $row->cells[ $fcol->id ] ?? '' );
+                                if ( $fc !== '' ) $footer_content_parts[] = $fc;
+                            }
+                            $footer_label = implode( ' ', $footer_content_parts );
+                        ?>
+                            <td class="tmp-td tmp-footer-cell" colspan="<?php echo esc_attr( $total_cols_footer ); ?>">
+                                <?php echo wp_kses_post( $footer_label ); ?>
+                            </td>
+                        <?php elseif ( $is_group ) :
                             $group_cells = array();
                             foreach ( $columns as $gi => $gcol ) {
                                 $group_cells[] = array(

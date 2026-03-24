@@ -71,7 +71,7 @@ Express 5 API server. Routes live in `src/routes/` and use `@workspace/api-zod` 
 WordPress plugin in `tablemaster-pro/` folder. ZIP built at root as `tablemaster-pro.zip`.
 
 - 25 files, ~53KB ZIP, current version 1.2.5
-- Features: unlimited tables, 3-level grouping, multi-level column headers (3-level), color theming (green/red/blue/grey/custom), search/sort/pagination, responsive (scroll + card modes), shortcode `[tablemaster id="X"]`, Gutenberg block, WPML, auto-updates
+- Features: unlimited tables, 3-level grouping, multi-level column headers (3-level), footer/closing rows (full-width spanning banner with configurable colors), color theming (green/red/blue/grey/custom), search/sort/pagination, responsive (scroll + card modes), shortcode `[tablemaster id="X"]`, Gutenberg block, WPML, auto-updates
 - Admin UX: clickable row-type badge (Data→G1→G2→G3 cycle), row duplicate button, auto-merge hints in group row placeholders
 - Group row auto-merge: on frontend, empty cells following a filled cell in group rows are automatically merged with colspan
 - Auto-update: plugin checks API server's `/api/wp-update/info` endpoint; update URL configured in WP admin under TableMaster > Instellingen

@@ -255,10 +255,15 @@
             }
         });
 
-        // Filter group rows
+        // Filter group rows (footer rows always stay visible)
         this.allRows.forEach(function (row) {
             var rowType = row.getAttribute('data-row-type');
             if (rowType === 'data') return;
+            if (rowType === 'footer') {
+                row.classList.remove('tmp-row-filtered');
+                row.classList.remove('tmp-row-hidden');
+                return;
+            }
             var rowId = row.getAttribute('data-row-id');
             if (matchedRowIds[rowId]) {
                 row.classList.remove('tmp-row-filtered');
@@ -338,7 +343,8 @@
         Object.keys(groups).forEach(function (pid) {
             var groupRows = groups[pid];
             var dataRows  = groupRows.filter(function (r) { return r.getAttribute('data-row-type') === 'data'; });
-            var nonData   = groupRows.filter(function (r) { return r.getAttribute('data-row-type') !== 'data'; });
+            var nonData   = groupRows.filter(function (r) { var t = r.getAttribute('data-row-type'); return t !== 'data' && t !== 'footer'; });
+            var footerRows = groupRows.filter(function (r) { return r.getAttribute('data-row-type') === 'footer'; });
 
             dataRows.sort(function (a, b) {
                 var cellA = a.querySelectorAll('td')[actualCellIdx];
@@ -355,8 +361,8 @@
                 return dir * va.localeCompare(vb, undefined, { numeric: true });
             });
 
-            // Re-append: non-data rows first (group headers stay in position), then sorted data
-            nonData.concat(dataRows).forEach(function (row) {
+            // Re-append: non-data rows first (group headers), then sorted data, then footer rows at the end
+            nonData.concat(dataRows).concat(footerRows).forEach(function (row) {
                 self.tbody.appendChild(row);
             });
         });

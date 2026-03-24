@@ -96,6 +96,7 @@
         $adminTable.find('.tmp-admin-row-group_1').css({ background: c.group1_bg, color: c.group1_text });
         $adminTable.find('.tmp-admin-row-group_2').css({ background: c.group2_bg, color: c.group2_text });
         $adminTable.find('.tmp-admin-row-group_3').css({ background: c.group3_bg, color: c.group3_text });
+        $adminTable.find('.tmp-admin-row-footer').css({ background: c.footer_bg, color: c.footer_text });
 
         var dataIdx = 0;
         $adminTable.find('.tmp-admin-row-data').each(function () {

@@ -136,6 +136,11 @@ $page_title = $is_new
                         'text'  => array( 'key' => 'group3_text', 'label' => __( 'Tekst', TMP_TEXT_DOMAIN ) ),
                     ),
                     array(
+                        'title' => __( 'Afsluitrij', TMP_TEXT_DOMAIN ),
+                        'bg'    => array( 'key' => 'footer_bg',   'label' => __( 'Achtergrond', TMP_TEXT_DOMAIN ) ),
+                        'text'  => array( 'key' => 'footer_text', 'label' => __( 'Tekst', TMP_TEXT_DOMAIN ) ),
+                    ),
+                    array(
                         'title' => __( 'Rijen', TMP_TEXT_DOMAIN ),
                         'bg'    => array( 'key' => 'odd_bg',  'label' => __( 'Oneven', TMP_TEXT_DOMAIN ) ),
                         'text'  => array( 'key' => 'even_bg', 'label' => __( 'Even', TMP_TEXT_DOMAIN ) ),
