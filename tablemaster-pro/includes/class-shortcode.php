@@ -25,9 +25,10 @@ class TableMaster_Shortcode {
         $lang     = defined( 'ICL_LANGUAGE_CODE' ) ? ICL_LANGUAGE_CODE : '';
         $data     = TableMaster_DB::get_table_data( $id, $lang );
 
-        if ( function_exists( 'icl_t' ) ) {
-            $settings = self::translate_settings( $settings, $id );
-            $data     = self::translate_data( $data, $id );
+        if ( TableMaster_WPML::is_active() ) {
+            $context  = TMP_TEXT_DOMAIN . ' - Table ' . $id;
+            $settings = self::translate_settings( $settings, $context );
+            $data     = self::translate_data( $data, $context );
         }
 
         ob_start();
@@ -35,22 +36,22 @@ class TableMaster_Shortcode {
         return ob_get_clean();
     }
 
-    private static function translate_settings( $settings, $table_id ) {
+    private static function translate_settings( $settings, $context ) {
         if ( ! empty( $settings['caption'] ) ) {
-            $settings['caption'] = icl_t(
-                TMP_TEXT_DOMAIN,
-                'table_' . $table_id . '_caption',
+            $settings['caption'] = TableMaster_WPML::translate_string(
+                $context,
+                'caption',
                 $settings['caption']
             );
         }
         return $settings;
     }
 
-    private static function translate_data( $data, $table_id ) {
+    private static function translate_data( $data, $context ) {
         foreach ( $data['columns'] as &$col ) {
-            $col->label = icl_t(
-                TMP_TEXT_DOMAIN,
-                'table_' . $table_id . '_col_' . $col->id . '_label',
+            $col->label = TableMaster_WPML::translate_string(
+                $context,
+                'col_' . $col->id . '_label',
                 $col->label
             );
         }
@@ -59,9 +60,9 @@ class TableMaster_Shortcode {
         foreach ( $data['rows'] as &$row ) {
             foreach ( $row->cells as $col_id => &$content ) {
                 if ( trim( $content ) === '' ) continue;
-                $content = icl_t(
-                    TMP_TEXT_DOMAIN,
-                    'table_' . $table_id . '_row_' . $row->id . '_col_' . $col_id,
+                $content = TableMaster_WPML::translate_string(
+                    $context,
+                    'row_' . $row->id . '_col_' . $col_id,
                     $content
                 );
             }

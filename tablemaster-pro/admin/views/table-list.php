@@ -75,6 +75,11 @@ $tables = TableMaster_DB::get_all_tables();
                             <button class="button button-small tmp-duplicate-btn" data-id="<?php echo esc_attr( $t->id ); ?>">
                                 <?php esc_html_e( 'Dupliceren', TMP_TEXT_DOMAIN ); ?>
                             </button>
+                            <?php if ( TableMaster_WPML::is_active() ) : ?>
+                                <a href="<?php echo esc_url( TableMaster_WPML::get_translate_url( $t->id ) ); ?>" class="button button-small" title="<?php esc_attr_e( 'Vertaal deze tabel via WPML', TMP_TEXT_DOMAIN ); ?>">
+                                    <?php esc_html_e( 'Vertalen', TMP_TEXT_DOMAIN ); ?>
+                                </a>
+                            <?php endif; ?>
                             <button class="button button-small button-link-delete tmp-delete-btn" data-id="<?php echo esc_attr( $t->id ); ?>">
                                 <?php esc_html_e( 'Verwijderen', TMP_TEXT_DOMAIN ); ?>
                             </button>
