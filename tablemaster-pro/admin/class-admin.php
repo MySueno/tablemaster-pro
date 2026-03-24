@@ -6,6 +6,18 @@ class TableMaster_Admin {
     public function register() {
         add_action( 'admin_menu',            array( $this, 'add_menu' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+        add_action( 'admin_init',            array( $this, 'maybe_render_preview' ) );
+    }
+
+    public function maybe_render_preview() {
+        if ( ! isset( $_GET['page'] ) || $_GET['page'] !== 'tablemaster-preview' ) {
+            return;
+        }
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'Geen toegang.', TMP_TEXT_DOMAIN ) );
+        }
+        include TMP_PLUGIN_DIR . 'admin/views/table-preview.php';
+        exit;
     }
 
     public function add_menu() {
