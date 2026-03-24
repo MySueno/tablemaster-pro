@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.9
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,15 +33,20 @@ Functies:
 
 == Changelog ==
 
-= 1.2.9 =
+= 1.3.0 =
+* Nieuw: Slimme vertaal-prefill — bestaande vertalingen uit andere tabellen worden automatisch ingevuld
+* Nieuw: Globale vertaalgeheugen — zoekt in alle TableMaster tabellen naar eerder vertaalde teksten
+* Verbeterd: Auto-fill werkt nu ook voor tabelnaam, onderschrift en kolomnamen (niet alleen celinhoud)
+* Verbeterd: Update-mechanisme robuuster — automatische retry bij verbindingsproblemen (tot 3 pogingen)
+* Verbeterd: Langere timeout (30s) en Connection: close header voor betere compatibiliteit met wisselende servers
+* Verbeterd: Slimme backoff — bij onbereikbare server 30 minuten wachten voordat opnieuw wordt geprobeerd
+* Verbeterd: Admin-melding bij verbindingsproblemen met de update server
+* Fix: Download URL wordt nu lokaal opgebouwd vanuit de bekende server-URL — voorkomt fouten bij wisselende domeinen
 * Fix: Versienummer constant (TMP_VERSION) gesynchroniseerd met plugin header
 * Fix: Inklapbare groepen werkten niet op de frontend — collapsible_groups instelling werd genegeerd
-* Beveiliging: API server beschermd tegen host header injection — download URL nu afgeleid van serveromgeving
-* Beveiliging: Rate limiting toegevoegd op API server (60 req/min algemeen, 10 req/min downloads)
-* Beveiliging: Helmet security headers toegevoegd (CSP, HSTS, X-Content-Type-Options, etc.)
-* Beveiliging: ZIP download gebruikt nu streaming i.p.v. geheugen-buffering
-* Beveiliging: Footer rijtype toegevoegd aan whitelist bij opslaan
-* Beveiliging: Strict type-vergelijking bij rijtype validatie
+* Beveiliging: API server beschermd tegen host header injection
+* Beveiliging: Rate limiting, Helmet headers, streaming ZIP downloads
+* Beveiliging: Footer rijtype toegevoegd aan whitelist, strict type-vergelijking bij validatie
 
 = 1.2.8 =
 * Verbeterd: Alle tekst in tabellen consistent links uitgelijnd — kolomtitels, groepsrijen en datacellen staan nu exact op dezelfde positie
