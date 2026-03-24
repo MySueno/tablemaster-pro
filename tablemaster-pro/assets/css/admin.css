@@ -218,8 +218,10 @@
 .tmp-admin-table {
     width: 100%;
     border-collapse: collapse;
+    font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 0.88em;
     min-width: 400px;
+    color: #5C5C5C;
 }
 
 .tmp-admin-table th {
@@ -227,6 +229,7 @@
     padding: 7px 8px;
     text-align: left;
     border: 1px solid #ddd;
+    font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: 600;
     white-space: nowrap;
     position: sticky;
@@ -237,6 +240,7 @@
     padding: 4px 6px;
     border: 1px solid #e0e0e0;
     vertical-align: middle;
+    font-weight: 400;
 }
 
 .tmp-admin-row {
