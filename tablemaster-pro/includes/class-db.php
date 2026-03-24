@@ -675,10 +675,10 @@ class TableMaster_DB {
         }
 
         $row_id_map = array();
-        $allowed_types = array( 'data', 'group_1', 'group_2', 'group_3' );
+        $allowed_types = array( 'data', 'group_1', 'group_2', 'group_3', 'footer' );
 
         foreach ( $rows_data as $order_index => $row ) {
-            $row_type  = in_array( $row['row_type'], $allowed_types ) ? $row['row_type'] : 'data';
+            $row_type  = in_array( $row['row_type'], $allowed_types, true ) ? $row['row_type'] : 'data';
             $parent_id = null;
             if ( ! empty( $row['parent_temp_id'] ) && isset( $row_id_map[ $row['parent_temp_id'] ] ) ) {
                 $parent_id = $row_id_map[ $row['parent_temp_id'] ];

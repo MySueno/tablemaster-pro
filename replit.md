@@ -60,7 +60,8 @@ Express 5 API server. Routes live in `src/routes/` and use `@workspace/api-zod` 
 - WordPress update server: `src/routes/wp-update.ts` — serves plugin version info and ZIP download
   - `GET /api/wp-update/info` — returns plugin metadata (name, version, download_url, changelog)
   - `GET /api/wp-update/version` — returns minimal version check
-  - `GET /api/wp-update/download` — serves the latest `tablemaster-pro.zip`
+  - `GET /api/wp-update/download` — serves the latest `tablemaster-pro.zip` (streamed, not buffered)
+- Security: Helmet headers, rate limiting (60 req/min general, 10 req/min downloads), explicit body size limits (100kb), base URL derived from REPLIT_DEV_DOMAIN (not request headers)
 - Depends on: `@workspace/db`, `@workspace/api-zod`
 - `pnpm --filter @workspace/api-server run dev` — run the dev server
 - `pnpm --filter @workspace/api-server run build` — production esbuild bundle (`dist/index.cjs`)

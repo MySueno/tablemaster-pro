@@ -1,5 +1,5 @@
 import { Router, type IRouter, type Request, type Response } from "express";
-import { readFileSync, existsSync, statSync } from "fs";
+import { readFileSync, existsSync, statSync, createReadStream } from "fs";
 import { join } from "path";
 
 const router: IRouter = Router();
@@ -7,6 +7,14 @@ const router: IRouter = Router();
 const PLUGIN_SLUG = "tablemaster-pro";
 const PLUGIN_FILE = "tablemaster-pro/tablemaster-pro.php";
 const WORKSPACE = process.env["REPL_HOME"] || "/home/runner/workspace";
+
+const ALLOWED_DOMAIN =
+  process.env["REPLIT_DEV_DOMAIN"] ||
+  process.env["REPL_SLUG"] + ".replit.app";
+
+function getBaseUrl(): string {
+  return `https://${ALLOWED_DOMAIN}`;
+}
 
 function getPluginVersion(): string {
   const mainPhp = join(WORKSPACE, PLUGIN_SLUG, "tablemaster-pro.php");
@@ -20,15 +28,25 @@ function getZipPath(): string {
   return join(WORKSPACE, `${PLUGIN_SLUG}.zip`);
 }
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 function getChangelog(currentVersion: string): string {
   const readmePath = join(WORKSPACE, PLUGIN_SLUG, "readme.txt");
   if (!existsSync(readmePath)) {
-    return `<h4>${currentVersion}</h4><ul><li>Update beschikbaar</li></ul>`;
+    return `<h4>${escapeHtml(currentVersion)}</h4><ul><li>Update beschikbaar</li></ul>`;
   }
   const content = readFileSync(readmePath, "utf-8");
-  const changelogMatch = content.match(/== Changelog ==\s*([\s\S]*?)(?:==\s|$)/);
+  const changelogMatch = content.match(
+    /== Changelog ==\s*([\s\S]*?)(?:==\s|$)/,
+  );
   if (!changelogMatch) {
-    return `<h4>${currentVersion}</h4><ul><li>Update beschikbaar</li></ul>`;
+    return `<h4>${escapeHtml(currentVersion)}</h4><ul><li>Update beschikbaar</li></ul>`;
   }
   const raw = changelogMatch[1].trim();
   let html = "";
@@ -36,24 +54,21 @@ function getChangelog(currentVersion: string): string {
     const trimmed = line.trim();
     if (trimmed.startsWith("= ") && trimmed.endsWith(" =")) {
       if (html) html += "</ul>";
-      html += `<h4>${trimmed.slice(2, -2)}</h4><ul>`;
+      html += `<h4>${escapeHtml(trimmed.slice(2, -2))}</h4><ul>`;
     } else if (trimmed.startsWith("* ")) {
-      html += `<li>${trimmed.slice(2)}</li>`;
+      html += `<li>${escapeHtml(trimmed.slice(2))}</li>`;
     }
   }
   if (html) html += "</ul>";
-  return html || `<h4>${currentVersion}</h4><ul><li>Update beschikbaar</li></ul>`;
+  return (
+    html ||
+    `<h4>${escapeHtml(currentVersion)}</h4><ul><li>Update beschikbaar</li></ul>`
+  );
 }
 
-function getBaseUrl(req: Request): string {
-  const proto = req.headers["x-forwarded-proto"] || req.protocol || "https";
-  const host = req.headers["x-forwarded-host"] || req.headers["host"] || "localhost";
-  return `${proto}://${host}`;
-}
-
-router.get("/wp-update/info", (req: Request, res: Response) => {
+router.get("/wp-update/info", (_req: Request, res: Response) => {
   const version = getPluginVersion();
-  const baseUrl = getBaseUrl(req);
+  const baseUrl = getBaseUrl();
   const zipPath = getZipPath();
   const zipExists = existsSync(zipPath);
 
@@ -82,9 +97,9 @@ router.get("/wp-update/info", (req: Request, res: Response) => {
   res.json(response);
 });
 
-router.get("/wp-update/version", (req: Request, res: Response) => {
+router.get("/wp-update/version", (_req: Request, res: Response) => {
   const version = getPluginVersion();
-  const baseUrl = getBaseUrl(req);
+  const baseUrl = getBaseUrl();
 
   res.json({
     version,
@@ -110,8 +125,13 @@ router.get("/wp-update/download", (_req: Request, res: Response) => {
   );
   res.setHeader("Content-Length", stat.size);
 
-  const data = readFileSync(zipPath);
-  res.send(data);
+  const stream = createReadStream(zipPath);
+  stream.pipe(res);
+  stream.on("error", () => {
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Error reading file" });
+    }
+  });
 });
 
 export default router;
