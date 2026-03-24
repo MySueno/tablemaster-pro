@@ -84,38 +84,27 @@
         return colors;
     }
 
-    /* ===== LIVE PREVIEW ===== */
+    /* ===== LIVE PREVIEW (applies colors to admin row table) ===== */
     function updatePreview() {
         var c = getColorValues();
-        var $preview = $('#tmp-color-preview');
 
-        var colCount = Math.max(columns.length, 1);
-        var colLabels = columns.length > 0
-            ? columns.map(function (col) { return col.label || 'Kolom'; })
-            : ['Kolom A', 'Kolom B', 'Kolom C'];
-        if (columns.length === 0) colCount = 3;
+        var $adminTable = $('.tmp-admin-table');
+        if ($adminTable.length === 0) return;
 
-        var headerHtml = '';
-        var oddHtml = '';
-        var evenHtml = '';
-        colLabels.forEach(function (label) {
-            headerHtml += '<th>' + escHtml(label) + '</th>';
-            oddHtml += '<td>Waarde</td>';
-            evenHtml += '<td>Waarde</td>';
+        $adminTable.find('thead th').css({ background: c.header_bg, color: c.header_text, borderColor: 'rgba(255,255,255,0.15)' });
+
+        $adminTable.find('.tmp-admin-row-group_1').css({ background: c.group1_bg, color: c.group1_text });
+        $adminTable.find('.tmp-admin-row-group_2').css({ background: c.group2_bg, color: c.group2_text });
+        $adminTable.find('.tmp-admin-row-group_3').css({ background: c.group3_bg, color: c.group3_text });
+
+        var dataIdx = 0;
+        $adminTable.find('.tmp-admin-row-data').each(function () {
+            var bg = dataIdx % 2 === 0 ? c.odd_bg : c.even_bg;
+            $(this).css({ background: bg });
+            dataIdx++;
         });
 
-        $('#tmp-prev-header-row').html(headerHtml);
-        $('#tmp-prev-odd-row').html(oddHtml);
-        $('#tmp-prev-even-row').html(evenHtml);
-
-        $('#tmp-prev-group1-cell').attr('colspan', colCount);
-        $('#tmp-prev-group2-cell').attr('colspan', colCount);
-
-        $preview.find('.tmp-prev-header th').css({ background: c.header_bg, color: c.header_text });
-        $preview.find('.tmp-prev-group1 td').css({ background: c.group1_bg, color: c.group1_text });
-        $preview.find('.tmp-prev-group2 td').css({ background: c.group2_bg, color: c.group2_text });
-        $preview.find('.tmp-prev-odd td').css({ background: c.odd_bg });
-        $preview.find('.tmp-prev-even td').css({ background: c.even_bg });
+        $adminTable.find('td').css({ borderColor: c.border_color || '#e0e0e0' });
     }
 
     /* ===== PRESETS ===== */
@@ -313,6 +302,8 @@
                 isDirty = true;
             }
         });
+
+        updatePreview();
     }
 
     function buildRowTr(row) {

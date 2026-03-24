@@ -152,23 +152,7 @@ $page_title = $is_new
                     <?php endforeach; ?>
                 </div>
 
-                <!-- MINI LIVE PREVIEW -->
-                <div class="tmp-color-preview-section">
-                    <h4><?php esc_html_e( 'Live Kleurenpreview', TMP_TEXT_DOMAIN ); ?></h4>
-                    <div id="tmp-color-preview" class="tmp-color-preview-table">
-                        <table>
-                            <thead>
-                                <tr class="tmp-prev-header" id="tmp-prev-header-row"></tr>
-                            </thead>
-                            <tbody>
-                                <tr class="tmp-prev-group1"><td id="tmp-prev-group1-cell" colspan="3"><?php esc_html_e( '▼ Groep 1', TMP_TEXT_DOMAIN ); ?></td></tr>
-                                <tr class="tmp-prev-group2"><td id="tmp-prev-group2-cell" colspan="3">&nbsp;&nbsp;<?php esc_html_e( '▼ Subgroep 1.1', TMP_TEXT_DOMAIN ); ?></td></tr>
-                                <tr class="tmp-prev-odd" id="tmp-prev-odd-row"></tr>
-                                <tr class="tmp-prev-even" id="tmp-prev-even-row"></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <p class="description" style="margin-top:12px;font-style:italic;"><?php esc_html_e( 'Kleuren worden direct toegepast op de rijtabel links.', TMP_TEXT_DOMAIN ); ?></p>
             </div>
 
             <!-- DISPLAY TAB -->

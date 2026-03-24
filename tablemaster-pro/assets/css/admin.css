@@ -223,12 +223,10 @@
     background: #fafafa;
 }
 
-/* Row type styles in admin */
-.tmp-admin-row-group_1 { background: #e8f5e9; }
-.tmp-admin-row-group_2 { background: #f1f8e9; }
-.tmp-admin-row-group_3 { background: #f9fbe7; }
+/* Row type styles in admin (live themed) */
 .tmp-admin-row-group_1 td { font-weight: 700; }
 .tmp-admin-row-group_2 td { font-weight: 600; }
+.tmp-admin-row-group_3 td { font-weight: 500; }
 
 .tmp-row-type-badge {
     display: inline-block;
@@ -413,54 +411,6 @@
     margin: 0;
 }
 
-/* Color preview table */
-.tmp-color-preview-section h4 {
-    margin: 0 0 8px 0;
-    font-size: 0.88em;
-    color: #555;
-}
-
-.tmp-color-preview-table {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    overflow: hidden;
-    font-size: 0.82em;
-}
-
-.tmp-color-preview-table table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.tmp-color-preview-table th,
-.tmp-color-preview-table td {
-    padding: 5px 8px;
-    border-bottom: 1px solid rgba(0,0,0,0.08);
-}
-
-.tmp-color-preview-table .tmp-prev-header {
-    background: var(--tmp-preview-header-bg, #2e7d32);
-    color: var(--tmp-preview-header-text, #fff);
-}
-
-.tmp-color-preview-table .tmp-prev-group1 {
-    background: var(--tmp-preview-group1-bg, #4caf50);
-    color: var(--tmp-preview-group1-text, #fff);
-    font-weight: 700;
-}
-
-.tmp-color-preview-table .tmp-prev-group2 {
-    background: var(--tmp-preview-group2-bg, #81c784);
-    color: var(--tmp-preview-group2-text, #1a1a1a);
-}
-
-.tmp-color-preview-table .tmp-prev-odd {
-    background: var(--tmp-preview-odd-bg, #fff);
-}
-
-.tmp-color-preview-table .tmp-prev-even {
-    background: var(--tmp-preview-even-bg, #f1f8e9);
-}
 
 /* Forms in tabs */
 .tmp-form-group {
