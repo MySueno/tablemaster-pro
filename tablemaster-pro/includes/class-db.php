@@ -457,12 +457,15 @@ class TableMaster_DB {
         if ( ! $table ) return false;
 
         $new_slug = $table->slug . '-copy-' . time();
+        $now = current_time( 'mysql' );
         $wpdb->insert(
             "{$wpdb->prefix}tablemaster_tables",
             array(
                 'name'       => $table->name . ' (kopie)',
                 'slug'       => $new_slug,
                 'settings'   => $table->settings,
+                'created_at' => $now,
+                'updated_at' => $now,
                 'created_by' => get_current_user_id(),
             )
         );

@@ -158,7 +158,7 @@ if ( ! function_exists( 'tmp_get_global_translations' ) ) {
             "SELECT s.value AS original, t.value AS translation
              FROM {$strings_table} s
              INNER JOIN {$translations_table} t ON t.string_id = s.id
-             WHERE s.context LIKE 'tablemaster_pro_table_%'
+             WHERE s.context LIKE 'tablemaster-pro - Table %'
                AND s.value IN ({$placeholders})
                AND t.language = %s
                AND t.status = 10

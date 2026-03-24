@@ -21,7 +21,7 @@ class TableMaster_Settings {
     }
 
     public static function save( $data ) {
-        $allowed_themes = array( 'red', 'blue', 'grey', 'custom' );
+        $allowed_themes = array( 'red', 'green', 'blue', 'grey', 'custom' );
         $theme = sanitize_text_field( $data['default_theme'] ?? 'red' );
         if ( ! in_array( $theme, $allowed_themes, true ) ) {
             $theme = 'red';
@@ -84,6 +84,16 @@ class TableMaster_Settings {
                 'odd_bg'       => '#ffffff', 'even_bg'      => '#e8f4fd',
                 'hover_bg'     => '#bbdefb', 'border_color' => '#90caf9',
                 'accent_color' => '#1565c0',
+            ),
+            'green' => array(
+                'header_bg'    => '#2e7d32', 'header_text'  => '#ffffff',
+                'group1_bg'    => '#388e3c', 'group1_text'  => '#ffffff',
+                'group2_bg'    => '#a5d6a7', 'group2_text'  => '#1a1a1a',
+                'group3_bg'    => '#e8f5e9', 'group3_text'  => '#1a1a1a',
+                'footer_bg'   => '#2e7d32', 'footer_text'  => '#ffffff',
+                'odd_bg'       => '#ffffff', 'even_bg'      => '#f1f8e9',
+                'hover_bg'     => '#c8e6c9', 'border_color' => '#a5d6a7',
+                'accent_color' => '#2e7d32',
             ),
             'grey' => array(
                 'header_bg'    => '#424242', 'header_text'  => '#ffffff',

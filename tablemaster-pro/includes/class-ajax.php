@@ -57,7 +57,7 @@ class TableMaster_Ajax {
     }
 
     private static function sanitize_table_settings( $settings ) {
-        $allowed_themes      = array( 'red', 'blue', 'grey', 'custom' );
+        $allowed_themes      = array( 'red', 'green', 'blue', 'grey', 'custom' );
         $allowed_search_pos  = array( 'left', 'right', 'top', 'bottom' );
         $allowed_mobile      = array( 'scroll' );
         $allowed_sort_dir    = array( 'asc', 'desc' );
