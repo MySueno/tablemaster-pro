@@ -11,18 +11,6 @@ $s = TableMaster_Settings::get();
         <?php wp_nonce_field( 'tablemaster_save_settings', 'tablemaster_settings_nonce' ); ?>
         <table class="form-table">
             <tr>
-                <th><?php esc_html_e( 'Standaard kleurthema', TMP_TEXT_DOMAIN ); ?></th>
-                <td>
-                    <select name="default_theme">
-                        <?php foreach ( array( 'red', 'green', 'blue', 'grey' ) as $t ) : ?>
-                            <option value="<?php echo esc_attr( $t ); ?>" <?php selected( $s['default_theme'], $t ); ?>>
-                                <?php echo esc_html( ucfirst( $t ) ); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </td>
-            </tr>
-            <tr>
                 <th><?php esc_html_e( 'Standaard items per pagina', TMP_TEXT_DOMAIN ); ?></th>
                 <td>
                     <select name="default_per_page">
