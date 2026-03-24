@@ -127,15 +127,15 @@ class TableMaster_DB {
 
         $cols1 = array(
             array( 'label' => 'Achternaam',  'type' => 'text',   'order_index' => 0,
-                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left',   'sortable' => true,  'filterable' => true,  'hide_mobile' => false ) ) ),
+                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left',   'sortable' => true,  'filterable' => true) ) ),
             array( 'label' => 'Voornaam',    'type' => 'text',   'order_index' => 1,
-                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left',   'sortable' => true,  'filterable' => true,  'hide_mobile' => false ) ) ),
+                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left',   'sortable' => true,  'filterable' => true) ) ),
             array( 'label' => 'Bedrijf',     'type' => 'text',   'order_index' => 2,
-                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left',   'sortable' => true,  'filterable' => true,  'hide_mobile' => true  ) ) ),
+                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left',   'sortable' => true,  'filterable' => true) ) ),
             array( 'label' => 'Land',        'type' => 'text',   'order_index' => 3,
-                   'settings' => json_encode( array( 'width' => '120px','align' => 'left',   'sortable' => true,  'filterable' => true,  'hide_mobile' => true  ) ) ),
+                   'settings' => json_encode( array( 'width' => '120px','align' => 'left',   'sortable' => true,  'filterable' => true) ) ),
             array( 'label' => 'Verjaardag',  'type' => 'date',   'order_index' => 4,
-                   'settings' => json_encode( array( 'width' => '120px','align' => 'center', 'sortable' => true,  'filterable' => false, 'hide_mobile' => true  ) ) ),
+                   'settings' => json_encode( array( 'width' => '120px','align' => 'center', 'sortable' => true,  'filterable' => false) ) ),
         );
 
         $col_ids1 = array();
@@ -233,13 +233,13 @@ class TableMaster_DB {
 
         $cols2 = array(
             array( 'label' => 'Behandeling',   'type' => 'text', 'order_index' => 0,
-                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left', 'sortable' => true, 'filterable' => true, 'hide_mobile' => false ) ) ),
+                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left', 'sortable' => true, 'filterable' => true) ) ),
             array( 'label' => 'Categorie',     'type' => 'text', 'order_index' => 1,
-                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left', 'sortable' => true, 'filterable' => true, 'hide_mobile' => true  ) ) ),
+                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left', 'sortable' => true, 'filterable' => true) ) ),
             array( 'label' => 'Indicatie',     'type' => 'text', 'order_index' => 2,
-                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left', 'sortable' => false,'filterable' => false,'hide_mobile' => true  ) ) ),
+                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left', 'sortable' => false,'filterable' => false,) ) ),
             array( 'label' => 'Prijs (€)',     'type' => 'number','order_index' => 3,
-                   'settings' => json_encode( array( 'width' => '100px','align' => 'right','sortable' => true, 'filterable' => false,'hide_mobile' => false ) ) ),
+                   'settings' => json_encode( array( 'width' => '100px','align' => 'right','sortable' => true, 'filterable' => false,) ) ),
         );
 
         $col_ids2 = array();
@@ -336,11 +336,11 @@ class TableMaster_DB {
 
         $cols3 = array(
             array( 'label' => 'Kiemen',               'type' => 'text',   'order_index' => 0,
-                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left',   'sortable' => true,  'filterable' => true,  'hide_mobile' => false ) ) ),
+                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left',   'sortable' => true,  'filterable' => true) ) ),
             array( 'label' => 'Percentage 2024-2025',  'type' => 'text',   'order_index' => 1,
-                   'settings' => json_encode( array( 'width' => '200px','align' => 'left',   'sortable' => true,  'filterable' => false, 'hide_mobile' => false ) ) ),
+                   'settings' => json_encode( array( 'width' => '200px','align' => 'left',   'sortable' => true,  'filterable' => false) ) ),
             array( 'label' => 'Percentage 2018',       'type' => 'text',   'order_index' => 2,
-                   'settings' => json_encode( array( 'width' => '200px','align' => 'left',   'sortable' => true,  'filterable' => false, 'hide_mobile' => false ) ) ),
+                   'settings' => json_encode( array( 'width' => '200px','align' => 'left',   'sortable' => true,  'filterable' => false) ) ),
         );
 
         $col_ids3 = array();
@@ -619,7 +619,6 @@ class TableMaster_DB {
                 'align'         => in_array( $raw_align, $allowed_aligns, true ) ? $raw_align : 'left',
                 'sortable'      => ! empty( $col['settings']['sortable'] ),
                 'filterable'    => ! empty( $col['settings']['filterable'] ),
-                'hide_mobile'   => ! empty( $col['settings']['hide_mobile'] ),
                 'header_group1' => mb_substr( sanitize_text_field( $col['settings']['header_group1'] ?? '' ), 0, 200 ),
                 'header_group2' => mb_substr( sanitize_text_field( $col['settings']['header_group2'] ?? '' ), 0, 200 ),
             );

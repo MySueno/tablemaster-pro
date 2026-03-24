@@ -15,7 +15,7 @@
     var lang       = cfg.lang      || '';
     var i18n       = cfg.i18n      || {};
 
-    var columns    = [];   // [{id, label, type, settings:{width,align,sortable,filterable,hide_mobile}}, ...]
+    var columns    = [];   // [{id, label, type, settings:{width,align,sortable,filterable}}, ...]
     var rows       = [];   // [{id, temp_id, row_type, parent_id, parent_temp_id, cells:{col_key: content}, is_collapsed}, ...]
     var colTempIdx = 0;
     var rowTempIdx = 0;
@@ -133,7 +133,7 @@
             temp_key: tempKey,
             label:    i18n.add_column + ' ' + (columns.length + 1),
             type:     'text',
-            settings: { width: 'auto', align: 'left', sortable: true, filterable: true, hide_mobile: false, header_group1: '', header_group2: '' }
+            settings: { width: 'auto', align: 'left', sortable: true, filterable: true, header_group1: '', header_group2: '' }
         }, colData || {});
         if (!col.settings.header_group1) col.settings.header_group1 = '';
         if (!col.settings.header_group2) col.settings.header_group2 = '';
@@ -182,7 +182,6 @@
                     '<div class="tmp-col-setting-field tmp-col-setting-checks">' +
                         '<label><input type="checkbox" class="tmp-col-sortable" ' + (col.settings.sortable ? 'checked' : '') + '> Sorteerbaar</label>' +
                         '<label><input type="checkbox" class="tmp-col-filterable" ' + (col.settings.filterable ? 'checked' : '') + '> Filterbaar</label>' +
-                        '<label><input type="checkbox" class="tmp-col-hidemobile" ' + (col.settings.hide_mobile ? 'checked' : '') + '> Verbergen op mobiel</label>' +
                     '</div>' +
                 '</div>' +
                 '<div class="tmp-col-settings-row">' +
@@ -242,7 +241,6 @@
                     align:         $item.find('.tmp-column-align-select').val(),
                     sortable:      $item.find('.tmp-col-sortable').is(':checked'),
                     filterable:    $item.find('.tmp-col-filterable').is(':checked'),
-                    hide_mobile:   $item.find('.tmp-col-hidemobile').is(':checked'),
                     header_group1: $item.find('.tmp-col-hg1').val().trim(),
                     header_group2: $item.find('.tmp-col-hg2').val().trim(),
                 }
@@ -491,7 +489,6 @@
                         align:       colSettings.align       || 'left',
                         sortable:    colSettings.sortable    !== false,
                         filterable:  colSettings.filterable  !== false,
-                        hide_mobile: !!colSettings.hide_mobile,
                     }
                 });
             });

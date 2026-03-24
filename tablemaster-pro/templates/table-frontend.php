@@ -178,10 +178,8 @@ $rows    = $data['rows'];
                         if ( $width === 'auto' && $default_col_w !== '' ) $width = $default_col_w;
                         $align  = in_array( $cs['align'] ?? 'left', $valid_aligns, true ) ? $cs['align'] : 'left';
                         $sort   = ! empty( $cs['sortable'] );
-                        $hide_m = ! empty( $cs['hide_mobile'] );
                         $th_class = 'tmp-th';
                         if ( $sort )   $th_class .= ' tmp-sortable';
-                        if ( $hide_m ) $th_class .= ' tmp-hide-mobile';
                         $style  = '';
                         if ( $width !== 'auto' ) $style = 'width:' . esc_attr( $width ) . ';';
                         $style .= 'text-align:' . esc_attr( $align ) . ';';
@@ -278,14 +276,12 @@ $rows    = $data['rows'];
                         if ( $cm['g2'] === '' ) continue;
                         $cs     = $cm['cs'];
                         $sort   = ! empty( $cs['sortable'] );
-                        $hide_m = ! empty( $cs['hide_mobile'] );
                         $lw3  = $cs['width'] ?? 'auto';
                         if ( $lw3 !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $lw3 ) ) $lw3 = 'auto';
                         if ( $lw3 === 'auto' && $default_col_w !== '' ) $lw3 = $default_col_w;
                         $ls3  = $lw3 !== 'auto' ? 'width:' . esc_attr( $lw3 ) . ';' : '';
                         $th_class = 'tmp-th tmp-th-grouped';
                         if ( $sort )   $th_class .= ' tmp-sortable';
-                        if ( $hide_m ) $th_class .= ' tmp-hide-mobile';
                     ?>
                         <th class="<?php echo esc_attr( $th_class ); ?>"
                             data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
@@ -429,10 +425,8 @@ $rows    = $data['rows'];
                             <?php foreach ( $columns as $col ) :
                                 $cs       = json_decode( $col->settings, true );
                                 $align    = in_array( $cs['align'] ?? 'left', $valid_aligns, true ) ? $cs['align'] : 'left';
-                                $hide_m   = ! empty( $cs['hide_mobile'] );
                                 $col_type = sanitize_text_field( $col->type );
                                 $td_class = 'tmp-td';
-                                if ( $hide_m ) $td_class .= ' tmp-hide-mobile';
 
                                 $raw_content = $row->cells[$col->id] ?? '';
                             ?>
