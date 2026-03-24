@@ -27,10 +27,7 @@ class TableMaster_Shortcode {
 
         $use_translation = false;
         if ( TableMaster_WPML::is_active() && $lang && $lang !== $default_lang ) {
-            $progress = TableMaster_WPML::get_translation_progress( $id, $lang );
-            if ( $progress['percent'] >= 100 ) {
-                $use_translation = true;
-            }
+            $use_translation = true;
         }
 
         $data = TableMaster_DB::get_table_data( $id, $use_translation ? $lang : '' );
