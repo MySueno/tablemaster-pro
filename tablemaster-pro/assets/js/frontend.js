@@ -571,6 +571,8 @@
         table.querySelectorAll('tbody .tmp-row').forEach(function (row) {
             if (row.classList.contains('tmp-row-filtered')) return;
             if (row.style.display === 'none') return;
+            var rowType = row.getAttribute('data-row-type');
+            if (rowType !== 'data') return;
             var cols = [];
             row.querySelectorAll('.tmp-td').forEach(function (td) {
                 if (!td.classList.contains('tmp-toggle-cell')) {
