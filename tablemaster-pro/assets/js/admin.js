@@ -282,10 +282,6 @@
                 '<label>Kolomnaam</label>' +
                 '<input type="text" class="tmp-pop-label" value="' + escAttr(col.label) + '">' +
             '</div>' +
-            '<div class="tmp-pop-checks">' +
-                '<label><input type="checkbox" class="tmp-pop-sortable" ' + (col.settings.sortable ? 'checked' : '') + '> Sorteerbaar</label>' +
-                '<label><input type="checkbox" class="tmp-pop-filterable" ' + (col.settings.filterable ? 'checked' : '') + '> Filterbaar</label>' +
-            '</div>' +
             '<div class="tmp-pop-actions">' +
                 '<button type="button" class="button button-small tmp-pop-delete" style="color:#dc3232;">Kolom verwijderen</button>' +
             '</div>' +
@@ -304,10 +300,8 @@
             left: left,
         });
 
-        $pop.find('input, select').on('change input', function () {
-            col.label    = $pop.find('.tmp-pop-label').val().trim();
-            col.settings.sortable   = $pop.find('.tmp-pop-sortable').is(':checked');
-            col.settings.filterable = $pop.find('.tmp-pop-filterable').is(':checked');
+        $pop.find('.tmp-pop-label').on('change input', function () {
+            col.label = $(this).val().trim();
             $th.find('.tmp-col-header-label').text(col.label || 'Kolom');
             isDirty = true;
         });
@@ -714,6 +708,7 @@
             per_page_selector:  $('#tmp-per-page-selector').is(':checked'),
             collapsible_groups: false,
             mobile_mode:        'scroll',
+            sortable:           $('#tmp-sortable').is(':checked'),
             column_filters:     $('#tmp-column-filters').is(':checked'),
             inline_html:        $('#tmp-inline-html').is(':checked'),
             sticky_first_col:   $('#tmp-sticky-first-col').is(':checked'),
@@ -846,7 +841,7 @@
         });
 
         // Settings change -> dirty
-        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-column-filters, #tmp-inline-html, #tmp-sticky-first-col, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-default-col-width, #tmp-table-name, .tmp-font-size, .tmp-font-bold, .tmp-font-italic').on('change input', function () {
+        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-sortable, #tmp-column-filters, #tmp-inline-html, #tmp-sticky-first-col, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-default-col-width, #tmp-table-name, .tmp-font-size, .tmp-font-bold, .tmp-font-italic').on('change input', function () {
             isDirty = true;
         });
 

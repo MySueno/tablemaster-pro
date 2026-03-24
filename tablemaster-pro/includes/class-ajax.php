@@ -75,6 +75,7 @@ class TableMaster_Ajax {
         $clean['default_sort_col']   = sanitize_text_field( $settings['default_sort_col'] ?? '' );
         $clean['default_sort_dir']   = in_array( $settings['default_sort_dir'] ?? '', $allowed_sort_dir, true ) ? $settings['default_sort_dir'] : 'asc';
         $clean['inline_html']        = ! empty( $settings['inline_html'] );
+        $clean['sortable']           = isset( $settings['sortable'] ) ? ! empty( $settings['sortable'] ) : true;
         $clean['column_filters']     = ! empty( $settings['column_filters'] );
         $clean['sticky_first_col']   = ! empty( $settings['sticky_first_col'] );
         $clean['sticky_header']      = ! empty( $settings['sticky_header'] );

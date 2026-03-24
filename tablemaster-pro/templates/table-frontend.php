@@ -40,6 +40,7 @@ $default_sort_dir  = in_array( $settings['default_sort_dir'] ?? '', $allowed_sor
 $inline_html       = ! empty( $settings['inline_html'] );
 $sticky_first_col  = ! empty( $settings['sticky_first_col'] );
 $sticky_header     = ! empty( $settings['sticky_header'] );
+$table_sortable    = $settings['sortable'] ?? true;
 $fonts             = $settings['fonts'] ?? array();
 
 $columns = $data['columns'];
@@ -134,10 +135,7 @@ foreach ( $font_css_map as $fk => $selector ) :
 
     <?php if ( $show_col_filters && ! empty( $columns ) ) : ?>
     <div class="tmp-col-filters">
-        <?php foreach ( $columns as $col ) :
-            $col_settings = json_decode( $col->settings, true );
-            if ( empty( $col_settings['filterable'] ) ) continue;
-        ?>
+        <?php foreach ( $columns as $col ) : ?>
             <div class="tmp-col-filter-item">
                 <label><?php echo esc_html( $col->label ); ?></label>
                 <select class="tmp-col-filter" data-col-id="<?php echo esc_attr( $col->id ); ?>">
@@ -197,7 +195,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                         if ( $width !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $width ) ) $width = 'auto';
                         if ( $width === 'auto' && $default_col_w !== '' ) $width = $default_col_w;
                         $align  = in_array( $cs['align'] ?? 'left', $valid_aligns, true ) ? $cs['align'] : 'left';
-                        $sort   = ! empty( $cs['sortable'] );
+                        $sort   = ! empty( $table_sortable );
                         $th_class = 'tmp-th';
                         if ( $sort )   $th_class .= ' tmp-sortable';
                         $style  = '';
@@ -295,7 +293,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                         if ( $cm['g1'] === '' ) continue;
                         if ( $cm['g2'] === '' ) continue;
                         $cs     = $cm['cs'];
-                        $sort   = ! empty( $cs['sortable'] );
+                        $sort   = ! empty( $table_sortable );
                         $lw3  = $cs['width'] ?? 'auto';
                         if ( $lw3 !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $lw3 ) ) $lw3 = 'auto';
                         if ( $lw3 === 'auto' && $default_col_w !== '' ) $lw3 = $default_col_w;

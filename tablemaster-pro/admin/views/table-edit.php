@@ -284,8 +284,13 @@ $page_title = $is_new
 
             <!-- ADVANCED TAB -->
             <div class="tmp-tab-content" id="tmp-tab-advanced">
-                <h4 style="margin:0 0 8px;"><?php esc_html_e( 'Filters', TMP_TEXT_DOMAIN ); ?></h4>
-                <p class="description"><?php esc_html_e( 'Filters worden per kolom ingesteld (klik op een kolomnaam in de tabel). Hieronder zijn de globale filteropties:', TMP_TEXT_DOMAIN ); ?></p>
+                <div class="tmp-form-group">
+                    <label>
+                        <input type="checkbox" id="tmp-sortable" <?php checked( $settings['sortable'] ?? true ); ?>>
+                        <?php esc_html_e( 'Kolommen sorteerbaar', TMP_TEXT_DOMAIN ); ?>
+                    </label>
+                    <p class="description"><?php esc_html_e( 'Bezoekers kunnen op kolomkoppen klikken om te sorteren.', TMP_TEXT_DOMAIN ); ?></p>
+                </div>
                 <div class="tmp-form-group">
                     <label>
                         <input type="checkbox" id="tmp-column-filters" <?php checked( $settings['column_filters'] ?? false ); ?>>
