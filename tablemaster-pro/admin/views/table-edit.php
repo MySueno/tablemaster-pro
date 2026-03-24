@@ -103,7 +103,6 @@ $page_title = $is_new
             <div class="tmp-tabs">
                 <button class="tmp-tab active" data-tab="colors"><?php esc_html_e( 'Kleuren', TMP_TEXT_DOMAIN ); ?></button>
                 <button class="tmp-tab" data-tab="display"><?php esc_html_e( 'Weergave', TMP_TEXT_DOMAIN ); ?></button>
-                <button class="tmp-tab" data-tab="filters"><?php esc_html_e( 'Filters', TMP_TEXT_DOMAIN ); ?></button>
                 <button class="tmp-tab" data-tab="advanced"><?php esc_html_e( 'Geavanceerd', TMP_TEXT_DOMAIN ); ?></button>
             </div>
 
@@ -247,8 +246,9 @@ $page_title = $is_new
                 </div>
             </div>
 
-            <!-- FILTERS TAB -->
-            <div class="tmp-tab-content" id="tmp-tab-filters">
+            <!-- ADVANCED TAB -->
+            <div class="tmp-tab-content" id="tmp-tab-advanced">
+                <h4 style="margin:0 0 8px;"><?php esc_html_e( 'Filters', TMP_TEXT_DOMAIN ); ?></h4>
                 <p class="description"><?php esc_html_e( 'Filters worden per kolom ingesteld (klik op een kolomnaam in de tabel). Hieronder zijn de globale filteropties:', TMP_TEXT_DOMAIN ); ?></p>
                 <div class="tmp-form-group">
                     <label>
@@ -256,10 +256,7 @@ $page_title = $is_new
                         <?php esc_html_e( 'Kolomfilters tonen (dropdown per kolom)', TMP_TEXT_DOMAIN ); ?>
                     </label>
                 </div>
-            </div>
-
-            <!-- ADVANCED TAB -->
-            <div class="tmp-tab-content" id="tmp-tab-advanced">
+                <hr style="margin:16px 0;">
                 <div class="tmp-form-group">
                     <label>
                         <input type="checkbox" id="tmp-inline-html" <?php checked( $settings['inline_html'] ?? false ); ?>>
