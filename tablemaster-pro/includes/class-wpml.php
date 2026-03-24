@@ -10,12 +10,23 @@ class TableMaster_WPML {
     }
 
     public static function is_active() {
-        return function_exists( 'icl_register_string' );
+        return defined( 'ICL_SITEPRESS_VERSION' ) && function_exists( 'icl_register_string' );
+    }
+
+    public static function is_string_translation_active() {
+        return defined( 'WPML_ST_VERSION' );
     }
 
     public static function get_translate_url( $table_id ) {
         $context = self::get_context( $table_id );
-        return admin_url( 'admin.php?page=wpml-string-translation/menu/string-translation.php&context=' . urlencode( $context ) );
+
+        if ( self::is_string_translation_active() ) {
+            return admin_url(
+                'admin.php?page=wpml-string-translation/menu/string-translation.php&context=' . urlencode( $context )
+            );
+        }
+
+        return admin_url( 'admin.php?page=sitepress-multilingual-cms/menu/languages.php' );
     }
 
     private static function get_context( $table_id ) {
