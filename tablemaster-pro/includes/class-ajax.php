@@ -188,16 +188,13 @@ class TableMaster_Ajax {
             wp_send_json_error( array( 'message' => 'Ongeldige doeltaal.' ) );
         }
 
-        $context = 'tablemaster-pro - Table ' . $table_id;
+        $context = TableMaster_WPML::get_context( $table_id );
 
-        $saved = 0;
+        $saved   = 0;
+        $cleared = 0;
         foreach ( $translations as $name => $value ) {
-            $name = sanitize_text_field( $name );
-            if ( strpos( $name, 'row_' ) === 0 ) {
-                $value = wp_kses_post( $value );
-            } else {
-                $value = sanitize_text_field( $value );
-            }
+            $name  = sanitize_text_field( $name );
+            $value = trim( $value );
 
             $string_id = $wpdb->get_var( $wpdb->prepare(
                 "SELECT id FROM {$wpdb->prefix}icl_strings WHERE context = %s AND name = %s",
@@ -210,6 +207,24 @@ class TableMaster_Ajax {
                 "SELECT id FROM {$wpdb->prefix}icl_string_translations WHERE string_id = %d AND language = %s",
                 $string_id, $lang
             ) );
+
+            if ( $value === '' ) {
+                if ( $existing ) {
+                    $wpdb->delete(
+                        $wpdb->prefix . 'icl_string_translations',
+                        array( 'id' => $existing ),
+                        array( '%d' )
+                    );
+                    $cleared++;
+                }
+                continue;
+            }
+
+            if ( strpos( $name, 'row_' ) === 0 ) {
+                $value = wp_kses_post( $value );
+            } else {
+                $value = sanitize_text_field( $value );
+            }
 
             if ( $existing ) {
                 $wpdb->update(
@@ -236,6 +251,6 @@ class TableMaster_Ajax {
             $saved++;
         }
 
-        wp_send_json_success( array( 'saved' => $saved ) );
+        wp_send_json_success( array( 'saved' => $saved, 'cleared' => $cleared ) );
     }
 }
