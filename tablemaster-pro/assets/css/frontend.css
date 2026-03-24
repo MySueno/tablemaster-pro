@@ -243,6 +243,9 @@
 .tmp-group-cell {
     font-weight: 700;
     font-size: 1em;
+}
+
+.tmp-group-cell-inner {
     display: flex;
     align-items: center;
     gap: 6px;

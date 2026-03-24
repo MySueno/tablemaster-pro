@@ -185,12 +185,14 @@ $rows    = $data['rows'];
                             $group_label = $first_col ? ( $row->cells[ $first_col->id ] ?? '' ) : '';
                         ?>
                             <td class="tmp-td tmp-group-cell" colspan="<?php echo esc_attr( $total_cols ); ?>" style="padding-left:<?php echo ( $indent_lvl * 24 + 12 ); ?>px;">
-                                <?php if ( $collapsible ) : ?>
-                                    <button class="tmp-toggle-btn" aria-expanded="<?php echo $row->is_collapsed ? 'false' : 'true'; ?>" aria-label="<?php esc_attr_e( 'In-/uitklappen', TMP_TEXT_DOMAIN ); ?>">
-                                        <span class="tmp-toggle-icon"><?php echo $row->is_collapsed ? '▶' : '▼'; ?></span>
-                                    </button>
-                                <?php endif; ?>
-                                <span class="tmp-group-label"><?php echo esc_html( $group_label ); ?></span>
+                                <div class="tmp-group-cell-inner">
+                                    <?php if ( $collapsible ) : ?>
+                                        <button class="tmp-toggle-btn" aria-expanded="<?php echo $row->is_collapsed ? 'false' : 'true'; ?>" aria-label="<?php esc_attr_e( 'In-/uitklappen', TMP_TEXT_DOMAIN ); ?>">
+                                            <span class="tmp-toggle-icon"><?php echo $row->is_collapsed ? '▶' : '▼'; ?></span>
+                                        </button>
+                                    <?php endif; ?>
+                                    <span class="tmp-group-label"><?php echo esc_html( $group_label ); ?></span>
+                                </div>
                             </td>
                         <?php else : ?>
                             <?php if ( $collapsible ) : ?>
