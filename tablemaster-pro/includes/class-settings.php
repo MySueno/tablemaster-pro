@@ -5,11 +5,12 @@ class TableMaster_Settings {
 
     public static function get( $key = null ) {
         $defaults = array(
-            'default_theme'   => 'red',
-            'default_per_page'=> 10,
-            'enable_export'   => false,
-            'border_radius'   => '15',
-            'update_url'      => '',
+            'default_theme'            => 'red',
+            'default_per_page'         => 10,
+            'enable_export'            => false,
+            'border_radius'            => '15',
+            'update_url'               => '',
+            'delete_data_on_uninstall' => '0',
         );
         $options = get_option( 'tablemaster_settings', array() );
         $merged  = wp_parse_args( $options, $defaults );
@@ -30,7 +31,8 @@ class TableMaster_Settings {
             'default_per_page' => min( 500, max( 1, intval( $data['default_per_page'] ?? 10 ) ) ),
             'enable_export'    => ! empty( $data['enable_export'] ),
             'border_radius'    => min( 50, max( 0, intval( $data['border_radius'] ?? 4 ) ) ),
-            'update_url'       => esc_url_raw( $data['update_url'] ?? '' ),
+            'update_url'               => esc_url_raw( $data['update_url'] ?? '' ),
+            'delete_data_on_uninstall' => ! empty( $data['delete_data_on_uninstall'] ) ? '1' : '0',
         );
         update_option( 'tablemaster_settings', $clean );
         delete_transient( 'tmp_update_check' );

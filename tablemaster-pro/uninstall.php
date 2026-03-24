@@ -5,14 +5,20 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 global $wpdb;
 
-$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tablemaster_cells" );
-$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tablemaster_rows" );
-$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tablemaster_columns" );
-$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tablemaster_tables" );
+$settings = get_option( 'tablemaster_settings', array() );
+$delete_data = isset( $settings['delete_data_on_uninstall'] ) && $settings['delete_data_on_uninstall'] === '1';
 
-delete_option( 'tablemaster_db_version' );
-delete_option( 'tablemaster_settings' );
-delete_option( 'tablemaster_wpml_registered' );
+if ( $delete_data ) {
+    $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tablemaster_cells" );
+    $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tablemaster_rows" );
+    $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tablemaster_columns" );
+    $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}tablemaster_tables" );
+
+    delete_option( 'tablemaster_db_version' );
+    delete_option( 'tablemaster_settings' );
+    delete_option( 'tablemaster_wpml_registered' );
+}
+
 delete_transient( 'tmp_update_check' );
 
 $wpdb->query(

@@ -67,6 +67,16 @@ $s = TableMaster_Settings::get();
                     <p class="description"><?php esc_html_e( 'URL van de Replit update-server. Als dit is ingevuld, controleert WordPress automatisch op nieuwe versies.', TMP_TEXT_DOMAIN ); ?></p>
                 </td>
             </tr>
+            <tr>
+                <th><?php esc_html_e( 'Data verwijderen bij deïnstallatie', TMP_TEXT_DOMAIN ); ?></th>
+                <td>
+                    <label>
+                        <input type="checkbox" name="delete_data_on_uninstall" value="1" <?php checked( $s['delete_data_on_uninstall'], '1' ); ?>>
+                        <?php esc_html_e( 'Alle tabellen en gegevens permanent verwijderen wanneer de plugin wordt verwijderd', TMP_TEXT_DOMAIN ); ?>
+                    </label>
+                    <p class="description" style="color:#d63638;"><?php esc_html_e( 'Let op: als deze optie is uitgeschakeld (standaard), blijven al uw tabellen en data bewaard in de database — ook na het verwijderen en opnieuw installeren van de plugin.', TMP_TEXT_DOMAIN ); ?></p>
+                </td>
+            </tr>
         </table>
         <?php submit_button( __( 'Instellingen opslaan', TMP_TEXT_DOMAIN ) ); ?>
     </form>

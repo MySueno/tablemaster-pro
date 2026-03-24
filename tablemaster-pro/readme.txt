@@ -36,6 +36,8 @@ Functies:
 = 1.2.8 =
 * Verbeterd: Alle tekst in tabellen consistent links uitgelijnd — kolomtitels, groepsrijen en datacellen staan nu exact op dezelfde positie
 * Verbeterd: Groepsrijen met samengevoegde cellen gebruiken links-uitlijning in plaats van gecentreerd
+* Nieuw: Databescherming — tabeldata blijft bewaard bij verwijderen en herinstalleren van de plugin (standaard ingeschakeld)
+* Nieuw: Optionele instelling om data te verwijderen bij deïnstallatie (standaard uitgeschakeld)
 
 = 1.2.7 =
 * Nieuw: Admin CSV-export — exporteer tabellen als CSV-bestand vanuit de bewerkpagina en het tabeloverzicht
