@@ -182,9 +182,9 @@
             $wrapper.find('.tmp-rows-empty').text('Nog geen rijen. Voeg rijen toe met de knoppen hierboven.').show();
         }
 
-        var headerCols = columns.map(function (col) {
+        var headerCols = columns.map(function (col, ci) {
             var key = col.temp_key || col.id;
-            return '<th class="tmp-col-header-cell" data-col-key="' + escAttr(key + '') + '">' +
+            return '<th class="tmp-col-header-cell" data-col-key="' + escAttr(key + '') + '" data-col-idx="' + ci + '" draggable="true">' +
                 '<span class="tmp-col-header-label">' + escHtml(col.label || 'Kolom') + '</span>' +
                 '<span class="tmp-col-header-gear dashicons dashicons-admin-generic"></span>' +
             '</th>';
@@ -206,9 +206,59 @@
 
         $thead.find('.tmp-col-header-cell').on('click', function (e) {
             e.stopPropagation();
+            if ($(this).hasClass('tmp-col-just-dragged')) {
+                $(this).removeClass('tmp-col-just-dragged');
+                return;
+            }
             var colKey = $(this).data('col-key') + '';
             openColumnPopover($(this), colKey);
         });
+
+        (function initColDrag() {
+            var dragSrcIdx = null;
+
+            $thead.find('.tmp-col-header-cell').on('dragstart', function (e) {
+                dragSrcIdx = parseInt($(this).data('col-idx'), 10);
+                e.originalEvent.dataTransfer.effectAllowed = 'move';
+                e.originalEvent.dataTransfer.setData('text/plain', dragSrcIdx);
+                $(this).addClass('tmp-col-dragging');
+            });
+
+            $thead.find('.tmp-col-header-cell').on('dragover', function (e) {
+                e.preventDefault();
+                e.originalEvent.dataTransfer.dropEffect = 'move';
+                var $th = $(this);
+                $thead.find('.tmp-col-header-cell').removeClass('tmp-col-drag-over-left tmp-col-drag-over-right');
+                var targetIdx = parseInt($th.data('col-idx'), 10);
+                if (targetIdx < dragSrcIdx) {
+                    $th.addClass('tmp-col-drag-over-left');
+                } else if (targetIdx > dragSrcIdx) {
+                    $th.addClass('tmp-col-drag-over-right');
+                }
+            });
+
+            $thead.find('.tmp-col-header-cell').on('dragleave', function () {
+                $(this).removeClass('tmp-col-drag-over-left tmp-col-drag-over-right');
+            });
+
+            $thead.find('.tmp-col-header-cell').on('drop', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $thead.find('.tmp-col-header-cell').removeClass('tmp-col-drag-over-left tmp-col-drag-over-right tmp-col-dragging');
+                var targetIdx = parseInt($(this).data('col-idx'), 10);
+                if (dragSrcIdx === null || dragSrcIdx === targetIdx) return;
+                var moved = columns.splice(dragSrcIdx, 1)[0];
+                columns.splice(targetIdx, 0, moved);
+                isDirty = true;
+                rebuildRowTable();
+                $(this).addClass('tmp-col-just-dragged');
+            });
+
+            $thead.find('.tmp-col-header-cell').on('dragend', function () {
+                $thead.find('.tmp-col-header-cell').removeClass('tmp-col-dragging tmp-col-drag-over-left tmp-col-drag-over-right');
+                dragSrcIdx = null;
+            });
+        })();
 
         $tbody.sortable({
             handle: '.tmp-drag-handle',

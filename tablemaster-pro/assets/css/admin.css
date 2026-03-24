@@ -89,10 +89,22 @@
 
 /* Column header cells (clickable) */
 .tmp-col-header-cell {
-    cursor: pointer;
+    cursor: grab;
     user-select: none;
     position: relative;
     transition: background 0.15s;
+}
+
+.tmp-col-header-cell.tmp-col-dragging {
+    opacity: 0.4;
+}
+
+.tmp-col-header-cell.tmp-col-drag-over-left {
+    box-shadow: inset 3px 0 0 0 #0073aa;
+}
+
+.tmp-col-header-cell.tmp-col-drag-over-right {
+    box-shadow: inset -3px 0 0 0 #0073aa;
 }
 
 .tmp-col-header-cell:hover {
