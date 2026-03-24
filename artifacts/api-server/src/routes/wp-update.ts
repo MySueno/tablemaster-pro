@@ -20,6 +20,31 @@ function getZipPath(): string {
   return join(WORKSPACE, `${PLUGIN_SLUG}.zip`);
 }
 
+function getChangelog(currentVersion: string): string {
+  const readmePath = join(WORKSPACE, PLUGIN_SLUG, "readme.txt");
+  if (!existsSync(readmePath)) {
+    return `<h4>${currentVersion}</h4><ul><li>Update beschikbaar</li></ul>`;
+  }
+  const content = readFileSync(readmePath, "utf-8");
+  const changelogMatch = content.match(/== Changelog ==\s*([\s\S]*?)(?:==\s|$)/);
+  if (!changelogMatch) {
+    return `<h4>${currentVersion}</h4><ul><li>Update beschikbaar</li></ul>`;
+  }
+  const raw = changelogMatch[1].trim();
+  let html = "";
+  for (const line of raw.split("\n")) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith("= ") && trimmed.endsWith(" =")) {
+      if (html) html += "</ul>";
+      html += `<h4>${trimmed.slice(2, -2)}</h4><ul>`;
+    } else if (trimmed.startsWith("* ")) {
+      html += `<li>${trimmed.slice(2)}</li>`;
+    }
+  }
+  if (html) html += "</ul>";
+  return html || `<h4>${currentVersion}</h4><ul><li>Update beschikbaar</li></ul>`;
+}
+
 function getBaseUrl(req: Request): string {
   const proto = req.headers["x-forwarded-proto"] || req.protocol || "https";
   const host = req.headers["x-forwarded-host"] || req.headers["host"] || "localhost";
@@ -45,7 +70,7 @@ router.get("/wp-update/info", (req: Request, res: Response) => {
     sections: {
       description:
         "Maak krachtige, interactieve tabellen met groepering, sortering, filtering en paginering.",
-      changelog: `<h4>${version}</h4><ul><li>Verbeterde layout voor groepsrijen (volle-breedte gekleurde balken)</li><li>Verbeterde mobiele kaartmodus</li><li>Automatische updates via update-server</li></ul>`,
+      changelog: getChangelog(version),
     },
     banners: {
       low: "",
