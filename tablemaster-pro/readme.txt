@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.2.5 =
+* Responsief: Dynamische min-width op tabellen — kolommen behouden leesbare breedte op mobiel/tablet
+* Responsief: Horizontale scroll werkt nu correct voor tabellen met veel kolommen
 
 = 1.2.4 =
 * Beveiliging: Strikte hex-kleur validatie — voorkomt CSS injection via kleurinstellingen

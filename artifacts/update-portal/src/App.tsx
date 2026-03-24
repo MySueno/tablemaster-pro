@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
+import Preview from "@/pages/preview";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,9 @@ function Home() {
             <li>/api/wp-update/download</li>
           </ul>
         </div>
+        <a href={import.meta.env.BASE_URL + "preview"} style={{ display: "inline-block", marginTop: "1rem", padding: "8px 20px", background: "#2e7d32", color: "#fff", borderRadius: 8, textDecoration: "none", fontWeight: 600, fontSize: "0.9rem" }}>
+          Live Preview
+        </a>
       </div>
     </div>
   );
@@ -36,6 +40,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/preview" component={Preview} />
       <Route component={NotFound} />
     </Switch>
   );

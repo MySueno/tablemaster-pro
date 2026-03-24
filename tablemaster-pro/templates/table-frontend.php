@@ -128,8 +128,15 @@ $rows    = $data['rows'];
     </div>
     <?php endif; ?>
 
+    <?php
+    $col_count     = count( $columns ) + ( $collapsible ? 1 : 0 );
+    $min_col_width = 120;
+    $table_min_w   = max( 400, $col_count * $min_col_width );
+    $table_style   = $mobile_mode === 'scroll' ? 'min-width:' . intval( $table_min_w ) . 'px;' : '';
+    ?>
     <div class="tmp-table-scroll-wrapper">
-        <table class="tmp-table" role="grid" aria-label="<?php echo esc_attr( $caption ?: $table->name ); ?>">
+        <table class="tmp-table" role="grid" aria-label="<?php echo esc_attr( $caption ?: $table->name ); ?>"
+            <?php if ( $table_style ) : ?> style="<?php echo esc_attr( $table_style ); ?>"<?php endif; ?>>
             <?php
             $has_groups = false;
             $col_meta   = array();
