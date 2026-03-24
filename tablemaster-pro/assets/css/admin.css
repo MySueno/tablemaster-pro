@@ -605,6 +605,31 @@
     gap: 2px;
 }
 
+.tmp-cell-preview {
+    padding: 4px 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    min-height: 20px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.tmp-cell-preview:hover {
+    border-color: #c3c4c7;
+    background: #f9f9f9;
+}
+
+.tmp-cell-preview a {
+    color: #0073aa;
+    text-decoration: underline;
+    pointer-events: none;
+}
+
+.tmp-cell-hidden {
+    display: none !important;
+}
+
 .tmp-cell-fmt {
     display: flex;
     gap: 3px;

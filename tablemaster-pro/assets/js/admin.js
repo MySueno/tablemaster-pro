@@ -382,8 +382,11 @@
                 '<button type="button" class="tmp-fmt-btn tmp-fmt-italic" title="Cursief (Ctrl+I)"><i>I</i></button>' +
                 '<button type="button" class="tmp-fmt-btn tmp-fmt-link" title="Link invoegen">&#128279;</button>' +
                 '</div>';
+            var hasHtml = /<[a-z][\s\S]*>/i.test(content);
+            var previewHtml = hasHtml ? content : '';
             return '<td><div class="tmp-cell-wrap">' + fmtBtns +
-                '<textarea class="tmp-cell-input" data-col-key="' + escAttr(key + '') + '" rows="1"' +
+                (hasHtml ? '<div class="tmp-cell-preview">' + content + '</div>' : '') +
+                '<textarea class="tmp-cell-input' + (hasHtml ? ' tmp-cell-hidden' : '') + '" data-col-key="' + escAttr(key + '') + '" rows="1"' +
                 (placeholder ? ' placeholder="' + escAttr(placeholder) + '"' : '') + '>' +
                 escHtml(content) + '</textarea></div></td>';
         }).join('');
@@ -409,6 +412,16 @@
             rebuildRowTable();
         });
 
+        $tr.find('.tmp-cell-preview').on('click', function () {
+            var $preview = $(this);
+            var $wrap = $preview.closest('.tmp-cell-wrap');
+            var $ta = $wrap.find('.tmp-cell-input');
+            $preview.hide();
+            $ta.removeClass('tmp-cell-hidden').focus();
+            $ta[0].style.height = 'auto';
+            $ta[0].style.height = ($ta[0].scrollHeight) + 'px';
+        });
+
         $tr.find('.tmp-cell-input').on('input change', function () {
             var $area  = $(this);
             var colKey = $area.data('col-key') + '';
@@ -418,9 +431,26 @@
                 rowObj.cells[colKey] = $area.val();
                 isDirty = true;
             }
-            // Auto-resize
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        $tr.find('.tmp-cell-input').on('blur', function () {
+            var $ta = $(this);
+            var val = $ta.val();
+            var $wrap = $ta.closest('.tmp-cell-wrap');
+            var $preview = $wrap.find('.tmp-cell-preview');
+            if (/<[a-z][\s\S]*>/i.test(val)) {
+                if ($preview.length) {
+                    $preview.html(val).show();
+                } else {
+                    $('<div class="tmp-cell-preview"></div>').html(val).insertBefore($ta);
+                }
+                $ta.addClass('tmp-cell-hidden');
+            } else {
+                $preview.remove();
+                $ta.removeClass('tmp-cell-hidden');
+            }
         });
 
         $tr.find('.tmp-row-duplicate').on('click', function () {
