@@ -2,9 +2,9 @@
 
 .tmp-wrapper {
     box-sizing: border-box;
-    font-family: inherit;
-    font-size: inherit;
-    color: inherit;
+    font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 400;
+    color: #5C5C5C;
     margin: 1.5em 0;
 }
 
@@ -138,6 +138,7 @@
     color: var(--tmp-header-text, #fff);
     padding: 10px 12px;
     text-align: left;
+    font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: 600;
     white-space: nowrap;
     border-right: none;
@@ -209,7 +210,8 @@
     padding: 8px 12px;
     border-top: 1px solid var(--tmp-border, #e0e0e0);
     vertical-align: middle;
-    color: inherit;
+    color: #5C5C5C;
+    font-weight: 400;
     text-align: left;
 }
 
@@ -244,6 +246,7 @@
 .tmp-type-group_2 .tmp-td,
 .tmp-type-group_3 .tmp-td {
     border-color: rgba(0,0,0,0.08);
+    color: inherit;
 }
 
 /* Footer / closing row */
@@ -258,6 +261,7 @@
 
 .tmp-type-footer .tmp-td {
     border-color: rgba(0,0,0,0.08);
+    color: inherit;
 }
 
 .tmp-footer-cell {
