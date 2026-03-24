@@ -6,8 +6,6 @@ class TableMaster {
     public function run() {
         add_action( 'init',             array( $this, 'load_textdomain' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'maybe_enqueue_frontend_assets' ) );
-        add_action( 'elementor/preview/enqueue_styles', array( __CLASS__, 'enqueue_frontend_assets' ) );
-        add_action( 'elementor/editor/after_enqueue_scripts', array( __CLASS__, 'enqueue_frontend_assets' ) );
 
         $shortcode = new TableMaster_Shortcode();
         $shortcode->register();
@@ -20,6 +18,16 @@ class TableMaster {
 
         $block = new TableMaster_Block();
         $block->register();
+
+        if ( did_action( 'elementor/loaded' ) || class_exists( '\Elementor\Plugin' ) ) {
+            $elementor = new TableMaster_Elementor();
+            $elementor->register();
+        } else {
+            add_action( 'elementor/loaded', function () {
+                $elementor = new TableMaster_Elementor();
+                $elementor->register();
+            } );
+        }
 
         if ( is_admin() ) {
             $admin = new TableMaster_Admin();
@@ -61,13 +69,13 @@ class TableMaster {
             TMP_VERSION
         );
         wp_enqueue_script(
-            'tablemaster-frontend',
+            'tablemaster-frontend-js',
             TMP_PLUGIN_URL . 'assets/js/frontend.js',
             array(),
             TMP_VERSION,
             true
         );
-        wp_localize_script( 'tablemaster-frontend', 'tableMasterAjax', array(
+        wp_localize_script( 'tablemaster-frontend-js', 'tableMasterAjax', array(
             'ajaxurl' => admin_url( 'admin-ajax.php' ),
             'nonce'   => wp_create_nonce( 'tablemaster_frontend' ),
         ) );

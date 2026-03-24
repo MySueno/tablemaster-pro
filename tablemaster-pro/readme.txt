@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,15 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.2.3 =
+* Nieuw: Eigen Elementor widget — sleep "TableMaster Pro" vanuit het Elementor paneel direct op je pagina
+* Nieuw: Tabelselectie via dropdown in Elementor — geen shortcode nodig
+* Nieuw: Elementor stijlopties — maximale breedte, lettergrootte, uitlijning per breakpoint
+* Nieuw: Placeholder in de Elementor editor wanneer geen tabel geselecteerd is
+* Verbeterd: Alle TableMaster stijlen laden correct in Elementor preview en editor
+* Verbeterd: CSS-overrides voorkomen stijlconflicten met Elementor's eigen styling
+* Verbeterd: Directe "Tabellen beheren" link in het Elementor paneel
 
 = 1.2.2 =
 * Nieuw standaard kleurthema: rood (#D32637) met G1 wit-op-rood, G2 rood-op-roze (#F9E6E7), data op #F8F8F8
