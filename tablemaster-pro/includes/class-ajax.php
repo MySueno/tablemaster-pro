@@ -77,6 +77,7 @@ class TableMaster_Ajax {
         $clean['inline_html']        = ! empty( $settings['inline_html'] );
         $clean['sortable']           = isset( $settings['sortable'] ) ? ! empty( $settings['sortable'] ) : true;
         $clean['column_filters']     = ! empty( $settings['column_filters'] );
+        $clean['enable_export']      = ! empty( $settings['enable_export'] );
         $clean['sticky_first_col']   = ! empty( $settings['sticky_first_col'] );
         $clean['sticky_header']      = ! empty( $settings['sticky_header'] );
         $clean['theme']              = in_array( $settings['theme'] ?? '', $allowed_themes, true ) ? $settings['theme'] : 'custom';

@@ -710,6 +710,7 @@
             mobile_mode:        'scroll',
             sortable:           $('#tmp-sortable').is(':checked'),
             column_filters:     $('#tmp-column-filters').is(':checked'),
+            enable_export:      $('#tmp-enable-export').is(':checked'),
             inline_html:        $('#tmp-inline-html').is(':checked'),
             sticky_first_col:   $('#tmp-sticky-first-col').is(':checked'),
             sticky_header:      $('#tmp-sticky-header').is(':checked'),
@@ -841,7 +842,7 @@
         });
 
         // Settings change -> dirty
-        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-sortable, #tmp-column-filters, #tmp-inline-html, #tmp-sticky-first-col, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-default-col-width, #tmp-table-name, .tmp-font-size, .tmp-font-bold, .tmp-font-italic').on('change input', function () {
+        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-sortable, #tmp-column-filters, #tmp-enable-export, #tmp-inline-html, #tmp-sticky-first-col, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-default-col-width, #tmp-table-name, .tmp-font-size, .tmp-font-bold, .tmp-font-italic').on('change input', function () {
             isDirty = true;
         });
 

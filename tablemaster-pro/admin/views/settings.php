@@ -23,15 +23,6 @@ $s = TableMaster_Settings::get();
                 </td>
             </tr>
             <tr>
-                <th><?php esc_html_e( 'Export inschakelen (CSV/Print)', TMP_TEXT_DOMAIN ); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="enable_export" value="1" <?php checked( $s['enable_export'] ); ?>>
-                        <?php esc_html_e( 'Exportknoppen tonen op de frontend', TMP_TEXT_DOMAIN ); ?>
-                    </label>
-                </td>
-            </tr>
-            <tr>
                 <th><?php esc_html_e( 'Tabel border-radius (px)', TMP_TEXT_DOMAIN ); ?></th>
                 <td>
                     <input type="number" name="border_radius" value="<?php echo esc_attr( $s['border_radius'] ); ?>" min="0" max="50" step="1" style="width:80px;"> px

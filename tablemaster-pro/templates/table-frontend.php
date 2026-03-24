@@ -473,7 +473,7 @@ foreach ( $font_css_map as $fk => $selector ) :
     <?php endif; ?>
 
     <?php
-    $export_enabled = TableMaster_Settings::get( 'enable_export' );
+    $export_enabled = ! empty( $settings['enable_export'] );
     if ( $export_enabled ) :
     ?>
     <div class="tmp-export-bar">

@@ -297,6 +297,12 @@ $page_title = $is_new
                         <?php esc_html_e( 'Kolomfilters tonen (dropdown per kolom)', TMP_TEXT_DOMAIN ); ?>
                     </label>
                 </div>
+                <div class="tmp-form-group">
+                    <label>
+                        <input type="checkbox" id="tmp-enable-export" <?php checked( $settings['enable_export'] ?? false ); ?>>
+                        <?php esc_html_e( 'Exportknoppen tonen op de frontend (CSV/Print)', TMP_TEXT_DOMAIN ); ?>
+                    </label>
+                </div>
                 <hr style="margin:16px 0;">
                 <div class="tmp-form-group">
                     <label>
