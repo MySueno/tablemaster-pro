@@ -363,7 +363,7 @@ $rows    = $data['rows'];
                                     if ( $gc['content'] !== '' ) { $group_label = $gc['content']; break; }
                                 }
                         ?>
-                            <td class="tmp-td tmp-group-cell" colspan="<?php echo esc_attr( $total_cols ); ?>" style="padding-left:<?php echo ( $indent_lvl * 24 + 12 ); ?>px;">
+                            <td class="tmp-td tmp-group-cell" colspan="<?php echo esc_attr( $total_cols ); ?>" style="text-align:left;padding-left:<?php echo ( $indent_lvl * 24 + 12 ); ?>px;">
                                 <div class="tmp-group-cell-inner">
                                     <?php if ( $collapsible ) : ?>
                                         <button class="tmp-toggle-btn" aria-expanded="<?php echo $row->is_collapsed ? 'false' : 'true'; ?>" aria-label="<?php esc_attr_e( 'In-/uitklappen', TMP_TEXT_DOMAIN ); ?>">
@@ -404,7 +404,7 @@ $rows    = $data['rows'];
                                 foreach ( $merged as $mc ) :
                                     $cs_g    = json_decode( $mc['col']->settings, true );
                                     $align_g = $cs_g['align'] ?? 'left';
-                                    if ( $mc['colspan'] > 1 ) $align_g = 'center';
+                                    if ( $mc['colspan'] > 1 && ( $cs_g['align'] ?? '' ) === '' ) $align_g = 'left';
                                     $pad = '';
                                     if ( $mc['idx'] === 0 ) {
                                         $pad = 'padding-left:' . ( $indent_lvl * 24 + 12 ) . 'px;';
