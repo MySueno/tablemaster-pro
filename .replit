@@ -28,3 +28,8 @@ timeoutMs = 20000
 [nix]
 channel = "stable-25_05"
 packages = ["zip", "unzip"]
+
+[userenv]
+
+[userenv.production]
+PLUGIN_BASE_URL = "https://table-importer-tool.replit.app"

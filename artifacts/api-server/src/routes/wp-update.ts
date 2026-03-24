@@ -8,12 +8,21 @@ const PLUGIN_SLUG = "tablemaster-pro";
 const PLUGIN_FILE = "tablemaster-pro/tablemaster-pro.php";
 const WORKSPACE = process.env["REPL_HOME"] || "/home/runner/workspace";
 
-const ALLOWED_DOMAIN =
-  process.env["REPLIT_DEV_DOMAIN"] ||
-  process.env["REPL_SLUG"] + ".replit.app";
+function getPublicDomain(): string {
+  if (process.env["PLUGIN_BASE_URL"]) {
+    return process.env["PLUGIN_BASE_URL"].replace(/\/+$/, "");
+  }
+  if (process.env["REPLIT_DEPLOYMENT"] === "1" && process.env["REPLIT_DOMAINS"]) {
+    return `https://${process.env["REPLIT_DOMAINS"].split(",")[0]}`;
+  }
+  if (process.env["REPLIT_DEV_DOMAIN"]) {
+    return `https://${process.env["REPLIT_DEV_DOMAIN"]}`;
+  }
+  return `https://${process.env["REPL_SLUG"] || "localhost"}.replit.app`;
+}
 
 function getBaseUrl(): string {
-  return `https://${ALLOWED_DOMAIN}`;
+  return getPublicDomain();
 }
 
 function getPluginVersion(): string {

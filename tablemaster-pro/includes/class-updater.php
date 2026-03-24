@@ -25,6 +25,10 @@ class TableMaster_Updater {
         add_filter( 'upgrader_post_install', array( $this, 'after_install' ), 10, 3 );
     }
 
+    private function get_download_url() {
+        return trailingslashit( $this->update_url ) . 'api/wp-update/download';
+    }
+
     public function check_update( $transient ) {
         if ( empty( $transient->checked ) ) {
             return $transient;
@@ -43,7 +47,7 @@ class TableMaster_Updater {
             $obj->plugin      = $this->plugin_file;
             $obj->new_version = $remote->version;
             $obj->url         = $remote->author_profile ?? '';
-            $obj->package     = $remote->download_url ?? '';
+            $obj->package     = $this->get_download_url();
             $obj->tested      = $remote->tested ?? '';
             $obj->requires    = $remote->requires ?? '';
             $obj->requires_php = $remote->requires_php ?? '';
@@ -86,7 +90,7 @@ class TableMaster_Updater {
         $info->requires       = $remote->requires ?? '5.8';
         $info->tested         = $remote->tested ?? '';
         $info->requires_php   = $remote->requires_php ?? '7.4';
-        $info->download_link  = $remote->download_url ?? '';
+        $info->download_link  = $this->get_download_url();
         $info->last_updated   = $remote->last_updated ?? '';
 
         $info->sections = array();
