@@ -6,6 +6,8 @@ class TableMaster {
     public function run() {
         add_action( 'init',             array( $this, 'load_textdomain' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'maybe_enqueue_frontend_assets' ) );
+        add_action( 'elementor/preview/enqueue_styles', array( __CLASS__, 'enqueue_frontend_assets' ) );
+        add_action( 'elementor/editor/after_enqueue_scripts', array( __CLASS__, 'enqueue_frontend_assets' ) );
 
         $shortcode = new TableMaster_Shortcode();
         $shortcode->register();
@@ -37,10 +39,17 @@ class TableMaster {
             if ( has_shortcode( $post->post_content, 'tablemaster' ) ) {
                 $should_load = true;
             }
+
+            if ( ! $should_load ) {
+                $elementor_data = get_post_meta( $post->ID, '_elementor_data', true );
+                if ( ! empty( $elementor_data ) && strpos( $elementor_data, 'tablemaster' ) !== false ) {
+                    $should_load = true;
+                }
+            }
         }
 
         if ( apply_filters( 'tablemaster_force_load_assets', $should_load ) ) {
-            $this->enqueue_frontend_assets();
+            self::enqueue_frontend_assets();
         }
     }
 
