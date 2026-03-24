@@ -240,6 +240,22 @@
     border-color: rgba(0,0,0,0.08);
 }
 
+.tmp-group-cell {
+    font-weight: 700;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tmp-group-label {
+    font-weight: 700;
+}
+
+.tmp-type-group_1 .tmp-group-cell {
+    font-size: 1.05em;
+}
+
 /* Toggle button */
 .tmp-toggle-cell {
     width: 36px;
@@ -401,13 +417,21 @@
     .tmp-mobile-card .tmp-type-group_1,
     .tmp-mobile-card .tmp-type-group_2,
     .tmp-mobile-card .tmp-type-group_3 {
-        border-radius: 4px;
-        margin-bottom: 0.35em;
-        padding: 6px 10px;
+        border-radius: 6px;
+        margin-bottom: 0.5em;
+        margin-top: 0.75em;
     }
 
-    .tmp-mobile-card .tmp-toggle-cell {
-        display: none;
+    .tmp-mobile-card .tmp-type-group_1 .tmp-group-cell,
+    .tmp-mobile-card .tmp-type-group_2 .tmp-group-cell,
+    .tmp-mobile-card .tmp-type-group_3 .tmp-group-cell {
+        padding: 10px 14px;
+        border: none;
+    }
+
+    .tmp-mobile-card .tmp-type-group_1 .tmp-group-cell {
+        font-size: 1.1em;
+        padding: 12px 14px;
     }
 
     /* SCROLL MODE: ensure scrollable */

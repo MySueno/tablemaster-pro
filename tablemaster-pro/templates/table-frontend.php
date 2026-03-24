@@ -178,63 +178,58 @@ $rows    = $data['rows'];
                         data-parent-id="<?php echo esc_attr( $row->parent_id ?? '' ); ?>"
                         <?php echo $row->is_collapsed ? 'data-collapsed="1"' : ''; ?>>
 
-                        <?php if ( $collapsible ) : ?>
-                            <td class="tmp-toggle-cell">
-                                <?php if ( $is_group ) : ?>
+                        <?php if ( $is_group ) :
+                            $total_cols = count( $columns );
+                            if ( $collapsible ) $total_cols++;
+                            $first_col  = array_values( (array) $columns )[0] ?? null;
+                            $group_label = $first_col ? ( $row->cells[ $first_col->id ] ?? '' ) : '';
+                        ?>
+                            <td class="tmp-td tmp-group-cell" colspan="<?php echo esc_attr( $total_cols ); ?>" style="padding-left:<?php echo ( $indent_lvl * 24 + 12 ); ?>px;">
+                                <?php if ( $collapsible ) : ?>
                                     <button class="tmp-toggle-btn" aria-expanded="<?php echo $row->is_collapsed ? 'false' : 'true'; ?>" aria-label="<?php esc_attr_e( 'In-/uitklappen', TMP_TEXT_DOMAIN ); ?>">
                                         <span class="tmp-toggle-icon"><?php echo $row->is_collapsed ? '▶' : '▼'; ?></span>
                                     </button>
                                 <?php endif; ?>
+                                <span class="tmp-group-label"><?php echo esc_html( $group_label ); ?></span>
                             </td>
-                        <?php endif; ?>
+                        <?php else : ?>
+                            <?php if ( $collapsible ) : ?>
+                                <td class="tmp-toggle-cell">&nbsp;</td>
+                            <?php endif; ?>
 
-                        <?php foreach ( $columns as $col ) :
-                            $cs       = json_decode( $col->settings, true );
-                            $align    = $cs['align']       ?? 'left';
-                            $hide_m   = ! empty( $cs['hide_mobile'] );
-                            $col_type = $col->type;
-                            $td_class = 'tmp-td';
-                            if ( $hide_m ) $td_class .= ' tmp-hide-mobile';
+                            <?php foreach ( $columns as $col ) :
+                                $cs       = json_decode( $col->settings, true );
+                                $align    = $cs['align']       ?? 'left';
+                                $hide_m   = ! empty( $cs['hide_mobile'] );
+                                $col_type = $col->type;
+                                $td_class = 'tmp-td';
+                                if ( $hide_m ) $td_class .= ' tmp-hide-mobile';
 
-                            $raw_content = $row->cells[$col->id] ?? '';
-                            $span_style  = '';
-                            if ( $is_group ) {
-                                $cols_before = $collapsible ? 1 : 0;
-                                $first_col   = array_values( (array)$columns )[0] ?? null;
-                                if ( $first_col && $col->id === $first_col->id ) {
-                                    $span_style = ' style="padding-left:' . ( $indent_lvl * 20 + 12 ) . 'px;font-weight:600;"';
-                                }
-                            }
-                        ?>
-                            <td class="<?php echo esc_attr( $td_class ); ?>"
-                                style="text-align:<?php echo esc_attr( $align ); ?>;"
-                                data-col-id="<?php echo esc_attr( $col->id ); ?>"
-                                data-col-type="<?php echo esc_attr( $col_type ); ?>"
-                                data-label="<?php echo esc_attr( $col->label ); ?>"
-                                <?php echo $is_group && $col->id === ( array_values( (array)$columns )[0]->id ?? null ) ? 'colspan="1"' : ''; ?>>
-                                <?php if ( $is_group && array_values( (array)$columns )[0]->id !== $col->id ) : ?>
-                                    &nbsp;
-                                <?php else : ?>
-                                    <span<?php echo $span_style; ?>>
-                                        <?php if ( $col_type === 'link' ) : ?>
-                                            <?php if ( filter_var( $raw_content, FILTER_VALIDATE_URL ) ) : ?>
-                                                <a href="<?php echo esc_url( $raw_content ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $raw_content ); ?></a>
-                                            <?php else : ?>
-                                                <?php echo esc_html( $raw_content ); ?>
-                                            <?php endif; ?>
-                                        <?php elseif ( $col_type === 'image' ) : ?>
-                                            <?php if ( $raw_content ) : ?>
-                                                <img src="<?php echo esc_url( $raw_content ); ?>" alt="" class="tmp-cell-image" loading="lazy">
-                                            <?php endif; ?>
-                                        <?php elseif ( $col_type === 'html' && $inline_html ) : ?>
-                                            <?php echo wp_kses_post( $raw_content ); ?>
+                                $raw_content = $row->cells[$col->id] ?? '';
+                            ?>
+                                <td class="<?php echo esc_attr( $td_class ); ?>"
+                                    style="text-align:<?php echo esc_attr( $align ); ?>;"
+                                    data-col-id="<?php echo esc_attr( $col->id ); ?>"
+                                    data-col-type="<?php echo esc_attr( $col_type ); ?>"
+                                    data-label="<?php echo esc_attr( $col->label ); ?>">
+                                    <?php if ( $col_type === 'link' ) : ?>
+                                        <?php if ( filter_var( $raw_content, FILTER_VALIDATE_URL ) ) : ?>
+                                            <a href="<?php echo esc_url( $raw_content ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $raw_content ); ?></a>
                                         <?php else : ?>
                                             <?php echo wp_kses_post( $raw_content ); ?>
                                         <?php endif; ?>
-                                    </span>
-                                <?php endif; ?>
-                            </td>
-                        <?php endforeach; ?>
+                                    <?php elseif ( $col_type === 'image' ) : ?>
+                                        <?php if ( $raw_content ) : ?>
+                                            <img src="<?php echo esc_url( $raw_content ); ?>" alt="" class="tmp-cell-image" loading="lazy">
+                                        <?php endif; ?>
+                                    <?php elseif ( $col_type === 'html' && $inline_html ) : ?>
+                                        <?php echo wp_kses_post( $raw_content ); ?>
+                                    <?php else : ?>
+                                        <?php echo wp_kses_post( $raw_content ); ?>
+                                    <?php endif; ?>
+                                </td>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
