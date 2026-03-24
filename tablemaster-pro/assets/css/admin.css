@@ -253,18 +253,57 @@
 
 .tmp-row-type-badge {
     display: inline-block;
-    padding: 1px 5px;
-    border-radius: 3px;
+    padding: 2px 8px;
+    border-radius: 4px;
     font-size: 0.75em;
     font-weight: 700;
     background: #ddd;
     color: #555;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.1s, box-shadow 0.1s;
+    white-space: nowrap;
+}
+
+.tmp-row-type-badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.tmp-row-type-badge:active {
+    transform: scale(0.95);
 }
 
 .tmp-type-badge-data    { background: #e3f2fd; color: #1565c0; }
 .tmp-type-badge-group_1 { background: #c8e6c9; color: #1b5e20; }
 .tmp-type-badge-group_2 { background: #dcedc8; color: #33691e; }
 .tmp-type-badge-group_3 { background: #f0f4c3; color: #827717; }
+
+.tmp-admin-row-group_1 .tmp-cell-input::placeholder,
+.tmp-admin-row-group_2 .tmp-cell-input::placeholder,
+.tmp-admin-row-group_3 .tmp-cell-input::placeholder {
+    color: #bbb;
+    font-style: italic;
+    font-size: 0.85em;
+}
+
+.tmp-row-actions {
+    white-space: nowrap;
+}
+
+.tmp-row-duplicate {
+    cursor: pointer;
+    color: #999;
+    border: none;
+    background: none;
+    padding: 2px;
+    font-size: 1em;
+    transition: color 0.15s;
+}
+
+.tmp-row-duplicate:hover {
+    color: #2271b1;
+}
 
 .tmp-drag-handle {
     cursor: grab;

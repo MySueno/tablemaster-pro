@@ -294,10 +294,31 @@ $rows    = $data['rows'];
                         <?php echo $row->is_collapsed ? 'data-collapsed="1"' : ''; ?>>
 
                         <?php if ( $is_group ) :
-                            $total_cols = count( $columns );
-                            if ( $collapsible ) $total_cols++;
-                            $first_col  = array_values( (array) $columns )[0] ?? null;
-                            $group_label = $first_col ? ( $row->cells[ $first_col->id ] ?? '' ) : '';
+                            $group_cells = array();
+                            foreach ( $columns as $gi => $gcol ) {
+                                $group_cells[] = array(
+                                    'col'     => $gcol,
+                                    'content' => trim( $row->cells[ $gcol->id ] ?? '' ),
+                                    'index'   => $gi,
+                                );
+                            }
+
+                            $has_filled = false;
+                            foreach ( $group_cells as $gc ) {
+                                if ( $gc['content'] !== '' ) { $has_filled = true; break; }
+                            }
+                            $filled_count = 0;
+                            foreach ( $group_cells as $gc ) {
+                                if ( $gc['content'] !== '' ) $filled_count++;
+                            }
+
+                            if ( $filled_count <= 1 ) :
+                                $total_cols = count( $columns );
+                                if ( $collapsible ) $total_cols++;
+                                $group_label = '';
+                                foreach ( $group_cells as $gc ) {
+                                    if ( $gc['content'] !== '' ) { $group_label = $gc['content']; break; }
+                                }
                         ?>
                             <td class="tmp-td tmp-group-cell" colspan="<?php echo esc_attr( $total_cols ); ?>" style="padding-left:<?php echo ( $indent_lvl * 24 + 12 ); ?>px;">
                                 <div class="tmp-group-cell-inner">
@@ -306,9 +327,53 @@ $rows    = $data['rows'];
                                             <span class="tmp-toggle-icon"><?php echo $row->is_collapsed ? '▶' : '▼'; ?></span>
                                         </button>
                                     <?php endif; ?>
-                                    <span class="tmp-group-label"><?php echo esc_html( $group_label ); ?></span>
+                                    <span class="tmp-group-label"><?php echo wp_kses_post( $group_label ); ?></span>
                                 </div>
                             </td>
+                            <?php else :
+                                if ( $collapsible ) : ?>
+                                    <td class="tmp-toggle-cell">
+                                        <button class="tmp-toggle-btn" aria-expanded="<?php echo $row->is_collapsed ? 'false' : 'true'; ?>" aria-label="<?php esc_attr_e( 'In-/uitklappen', TMP_TEXT_DOMAIN ); ?>">
+                                            <span class="tmp-toggle-icon"><?php echo $row->is_collapsed ? '▶' : '▼'; ?></span>
+                                        </button>
+                                    </td>
+                                <?php endif;
+
+                                $merged = array();
+                                $ci = 0;
+                                $col_arr = array_values( (array) $columns );
+                                $total_c = count( $col_arr );
+                                while ( $ci < $total_c ) {
+                                    $content = trim( $row->cells[ $col_arr[ $ci ]->id ] ?? '' );
+                                    if ( $content !== '' ) {
+                                        $span = 1;
+                                        while ( $ci + $span < $total_c && trim( $row->cells[ $col_arr[ $ci + $span ]->id ] ?? '' ) === '' ) {
+                                            $span++;
+                                        }
+                                        $merged[] = array( 'col' => $col_arr[ $ci ], 'content' => $content, 'colspan' => $span, 'idx' => $ci );
+                                        $ci += $span;
+                                    } else {
+                                        $merged[] = array( 'col' => $col_arr[ $ci ], 'content' => '', 'colspan' => 1, 'idx' => $ci );
+                                        $ci++;
+                                    }
+                                }
+
+                                foreach ( $merged as $mc ) :
+                                    $cs_g    = json_decode( $mc['col']->settings, true );
+                                    $align_g = $cs_g['align'] ?? 'left';
+                                    if ( $mc['colspan'] > 1 ) $align_g = 'center';
+                                    $pad = '';
+                                    if ( $mc['idx'] === 0 ) {
+                                        $pad = 'padding-left:' . ( $indent_lvl * 24 + 12 ) . 'px;';
+                                    }
+                            ?>
+                                <td class="tmp-td tmp-group-cell"
+                                    style="text-align:<?php echo esc_attr( $align_g ); ?>;<?php echo $pad; ?>"
+                                    <?php echo $mc['colspan'] > 1 ? 'colspan="' . esc_attr( $mc['colspan'] ) . '"' : ''; ?>>
+                                    <?php echo wp_kses_post( $mc['content'] ); ?>
+                                </td>
+                            <?php endforeach;
+                            endif; ?>
                         <?php else : ?>
                             <?php if ( $collapsible ) : ?>
                                 <td class="tmp-toggle-cell">&nbsp;</td>

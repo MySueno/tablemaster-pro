@@ -317,31 +317,49 @@
         updatePreview();
     }
 
+    var rowTypeOrder = ['data', 'group_1', 'group_2', 'group_3'];
+    var rowTypeLabels = { data: 'Data', group_1: 'G1', group_2: 'G2', group_3: 'G3' };
+
     function buildRowTr(row) {
         var typeClass = 'tmp-admin-row tmp-admin-row-' + (row.row_type || 'data');
         var badgeClass= 'tmp-row-type-badge tmp-type-badge-' + (row.row_type || 'data');
-        var badgeText = row.row_type === 'data' ? 'Data' :
-                        row.row_type === 'group_1' ? 'G1' :
-                        row.row_type === 'group_2' ? 'G2' : 'G3';
+        var badgeText = rowTypeLabels[row.row_type] || 'Data';
+        var isGroup   = row.row_type && row.row_type !== 'data';
 
         var cellInputs = columns.map(function (col) {
             var key     = col.temp_key || col.id;
             var content = row.cells[key] !== undefined ? row.cells[key] : '';
+            var placeholder = isGroup ? 'Leeg = samenvoegen \u2192' : '';
             var fmtBtns = '<div class="tmp-cell-fmt">' +
                 '<button type="button" class="tmp-fmt-btn tmp-fmt-bold" title="Vet (Ctrl+B)"><b>B</b></button>' +
                 '<button type="button" class="tmp-fmt-btn tmp-fmt-link" title="Link invoegen">&#128279;</button>' +
                 '</div>';
             return '<td><div class="tmp-cell-wrap">' + fmtBtns +
-                '<textarea class="tmp-cell-input" data-col-key="' + escAttr(key + '') + '" rows="1">' +
+                '<textarea class="tmp-cell-input" data-col-key="' + escAttr(key + '') + '" rows="1"' +
+                (placeholder ? ' placeholder="' + escAttr(placeholder) + '"' : '') + '>' +
                 escHtml(content) + '</textarea></div></td>';
         }).join('');
 
         var $tr = $('<tr class="' + escAttr(typeClass) + '" data-temp-id="' + escAttr(row.temp_id) + '">' +
             '<td><span class="tmp-drag-handle dashicons dashicons-menu"></span></td>' +
-            '<td><span class="' + escAttr(badgeClass) + '">' + escHtml(badgeText) + '</span></td>' +
+            '<td><span class="' + escAttr(badgeClass) + '" title="Klik om rijtype te wijzigen">' + escHtml(badgeText) + '</span></td>' +
             cellInputs +
-            '<td><button type="button" class="tmp-row-delete dashicons dashicons-trash" title="' + escAttr(i18n.delete_row) + '"></button></td>' +
+            '<td class="tmp-row-actions">' +
+                '<button type="button" class="tmp-row-duplicate dashicons dashicons-admin-page" title="Rij dupliceren"></button>' +
+                '<button type="button" class="tmp-row-delete dashicons dashicons-trash" title="' + escAttr(i18n.delete_row) + '"></button>' +
+            '</td>' +
         '</tr>');
+
+        $tr.find('.tmp-row-type-badge').on('click', function () {
+            var tempId = $tr.data('temp-id') + '';
+            var rowObj = rows.find(function (r) { return r.temp_id + '' === tempId; });
+            if (!rowObj) return;
+            var curIdx = rowTypeOrder.indexOf(rowObj.row_type);
+            var newIdx = (curIdx + 1) % rowTypeOrder.length;
+            rowObj.row_type = rowTypeOrder[newIdx];
+            isDirty = true;
+            rebuildRowTable();
+        });
 
         $tr.find('.tmp-cell-input').on('input change', function () {
             var $area  = $(this);
@@ -355,6 +373,30 @@
             // Auto-resize
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        $tr.find('.tmp-row-duplicate').on('click', function () {
+            var tempId = $tr.data('temp-id') + '';
+            var rowObj = rows.find(function (r) { return r.temp_id + '' === tempId; });
+            if (!rowObj) return;
+            var newTempId = 'new_row_' + (++rowTempIdx);
+            var newCells = {};
+            for (var k in rowObj.cells) {
+                newCells[k] = rowObj.cells[k];
+            }
+            var newRow = {
+                temp_id:      newTempId,
+                row_type:     rowObj.row_type,
+                cells:        newCells,
+                sort_order:   0,
+                is_collapsed: false,
+                parent_id:    rowObj.parent_id || null,
+                parent_temp_id: rowObj.parent_temp_id || null,
+            };
+            var idx = rows.indexOf(rowObj);
+            rows.splice(idx + 1, 0, newRow);
+            isDirty = true;
+            rebuildRowTable();
         });
 
         $tr.find('.tmp-row-delete').on('click', function () {

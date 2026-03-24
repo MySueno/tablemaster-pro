@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,14 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.2.1 =
+* Nieuw: Klikbaar rijtype-label — klik op Data/G1/G2/G3 om het type direct te wijzigen
+* Nieuw: Rij dupliceren knop — kopieer een bestaande rij met alle inhoud
+* Nieuw: Slimme auto-merge — lege cellen in groepsrijen worden automatisch samengevoegd op de frontend
+* Verbeterd: Placeholder-hints in groepsrij cellen ("Leeg = samenvoegen →")
+* Verbeterd: Tooltips op alle rij-knoppen met uitleg
+* Verbeterd: Groepsrijen met meerdere gevulde cellen renderen nu als aparte cellen met colspan waar nodig
 
 = 1.2.0 =
 * Nieuw: Multi-level kolomheaders (3 niveaus) — maak tabellen met groepskoppen zoals E. coli > Ambulant > 2024-2025

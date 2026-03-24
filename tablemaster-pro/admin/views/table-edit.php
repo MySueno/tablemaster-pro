@@ -79,13 +79,14 @@ $page_title = $is_new
                 <div class="tmp-section-header">
                     <h3><?php esc_html_e( 'Rijen & Gegevens', TMP_TEXT_DOMAIN ); ?></h3>
                     <div class="tmp-row-buttons">
-                        <button id="tmp-add-row"    class="button button-secondary button-small">+ <?php esc_html_e( 'Rij', TMP_TEXT_DOMAIN ); ?></button>
-                        <button id="tmp-add-group1" class="button button-secondary button-small tmp-group1-btn">+ <?php esc_html_e( 'Groep 1', TMP_TEXT_DOMAIN ); ?></button>
-                        <button id="tmp-add-group2" class="button button-secondary button-small tmp-group2-btn">+ <?php esc_html_e( 'Groep 2', TMP_TEXT_DOMAIN ); ?></button>
-                        <button id="tmp-add-group3" class="button button-secondary button-small tmp-group3-btn">+ <?php esc_html_e( 'Groep 3', TMP_TEXT_DOMAIN ); ?></button>
+                        <button id="tmp-add-row"    class="button button-secondary button-small" title="<?php esc_attr_e( 'Normale datarij toevoegen', TMP_TEXT_DOMAIN ); ?>">+ <?php esc_html_e( 'Rij', TMP_TEXT_DOMAIN ); ?></button>
+                        <button id="tmp-add-group1" class="button button-secondary button-small tmp-group1-btn" title="<?php esc_attr_e( 'Groepsrij niveau 1 — lege cellen worden automatisch samengevoegd', TMP_TEXT_DOMAIN ); ?>">+ <?php esc_html_e( 'Groep 1', TMP_TEXT_DOMAIN ); ?></button>
+                        <button id="tmp-add-group2" class="button button-secondary button-small tmp-group2-btn" title="<?php esc_attr_e( 'Groepsrij niveau 2 — sub-groep onder G1', TMP_TEXT_DOMAIN ); ?>">+ <?php esc_html_e( 'Groep 2', TMP_TEXT_DOMAIN ); ?></button>
+                        <button id="tmp-add-group3" class="button button-secondary button-small tmp-group3-btn" title="<?php esc_attr_e( 'Groepsrij niveau 3 — sub-groep onder G2', TMP_TEXT_DOMAIN ); ?>">+ <?php esc_html_e( 'Groep 3', TMP_TEXT_DOMAIN ); ?></button>
                     </div>
                 </div>
-                <div class="tmp-rows-hint tmp-hint"><?php esc_html_e( 'Klik op een cel om te bewerken. Sleep rijen om te herordenen.', TMP_TEXT_DOMAIN ); ?></div>
+                <div class="tmp-rows-hint tmp-hint"><?php esc_html_e( 'Klik op een cel om te bewerken. Sleep rijen om te herordenen. Klik op het type-label (Data/G1/G2/G3) om het rijtype te wijzigen.', TMP_TEXT_DOMAIN ); ?></div>
+                <div class="tmp-rows-hint tmp-hint" style="margin-top:2px;"><?php esc_html_e( 'Tip: bij groepsrijen worden lege cellen na een gevulde cel automatisch samengevoegd op de frontend.', TMP_TEXT_DOMAIN ); ?></div>
                 <div id="tmp-rows-wrapper" class="tmp-rows-wrapper">
                     <div class="tmp-rows-empty tmp-hint"><?php esc_html_e( 'Nog geen rijen. Voeg kolommen toe en klik op "+ Rij toevoegen".', TMP_TEXT_DOMAIN ); ?></div>
                 </div>
