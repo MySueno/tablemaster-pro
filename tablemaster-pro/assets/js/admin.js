@@ -524,7 +524,7 @@
             per_page:           parseInt($('#tmp-per-page').val(), 10),
             per_page_selector:  $('#tmp-per-page-selector').is(':checked'),
             collapsible_groups: $('#tmp-collapsible').is(':checked'),
-            mobile_mode:        $('#tmp-mobile-mode').val(),
+            mobile_mode:        'scroll',
             column_filters:     $('#tmp-column-filters').is(':checked'),
             inline_html:        $('#tmp-inline-html').is(':checked'),
             sticky_first_col:   $('#tmp-sticky-first-col').is(':checked'),
@@ -636,7 +636,7 @@
         });
 
         // Settings change -> dirty
-        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-mobile-mode, #tmp-column-filters, #tmp-inline-html, #tmp-sticky-first-col, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-default-col-width, #tmp-table-name').on('change input', function () {
+        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-column-filters, #tmp-inline-html, #tmp-sticky-first-col, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-default-col-width, #tmp-table-name').on('change input', function () {
             isDirty = true;
         });
 
