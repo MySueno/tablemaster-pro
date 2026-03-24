@@ -34,6 +34,46 @@ const DEMO_ROWS = [
   { id: "r18", type: "data", parent: "r15", cells: { "1": "Moedervlek controle", "2": "Dermatologie", "3": "Screening", "4": "Dr. Visser", "5": "Eindhoven", "6": "15", "7": "65", "8": "Ja" } },
 ];
 
+function generateSmallTable() {
+  const cols = [
+    { id: "s1", label: "Product", type: "text", sortable: true },
+    { id: "s2", label: "Prijs", type: "number", sortable: true },
+    { id: "s3", label: "Voorraad", type: "number", sortable: true },
+  ];
+  const rows = [
+    { id: "sm1", type: "data" as const, parent: null, cells: { s1: "Widget A", s2: "€ 12,50", s3: "340" } },
+    { id: "sm2", type: "data" as const, parent: null, cells: { s1: "Widget B", s2: "€ 29,95", s3: "82" } },
+    { id: "sm3", type: "data" as const, parent: null, cells: { s1: "Widget C", s2: "€ 7,00", s3: "1.205" } },
+  ];
+  return { cols, rows };
+}
+
+function generateLargeTable() {
+  const cols = Array.from({ length: 25 }, (_, i) => ({
+    id: `L${i + 1}`,
+    label: `Kolom ${i + 1}`,
+    type: i < 5 ? "text" : "number",
+    sortable: true,
+  }));
+
+  const sampleWords = ["Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Zeta", "Eta", "Theta", "Iota", "Kappa"];
+  const rows = Array.from({ length: 25 }, (_, r) => {
+    const cells: Record<string, string> = {};
+    cols.forEach((col, c) => {
+      if (c < 5) {
+        cells[col.id] = `${sampleWords[r % sampleWords.length]}-${c + 1}`;
+      } else {
+        cells[col.id] = `${Math.floor(Math.random() * 9000 + 1000)}`;
+      }
+    });
+    return { id: `lg${r + 1}`, type: "data" as const, parent: null, cells };
+  });
+  return { cols, rows };
+}
+
+const SMALL = generateSmallTable();
+const LARGE = generateLargeTable();
+
 const THEMES = {
   red: {
     header_bg: "#D32637", header_text: "#ffffff",
@@ -75,21 +115,32 @@ const THEMES = {
 
 type ThemeKey = keyof typeof THEMES;
 
-export default function Preview() {
-  const [theme, setTheme] = useState<ThemeKey>("red");
-  const [viewportWidth, setViewportWidth] = useState<number | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const colors = THEMES[theme];
-  const uid = "tmp-preview-1234";
+interface TableColumn {
+  id: string;
+  label: string;
+  type: string;
+  sortable: boolean;
+}
+interface TableRow {
+  id: string;
+  type: string;
+  parent: string | null;
+  cells: Record<string, string>;
+}
 
-  useEffect(() => {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = import.meta.env.BASE_URL + "tablemaster-assets/frontend.css";
-    document.head.appendChild(link);
-    return () => { document.head.removeChild(link); };
-  }, []);
-
+function DemoTable({
+  title,
+  columns,
+  rows,
+  colors,
+  uid,
+}: {
+  title: string;
+  columns: TableColumn[];
+  rows: TableRow[];
+  colors: typeof THEMES.red;
+  uid: string;
+}) {
   const cssVars: Record<string, string> = {
     "--tmp-header-bg": colors.header_bg,
     "--tmp-header-text": colors.header_text,
@@ -109,16 +160,15 @@ export default function Preview() {
 
   let dataIdx = 0;
 
-  function renderRow(row: typeof DEMO_ROWS[0]) {
+  function renderRow(row: TableRow) {
     const isGroup = row.type !== "data";
     const indentLvl = row.type === "group_2" ? 1 : row.type === "group_3" ? 2 : 0;
 
     if (isGroup) {
-      const label = row.cells["1"] || "";
-      const totalCols = DEMO_COLUMNS.length;
+      const label = row.cells[columns[0]?.id] || "";
       return (
         <tr key={row.id} className={`tmp-row tmp-type-${row.type}`} data-row-id={row.id} data-row-type={row.type} data-parent-id={row.parent || ""}>
-          <td className="tmp-td tmp-group-cell" colSpan={totalCols} style={{ paddingLeft: `${indentLvl * 24 + 12}px` }}>
+          <td className="tmp-td tmp-group-cell" colSpan={columns.length} style={{ paddingLeft: `${indentLvl * 24 + 12}px` }}>
             <div className="tmp-group-cell-inner">
               <span className="tmp-group-label">{label}</span>
             </div>
@@ -132,7 +182,7 @@ export default function Preview() {
 
     return (
       <tr key={row.id} className={`tmp-row tmp-type-data ${zebraClass}`} data-row-id={row.id} data-row-type="data" data-parent-id={row.parent || ""}>
-        {DEMO_COLUMNS.map((col) => (
+        {columns.map((col) => (
           <td key={col.id} className="tmp-td" data-col-id={col.id} data-label={col.label}>
             {row.cells[col.id] || ""}
           </td>
@@ -140,6 +190,55 @@ export default function Preview() {
       </tr>
     );
   }
+
+  const dataRowCount = rows.filter((r) => r.type === "data").length;
+
+  return (
+    <div id={uid} className="tmp-wrapper tmp-mobile-scroll" style={cssVars as React.CSSProperties}
+      data-table-id={uid} data-per-page="-1" data-collapsible="0" data-mobile-mode="scroll">
+
+      <div className="tmp-caption" style={{ marginBottom: 8 }}>{title}</div>
+
+      <div className="tmp-table-scroll-wrapper">
+        <table className="tmp-table" role="grid" aria-label={title}
+          style={{ minWidth: `${Math.max(400, columns.length * 120)}px` }}>
+          <thead>
+            <tr className="tmp-header-row">
+              {columns.map((col) => (
+                <th key={col.id} className={`tmp-th${col.sortable ? " tmp-sortable" : ""}`}
+                  data-col-id={col.id} data-col-type={col.type}
+                  style={{ textAlign: "left" }}>
+                  {col.label}
+                  {col.sortable && <span className="tmp-sort-icon" aria-hidden="true" />}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="tmp-tbody">
+            {rows.map((row) => renderRow(row))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="tmp-controls tmp-controls-bottom">
+        <div className="tmp-info-text">{dataRowCount} resultaten — {columns.length} kolommen</div>
+      </div>
+    </div>
+  );
+}
+
+export default function Preview() {
+  const [theme, setTheme] = useState<ThemeKey>("red");
+  const [viewportWidth, setViewportWidth] = useState<number | null>(null);
+  const colors = THEMES[theme];
+
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = import.meta.env.BASE_URL + "tablemaster-assets/frontend.css";
+    document.head.appendChild(link);
+    return () => { document.head.removeChild(link); };
+  }, []);
 
   return (
     <div style={{ minHeight: "100vh", background: "#f5f5f5", fontFamily: "system-ui, sans-serif" }}>
@@ -187,50 +286,36 @@ export default function Preview() {
       </div>
 
       <div style={{ padding: "32px 24px" }}>
-        <div ref={containerRef} style={{
+        <div style={{
           maxWidth: viewportWidth ? `${viewportWidth}px` : "1200px",
           margin: "0 auto",
           transition: "max-width 0.3s ease",
-          background: "#fff",
-          borderRadius: 12,
-          padding: 24,
-          boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
         }}>
           {viewportWidth && (
-            <div style={{ marginBottom: 12, padding: "6px 12px", background: "#f0f0f0", borderRadius: 6, fontSize: "0.75rem", color: "#888", textAlign: "center" }}>
+            <div style={{ marginBottom: 12, padding: "6px 12px", background: "#e0e0e0", borderRadius: 6, fontSize: "0.75rem", color: "#666", textAlign: "center" }}>
               Simulatie: {viewportWidth}px breed
             </div>
           )}
 
-          <div id={uid} className="tmp-wrapper tmp-mobile-scroll" style={cssVars as React.CSSProperties}
-            data-table-id="preview" data-per-page="-1" data-collapsible="0" data-mobile-mode="scroll">
+          <div style={{ background: "#fff", borderRadius: 12, padding: 24, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: 32 }}>
+            <h2 style={{ fontSize: "1rem", fontWeight: 600, color: "#999", margin: "0 0 16px 0", textTransform: "uppercase", letterSpacing: 1 }}>
+              Kleine tabel — 3 kolommen, 3 rijen
+            </h2>
+            <DemoTable title="Productvoorraad" columns={SMALL.cols} rows={SMALL.rows} colors={colors} uid="tmp-small" />
+          </div>
 
-            <div className="tmp-caption" style={{ marginBottom: 8 }}>Medische Behandelingen — Overzicht</div>
+          <div style={{ background: "#fff", borderRadius: 12, padding: 24, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: 32 }}>
+            <h2 style={{ fontSize: "1rem", fontWeight: 600, color: "#999", margin: "0 0 16px 0", textTransform: "uppercase", letterSpacing: 1 }}>
+              Medische demo — 8 kolommen, 18 rijen (met groepering)
+            </h2>
+            <DemoTable title="Medische Behandelingen — Overzicht" columns={DEMO_COLUMNS} rows={DEMO_ROWS} colors={colors} uid="tmp-medical" />
+          </div>
 
-            <div className="tmp-table-scroll-wrapper">
-              <table className="tmp-table" role="grid" aria-label="Medische Behandelingen"
-                style={{ minWidth: `${Math.max(400, DEMO_COLUMNS.length * 120)}px` }}>
-                <thead>
-                  <tr className="tmp-header-row">
-                    {DEMO_COLUMNS.map((col) => (
-                      <th key={col.id} className={`tmp-th${col.sortable ? " tmp-sortable" : ""}`}
-                        data-col-id={col.id} data-col-type={col.type}
-                        style={{ textAlign: "left" }}>
-                        {col.label}
-                        {col.sortable && <span className="tmp-sort-icon" aria-hidden="true" />}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="tmp-tbody">
-                  {DEMO_ROWS.map((row) => renderRow(row))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="tmp-controls tmp-controls-bottom">
-              <div className="tmp-info-text">1–18 van 18 resultaten</div>
-            </div>
+          <div style={{ background: "#fff", borderRadius: 12, padding: 24, boxShadow: "0 2px 12px rgba(0,0,0,0.08)", marginBottom: 32 }}>
+            <h2 style={{ fontSize: "1rem", fontWeight: 600, color: "#999", margin: "0 0 16px 0", textTransform: "uppercase", letterSpacing: 1 }}>
+              Grote tabel — 25 kolommen, 25 rijen
+            </h2>
+            <DemoTable title="Dataset 25×25" columns={LARGE.cols} rows={LARGE.rows} colors={colors} uid="tmp-large" />
           </div>
         </div>
       </div>
