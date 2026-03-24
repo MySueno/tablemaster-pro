@@ -3,6 +3,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 $colors   = $settings['colors']         ?? array();
 $table_uid = 'tmp-' . $table->id . '-' . wp_rand( 1000, 9999 );
+$global_settings = TableMaster_Settings::get();
+$border_radius   = intval( $global_settings['border_radius'] ?? 4 );
 
 $header_bg    = esc_attr( $colors['header_bg']    ?? '#2e7d32' );
 $header_text  = esc_attr( $colors['header_text']  ?? '#ffffff' );
@@ -50,6 +52,7 @@ $rows    = $data['rows'];
     --tmp-hover-bg:     <?php echo $hover_bg; ?>;
     --tmp-border:       <?php echo $border_color; ?>;
     --tmp-accent:       <?php echo $accent_color; ?>;
+    --tmp-radius:       <?php echo $border_radius; ?>px;
 }
 </style>
 

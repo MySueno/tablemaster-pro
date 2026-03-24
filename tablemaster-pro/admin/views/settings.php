@@ -44,6 +44,23 @@ $s = TableMaster_Settings::get();
                 </td>
             </tr>
             <tr>
+                <th><?php esc_html_e( 'Tabel border-radius (px)', TMP_TEXT_DOMAIN ); ?></th>
+                <td>
+                    <input type="number" name="border_radius" value="<?php echo esc_attr( $s['border_radius'] ); ?>" min="0" max="50" step="1" style="width:80px;"> px
+                    <p class="description"><?php esc_html_e( 'Hoekafronding van alle tabellen. Geldt direct voor alle tabellen op de frontend.', TMP_TEXT_DOMAIN ); ?></p>
+                    <div id="tmp-radius-preview" style="margin-top:10px;width:280px;height:60px;border:2px solid #2e7d32;background:#f1f8e9;transition:border-radius .2s;border-radius:<?php echo intval( $s['border_radius'] ); ?>px;display:flex;align-items:center;justify-content:center;color:#555;font-size:13px;">
+                        <?php esc_html_e( 'Preview border-radius', TMP_TEXT_DOMAIN ); ?>
+                    </div>
+                    <script>
+                    jQuery(function($){
+                        $('input[name="border_radius"]').on('input change', function(){
+                            $('#tmp-radius-preview').css('border-radius', $(this).val() + 'px');
+                        });
+                    });
+                    </script>
+                </td>
+            </tr>
+            <tr>
                 <th><?php esc_html_e( 'Update Server URL', TMP_TEXT_DOMAIN ); ?></th>
                 <td>
                     <input type="url" name="update_url" value="<?php echo esc_attr( $s['update_url'] ); ?>" class="regular-text" placeholder="https://uw-replit-domein.replit.app">

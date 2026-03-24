@@ -115,7 +115,8 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     border: 1px solid var(--tmp-border, #ccc);
-    border-radius: 4px;
+    border-radius: var(--tmp-radius, 4px);
+    overflow: hidden;
 }
 
 /* The table */
