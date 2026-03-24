@@ -552,6 +552,7 @@
             sticky_first_col:   $('#tmp-sticky-first-col').is(':checked'),
             default_sort_col:   $('#tmp-default-sort-col').val(),
             default_sort_dir:   $('#tmp-default-sort-dir').val(),
+            default_col_width:  $('#tmp-default-col-width').val().trim(),
         };
 
         setStatus('loading');
@@ -657,7 +658,7 @@
         });
 
         // Settings change -> dirty
-        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-mobile-mode, #tmp-column-filters, #tmp-inline-html, #tmp-sticky-first-col, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-table-name').on('change input', function () {
+        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-mobile-mode, #tmp-column-filters, #tmp-inline-html, #tmp-sticky-first-col, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-default-col-width, #tmp-table-name').on('change input', function () {
             isDirty = true;
         });
 

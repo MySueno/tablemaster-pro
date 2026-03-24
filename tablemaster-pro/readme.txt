@@ -34,6 +34,7 @@ Functies:
 == Changelog ==
 
 = 1.2.5 =
+* Nieuw: Standaard kolombreedte op tabelniveau — stel een breedte in (bijv. 150px) die geldt voor alle kolommen zonder eigen breedte
 * Responsief: Dynamische min-width op tabellen — kolommen behouden leesbare breedte op mobiel/tablet
 * Responsief: Horizontale scroll werkt nu correct voor tabellen met veel kolommen
 

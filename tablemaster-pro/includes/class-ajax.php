@@ -77,6 +77,12 @@ class TableMaster_Ajax {
         $clean['sticky_first_col']   = ! empty( $settings['sticky_first_col'] );
         $clean['theme']              = in_array( $settings['theme'] ?? '', $allowed_themes, true ) ? $settings['theme'] : 'custom';
 
+        $dcw = trim( $settings['default_col_width'] ?? '' );
+        if ( $dcw !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $dcw ) ) {
+            $dcw = '';
+        }
+        $clean['default_col_width']  = $dcw;
+
         if ( isset( $settings['colors'] ) && is_array( $settings['colors'] ) ) {
             $clean['colors'] = TableMaster_Settings::sanitize_colors( $settings['colors'] );
         }

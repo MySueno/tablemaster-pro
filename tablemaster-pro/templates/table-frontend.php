@@ -167,12 +167,15 @@ $rows    = $data['rows'];
                         <th class="tmp-toggle-col" aria-hidden="true"></th>
                     <?php endif; ?>
                     <?php
-                    $valid_aligns = array( 'left', 'center', 'right' );
+                    $valid_aligns    = array( 'left', 'center', 'right' );
+                    $default_col_w   = $settings['default_col_width'] ?? '';
+                    if ( $default_col_w !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $default_col_w ) ) $default_col_w = '';
                     foreach ( $col_meta as $cm ) :
                         $cs     = $cm['cs'];
                         $col    = $cm['col'];
                         $width  = $cs['width'] ?? 'auto';
                         if ( $width !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $width ) ) $width = 'auto';
+                        if ( $width === 'auto' && $default_col_w !== '' ) $width = $default_col_w;
                         $align  = in_array( $cs['align'] ?? 'left', $valid_aligns, true ) ? $cs['align'] : 'left';
                         $sort   = ! empty( $cs['sortable'] );
                         $hide_m = ! empty( $cs['hide_mobile'] );
@@ -217,8 +220,13 @@ $rows    = $data['rows'];
                     <?php
                     $prev_g1 = null;
                     foreach ( $col_meta as $idx => $cm ) :
-                        if ( $cm['g1'] === '' ) : ?>
-                            <th class="tmp-th tmp-th-grouped" rowspan="<?php echo $max_depth; ?>"><?php echo esc_html( $cm['col']->label ); ?></th>
+                        if ( $cm['g1'] === '' ) :
+                            $uw  = $cm['cs']['width'] ?? 'auto';
+                            if ( $uw !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $uw ) ) $uw = 'auto';
+                            if ( $uw === 'auto' && $default_col_w !== '' ) $uw = $default_col_w;
+                            $us  = $uw !== 'auto' ? 'width:' . esc_attr( $uw ) . ';' : '';
+                        ?>
+                            <th class="tmp-th tmp-th-grouped" rowspan="<?php echo $max_depth; ?>"<?php if ( $us ) echo ' style="' . esc_attr( $us ) . '"'; ?>><?php echo esc_html( $cm['col']->label ); ?></th>
                         <?php elseif ( $cm['g1'] !== $prev_g1 ) :
                             $colspan = count( $g1_groups[ $cm['g1'] ] );
                         ?>
@@ -233,16 +241,22 @@ $rows    = $data['rows'];
                     $prev_g2_key = null;
                     foreach ( $col_meta as $idx => $cm ) :
                         if ( $cm['g1'] === '' ) continue;
+                        $lw  = $cm['cs']['width'] ?? 'auto';
+                        if ( $lw !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $lw ) ) $lw = 'auto';
+                        if ( $lw === 'auto' && $default_col_w !== '' ) $lw = $default_col_w;
+                        $ls  = $lw !== 'auto' ? 'width:' . esc_attr( $lw ) . ';' : '';
                         if ( $cm['g2'] === '' && $max_depth === 2 ) : ?>
                             <th class="tmp-th tmp-th-grouped"
                                 data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
-                                data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>">
+                                data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
+                                <?php if ( $ls ) echo 'style="' . esc_attr( $ls ) . '"'; ?>>
                                 <?php echo esc_html( $cm['col']->label ); ?>
                             </th>
                         <?php elseif ( $cm['g2'] === '' && $max_depth === 3 ) : ?>
                             <th class="tmp-th tmp-th-grouped" rowspan="2"
                                 data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
-                                data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>">
+                                data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
+                                <?php if ( $ls ) echo 'style="' . esc_attr( $ls ) . '"'; ?>>
                                 <?php echo esc_html( $cm['col']->label ); ?>
                             </th>
                         <?php else :
@@ -265,6 +279,10 @@ $rows    = $data['rows'];
                         $cs     = $cm['cs'];
                         $sort   = ! empty( $cs['sortable'] );
                         $hide_m = ! empty( $cs['hide_mobile'] );
+                        $lw3  = $cs['width'] ?? 'auto';
+                        if ( $lw3 !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $lw3 ) ) $lw3 = 'auto';
+                        if ( $lw3 === 'auto' && $default_col_w !== '' ) $lw3 = $default_col_w;
+                        $ls3  = $lw3 !== 'auto' ? 'width:' . esc_attr( $lw3 ) . ';' : '';
                         $th_class = 'tmp-th tmp-th-grouped';
                         if ( $sort )   $th_class .= ' tmp-sortable';
                         if ( $hide_m ) $th_class .= ' tmp-hide-mobile';
@@ -272,6 +290,7 @@ $rows    = $data['rows'];
                         <th class="<?php echo esc_attr( $th_class ); ?>"
                             data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
                             data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
+                            <?php if ( $ls3 ) echo 'style="' . esc_attr( $ls3 ) . '"'; ?>
                             <?php echo $sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
                             <?php echo esc_html( $cm['col']->label ); ?>
                             <?php if ( $sort ) : ?>
