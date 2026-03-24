@@ -295,8 +295,8 @@
         updatePreview();
     }
 
-    var rowTypeOrder = ['data', 'group_1', 'group_2', 'group_3'];
-    var rowTypeLabels = { data: 'Data', group_1: 'G1', group_2: 'G2', group_3: 'G3' };
+    var rowTypeOrder = ['data', 'group_1', 'group_2', 'group_3', 'footer'];
+    var rowTypeLabels = { data: 'Data', group_1: 'G1', group_2: 'G2', group_3: 'G3', footer: 'Afsluit' };
 
     function buildRowTr(row) {
         var typeClass = 'tmp-admin-row tmp-admin-row-' + (row.row_type || 'data');
@@ -629,6 +629,7 @@
         $('#tmp-add-group1').on('click', function () { addRow('group_1'); });
         $('#tmp-add-group2').on('click', function () { addRow('group_2'); });
         $('#tmp-add-group3').on('click', function () { addRow('group_3'); });
+        $('#tmp-add-footer').on('click', function () { addRow('footer'); });
 
         // Save
         $('#tmp-save-all').on('click', function () {
