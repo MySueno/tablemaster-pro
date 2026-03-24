@@ -355,33 +355,16 @@ foreach ( $font_css_map as $fk => $selector ) :
                                 <?php echo wp_kses_post( $footer_label ); ?>
                             </td>
                         <?php elseif ( $is_group ) :
-                            $group_cells = array();
-                            foreach ( $columns as $gi => $gcol ) {
-                                $group_cells[] = array(
-                                    'col'     => $gcol,
-                                    'content' => trim( $row->cells[ $gcol->id ] ?? '' ),
-                                    'index'   => $gi,
-                                );
+                            $group_parts = array();
+                            foreach ( $columns as $gcol ) {
+                                $gc = trim( $row->cells[ $gcol->id ] ?? '' );
+                                if ( $gc !== '' ) $group_parts[] = $gc;
                             }
-
-                            $has_filled = false;
-                            foreach ( $group_cells as $gc ) {
-                                if ( $gc['content'] !== '' ) { $has_filled = true; break; }
-                            }
-                            $filled_count = 0;
-                            foreach ( $group_cells as $gc ) {
-                                if ( $gc['content'] !== '' ) $filled_count++;
-                            }
-
-                            if ( $filled_count <= 1 || $row->row_type === 'group_1' || $sticky_first_col ) :
-                                $total_cols = count( $columns );
-                                if ( $collapsible ) $total_cols++;
-                                $group_label = '';
-                                foreach ( $group_cells as $gc ) {
-                                    if ( $gc['content'] !== '' ) { $group_label = $gc['content']; break; }
-                                }
+                            $group_label = implode( ' ', $group_parts );
+                            $total_cols  = count( $columns );
+                            if ( $collapsible ) $total_cols++;
                         ?>
-                            <td class="tmp-td tmp-group-cell" colspan="<?php echo esc_attr( $total_cols ); ?>" style="text-align:left;padding-left:<?php echo ( $indent_lvl * 24 + 12 ); ?>px;">
+                            <td class="tmp-td tmp-group-cell" colspan="<?php echo esc_attr( $total_cols ); ?>">
                                 <div class="tmp-group-cell-inner">
                                     <?php if ( $collapsible ) : ?>
                                         <button class="tmp-toggle-btn" aria-expanded="<?php echo $row->is_collapsed ? 'false' : 'true'; ?>" aria-label="<?php esc_attr_e( 'In-/uitklappen', TMP_TEXT_DOMAIN ); ?>">
@@ -391,30 +374,6 @@ foreach ( $font_css_map as $fk => $selector ) :
                                     <span class="tmp-group-label"><?php echo wp_kses_post( $group_label ); ?></span>
                                 </div>
                             </td>
-                            <?php else :
-                                if ( $collapsible ) : ?>
-                                    <td class="tmp-toggle-cell">
-                                        <button class="tmp-toggle-btn" aria-expanded="<?php echo $row->is_collapsed ? 'false' : 'true'; ?>" aria-label="<?php esc_attr_e( 'In-/uitklappen', TMP_TEXT_DOMAIN ); ?>">
-                                            <span class="tmp-toggle-icon"><?php echo $row->is_collapsed ? '▶' : '▼'; ?></span>
-                                        </button>
-                                    </td>
-                                <?php endif;
-
-                                $col_arr = array_values( (array) $columns );
-                                $total_c = count( $col_arr );
-
-                                foreach ( $col_arr as $gi2 => $gcol2 ) :
-                                    $gc_content = trim( $row->cells[ $gcol2->id ] ?? '' );
-                                    $cs_g       = json_decode( $gcol2->settings, true );
-                                    $align_g    = $cs_g['align'] ?? 'left';
-                                    $pad        = '';
-                            ?>
-                                <td class="tmp-td tmp-group-cell"
-                                    style="text-align:<?php echo esc_attr( $align_g ); ?>;<?php echo $pad; ?>">
-                                    <?php echo wp_kses_post( $gc_content ); ?>
-                                </td>
-                            <?php endforeach;
-                            endif; ?>
                         <?php else : ?>
                             <?php if ( $collapsible ) : ?>
                                 <td class="tmp-toggle-cell">&nbsp;</td>

@@ -306,6 +306,8 @@
 .tmp-group-cell {
     font-weight: 700;
     font-size: 1em;
+    text-align: left;
+    padding: 8px 12px;
 }
 
 .tmp-group-cell-inner {
