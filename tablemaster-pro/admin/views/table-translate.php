@@ -442,7 +442,132 @@ if ( $has_cell_rows ) {
         var original = $(this).data('original');
         var $field   = $(this).closest('.tmp-translate-field-wrap').find('.tmp-translate-input');
         $field.val(original).trigger('input').focus();
+        syncLinkFieldsFromInput($field.closest('.tmp-translate-row'));
     });
+
+    function parseLinks(html) {
+        var links = [];
+        if (typeof html !== 'string') return links;
+        var re = /<a\s([^>]*)>([\s\S]*?)<\/a>/gi;
+        var m;
+        while ((m = re.exec(html)) !== null) {
+            var attrs = m[1];
+            var text  = m[2].replace(/<[^>]+>/g, '');
+            var hm    = attrs.match(/href="([^"]*)"/);
+            var tm    = attrs.match(/target="([^"]*)"/);
+            links.push({
+                full:   m[0],
+                href:   hm ? hm[1] : '',
+                target: tm ? tm[1] : '',
+                text:   text,
+            });
+        }
+        return links;
+    }
+
+    function escHtml(str) {
+        return $('<span>').text(str).html();
+    }
+
+    function syncLinkFieldsFromInput($row) {
+        var $input = $row.find('.tmp-translate-input');
+        var val    = $input.val() || '';
+        var links  = parseLinks(val);
+        $row.find('.tmp-translate-link-url').each(function() {
+            var idx = parseInt($(this).data('link-idx'), 10);
+            $(this).val(links[idx] ? links[idx].href : '');
+        });
+    }
+
+    function syncInputFromLinkFields($row) {
+        var $input = $row.find('.tmp-translate-input');
+        var val    = $input.val() || '';
+        if (!val) return;
+        var idx = 0;
+        val = val.replace(/href="([^"]*)"/g, function(full, oldUrl) {
+            var $urlField = $row.find('.tmp-translate-link-url[data-link-idx="' + idx + '"]');
+            idx++;
+            if ($urlField.length && $urlField.val().trim()) {
+                return 'href="' + $urlField.val().trim() + '"';
+            }
+            return full;
+        });
+        $input.val(val).trigger('input');
+    }
+
+    function enhanceLinkTranslations() {
+        $('.tmp-translate-row').each(function() {
+            var $row   = $(this);
+            var $input = $row.find('.tmp-translate-input');
+            if (!$input.length) return;
+
+            var rawOriginal = $input.data('original');
+            if (typeof rawOriginal !== 'string') rawOriginal = rawOriginal + '';
+            var links = parseLinks(rawOriginal);
+            if (!links.length) return;
+
+            $row.addClass('tmp-translate-has-links');
+
+            var $origText = $row.find('.tmp-translate-original-text');
+            var parts = rawOriginal;
+            var displayParts = [];
+            var remaining = rawOriginal;
+            links.forEach(function(link) {
+                var pos = remaining.indexOf(link.full);
+                if (pos > 0) {
+                    displayParts.push(escHtml(remaining.substring(0, pos)));
+                }
+                displayParts.push(
+                    '<span class="tmp-orig-link-inline">' + escHtml(link.text) + '</span>'
+                );
+                remaining = remaining.substring(pos + link.full.length);
+            });
+            if (remaining) displayParts.push(escHtml(remaining));
+
+            var linkInfoHtml = links.map(function(link) {
+                return '<div class="tmp-orig-link-info">' +
+                    '<span class="dashicons dashicons-admin-links"></span> ' +
+                    '<span class="tmp-orig-link-url-display">' + escHtml(link.href) + '</span>' +
+                    (link.target === '_blank' ? ' <span class="tmp-orig-link-target">(nieuw tabblad)</span>' : ' <span class="tmp-orig-link-target">(zelfde tab)</span>') +
+                '</div>';
+            }).join('');
+
+            $origText.html(
+                '<div class="tmp-orig-text-display">' + displayParts.join('') + '</div>' +
+                linkInfoHtml
+            );
+
+            var $fieldWrap = $input.closest('.tmp-translate-field-wrap');
+            var curTranslation = $input.val() || '';
+            var curLinks = parseLinks(curTranslation);
+
+            var linkFieldsHtml = '';
+            links.forEach(function(link, idx) {
+                var curHref = curLinks[idx] ? curLinks[idx].href : '';
+                linkFieldsHtml +=
+                    '<div class="tmp-translate-link-field">' +
+                        '<label><span class="dashicons dashicons-admin-links"></span> Link URL' +
+                        (links.length > 1 ? ' ' + (idx + 1) : '') + '</label>' +
+                        '<input type="text" class="tmp-translate-link-url" ' +
+                            'data-link-idx="' + idx + '" ' +
+                            'placeholder="' + escHtml(link.href) + '" ' +
+                            'value="' + escHtml(curHref) + '">' +
+                    '</div>';
+            });
+            $fieldWrap.after(linkFieldsHtml);
+
+            $row.find('.tmp-translate-link-url').on('input', function() {
+                isDirty = true;
+                syncInputFromLinkFields($row);
+            });
+
+            $input.on('input.linkSync', function() {
+                syncLinkFieldsFromInput($row);
+            });
+        });
+    }
+
+    enhanceLinkTranslations();
 
     $('#tmp-translate-lang-select').on('change', function() {
         if (isDirty && !confirm('<?php echo esc_js( __( 'Je hebt niet-opgeslagen vertalingen. Toch van taal wisselen?', TMP_TEXT_DOMAIN ) ); ?>')) {
