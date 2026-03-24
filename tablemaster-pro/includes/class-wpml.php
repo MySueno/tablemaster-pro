@@ -21,7 +21,7 @@ class TableMaster_WPML {
         return admin_url( 'admin.php?page=tablemaster-translate&id=' . intval( $table_id ) );
     }
 
-    private static function get_context( $table_id ) {
+    public static function get_context( $table_id ) {
         return 'tablemaster-pro - Table ' . $table_id;
     }
 

@@ -26,7 +26,7 @@ class TableMaster_Shortcode {
         $data     = TableMaster_DB::get_table_data( $id, $lang );
 
         if ( TableMaster_WPML::is_active() ) {
-            $context  = TMP_TEXT_DOMAIN . ' - Table ' . $id;
+            $context  = TableMaster_WPML::get_context( $id );
             $settings = self::translate_settings( $settings, $context );
             $data     = self::translate_data( $data, $context );
         }
