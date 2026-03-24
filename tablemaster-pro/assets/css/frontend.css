@@ -223,7 +223,8 @@
     background: var(--tmp-even-bg, #ffffff);
 }
 
-.tmp-type-data:hover {
+.tmp-type-data:hover,
+.tmp-type-data:hover > .tmp-td {
     background: var(--tmp-hover-bg, #fce4e4) !important;
 }
 
