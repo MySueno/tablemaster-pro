@@ -137,6 +137,16 @@ foreach ( $columns as $col ) {
     if ( $translated !== '' ) $translated_fields++;
 }
 
+$known_translations = array();
+
+foreach ( $translate_rows as $tr ) {
+    if ( ! isset( $tr['name'] ) || ! isset( $tr['original'] ) ) continue;
+    $tv = tmp_get_translation( $context, $tr['name'], $target_lang );
+    if ( $tv !== '' ) {
+        $known_translations[ $tr['original'] ] = $tv;
+    }
+}
+
 $has_cell_rows = false;
 $cell_rows     = array();
 foreach ( $rows as $row ) {
@@ -148,16 +158,28 @@ foreach ( $rows as $row ) {
         $string_name     = 'row_' . $row->id . '_col_' . $col->id;
         $translated      = tmp_get_translation( $context, $string_name, $target_lang );
         $is_multiline    = ( strpos( $content, "\n" ) !== false || mb_strlen( $content ) > 60 );
+        $prefilled       = false;
+
+        if ( $translated === '' && isset( $known_translations[ $content ] ) ) {
+            $translated = $known_translations[ $content ];
+            $prefilled  = true;
+        }
+
+        if ( $translated !== '' && ! isset( $known_translations[ $content ] ) ) {
+            $known_translations[ $content ] = $translated;
+        }
+
         $cell_rows[] = array(
-            'section'  => '',
-            'label'    => $col->label,
-            'badge'    => $row_label,
-            'name'     => $string_name,
-            'original' => $content,
-            'type'     => $is_multiline ? 'textarea' : 'input',
+            'section'    => '',
+            'label'      => $col->label,
+            'badge'      => $row_label,
+            'name'       => $string_name,
+            'original'   => $content,
+            'type'       => $is_multiline ? 'textarea' : 'input',
+            'prefilled'  => $prefilled,
         );
         $total_fields++;
-        if ( $translated !== '' ) $translated_fields++;
+        if ( $translated !== '' && ! $prefilled ) $translated_fields++;
     }
 }
 
@@ -228,9 +250,17 @@ if ( $has_cell_rows ) {
 
                     if ( ! isset( $tr_row['name'] ) ) continue;
 
-                    $translated = tmp_get_translation( $context, $tr_row['name'], $target_lang );
+                    $translated  = tmp_get_translation( $context, $tr_row['name'], $target_lang );
+                    $is_prefilled = ! empty( $tr_row['prefilled'] );
+
+                    if ( $is_prefilled && $translated === '' && isset( $known_translations[ $tr_row['original'] ] ) ) {
+                        $translated = $known_translations[ $tr_row['original'] ];
+                    }
+
                     $has_value  = ( $translated !== '' );
-                    $row_class  = $has_value ? 'tmp-translate-row tmp-translate-done' : 'tmp-translate-row';
+                    $row_class  = 'tmp-translate-row';
+                    if ( $has_value && ! $is_prefilled ) $row_class .= ' tmp-translate-done';
+                    if ( $is_prefilled ) $row_class .= ' tmp-translate-prefilled';
                 ?>
                 <tr class="<?php echo esc_attr( $row_class ); ?>">
                     <td class="tmp-translate-context">
@@ -246,9 +276,11 @@ if ( $has_cell_rows ) {
                         <div class="tmp-translate-field-wrap">
                             <?php if ( $tr_row['type'] === 'textarea' ) : ?>
                                 <textarea class="tmp-translate-input tmp-translate-textarea" data-string-name="<?php echo esc_attr( $tr_row['name'] ); ?>"
+                                          data-original="<?php echo esc_attr( $tr_row['original'] ); ?>"
                                           placeholder="<?php echo esc_attr( $tr_row['original'] ); ?>"><?php echo esc_textarea( $translated ); ?></textarea>
                             <?php else : ?>
                                 <input type="text" class="tmp-translate-input" data-string-name="<?php echo esc_attr( $tr_row['name'] ); ?>"
+                                       data-original="<?php echo esc_attr( $tr_row['original'] ); ?>"
                                        value="<?php echo esc_attr( $translated ); ?>"
                                        placeholder="<?php echo esc_attr( $tr_row['original'] ); ?>">
                             <?php endif; ?>
@@ -297,8 +329,29 @@ if ( $has_cell_rows ) {
         });
     }
 
+    function propagateTranslation($source) {
+        var original = $source.data('original');
+        var val      = $source.val().trim();
+        if (!original || val === '') return;
+
+        $('.tmp-translate-input').not($source).each(function() {
+            var $field = $(this);
+            if ($field.data('original') === original && $field.val().trim() === '') {
+                $field.val(val);
+                $field.closest('.tmp-translate-row')
+                      .addClass('tmp-translate-prefilled')
+                      .removeClass('tmp-translate-done');
+            }
+        });
+    }
+
     $('.tmp-translate-input').on('input change', function() {
         isDirty = true;
+        updateProgress();
+    });
+
+    $('.tmp-translate-input').on('change', function() {
+        propagateTranslation($(this));
         updateProgress();
     });
 

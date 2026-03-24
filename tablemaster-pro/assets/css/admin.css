@@ -744,6 +744,22 @@
     vertical-align: middle;
 }
 
+.tmp-translate-row.tmp-translate-prefilled td.tmp-translate-context::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #dba617;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.tmp-translate-row.tmp-translate-prefilled .tmp-translate-input {
+    border-color: #dba617;
+    background: #fef8e8;
+}
+
 .tmp-translate-section-header td {
     background: #f6f7f7;
     padding: 10px 14px !important;
