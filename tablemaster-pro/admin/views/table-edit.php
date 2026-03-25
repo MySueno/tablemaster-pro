@@ -192,7 +192,7 @@ $page_title = $is_new
                 <?php endforeach; ?>
 
                 <div class="tmp-color-section">
-                    <div class="tmp-color-section-title"><?php esc_html_e( 'Overig', TMP_TEXT_DOMAIN ); ?></div>
+                    <div class="tmp-color-section-title"><?php esc_html_e( 'Tabelkleuren (hover, rand & accent)', TMP_TEXT_DOMAIN ); ?></div>
                     <div class="tmp-color-row">
                         <div class="tmp-color-field">
                             <label><?php esc_html_e( 'Hover', TMP_TEXT_DOMAIN ); ?></label>
