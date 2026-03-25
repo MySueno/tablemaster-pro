@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.24
+Stable tag: 1.3.25
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,11 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.25 =
+* Fix: Kolomlabel bewerken zonder wijziging maakt geen undo-punt meer aan
+* Fix: Vet/cursief/link-formatting maakt nu één undo-punt per sessie in plaats van één per actie
+* Fix: Kolom-merge toolbar en cel-merge toolbar gebruiken aparte CSS-klassen — sluiten niet meer elkaars toolbar
 
 = 1.3.24 =
 * Nieuw: Ongedaan maken/opnieuw — Ctrl+Z (undo) en Ctrl+Shift+Z / Ctrl+Y (redo) in de tabeleditor

@@ -140,7 +140,8 @@
     background: rgba(34,113,177,0.15) !important;
 }
 
-.tmp-merge-toolbar {
+.tmp-col-merge-toolbar,
+.tmp-cell-merge-toolbar {
     position: absolute;
     z-index: 100000;
     background: #fff;
@@ -160,7 +161,8 @@
     color: #1d2327;
 }
 
-.tmp-merge-toolbar .button {
+.tmp-col-merge-toolbar .button,
+.tmp-cell-merge-toolbar .button {
     font-size: 12px;
     padding: 2px 10px;
     line-height: 1.6;

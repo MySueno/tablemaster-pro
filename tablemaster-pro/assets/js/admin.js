@@ -216,6 +216,7 @@
         $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
         $('#tmp-tb-cell-ref').text('');
         hideMergeToolbar();
+        hideCellMergeToolbar();
         var $wrapper = $('#tmp-rows-wrapper');
         $wrapper.find('.tmp-rows-empty').hide();
         $wrapper.find('.tmp-admin-table-wrap').remove();
@@ -354,6 +355,7 @@
                 sel.removeAllRanges();
                 sel.addRange(rng);
                 activeCell = { $area: $editDiv, el: $editDiv[0], $tr: null, colKey: '__group__' + groupKeys.join(','), tempId: '__header__' };
+                formatUndoPushed = false;
                 $('#tmp-cell-toolbar').removeClass('tmp-toolbar-disabled');
                 $('#tmp-tb-cell-ref').text(groupName);
                 function finishGroupNameEdit() {
@@ -403,11 +405,15 @@
                 sel.removeAllRanges();
                 sel.addRange(rng);
                 activeCell = { $area: $editDiv, el: $editDiv[0], $tr: null, colKey: colKey, tempId: '__header__' };
+                formatUndoPushed = false;
                 $('#tmp-cell-toolbar').removeClass('tmp-toolbar-disabled');
                 $('#tmp-tb-cell-ref').text(col.label || 'Kolom');
                 function finishEdit() {
-                    pushUndo();
-                    col.label = cleanCellHtml($editDiv.html()).trim() || origLabel;
+                    var newLabel = cleanCellHtml($editDiv.html()).trim() || origLabel;
+                    if (newLabel !== origLabel) {
+                        pushUndo();
+                        col.label = newLabel;
+                    }
                     activeCell = null;
                     $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
                     $('#tmp-tb-cell-ref').text('');
@@ -416,16 +422,28 @@
                     $editDiv.remove();
                     $th.css('min-width', '');
                 }
-                $editDiv.on('blur', function () { setTimeout(finishEdit, 150); });
+                var editCancelled = false;
+                function cancelEdit() {
+                    editCancelled = true;
+                    col.label = origLabel;
+                    activeCell = null;
+                    $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
+                    $('#tmp-tb-cell-ref').text('');
+                    $label.html(origLabel || 'Kolom').show();
+                    $delBtn.show();
+                    $editDiv.remove();
+                    $th.css('min-width', '');
+                }
+                $editDiv.on('blur', function () { setTimeout(function() { if (!editCancelled) finishEdit(); }, 150); });
                 $editDiv.on('keydown', function (ev) {
                     if (ev.key === 'Enter') { ev.preventDefault(); finishEdit(); }
-                    if (ev.key === 'Escape') { col.label = origLabel; activeCell = null; $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled'); finishEdit(); }
+                    if (ev.key === 'Escape') { ev.preventDefault(); cancelEdit(); }
                 });
             }
         });
 
         $(document).off('click.colselect').on('click.colselect', function (e) {
-            if (!$(e.target).closest('.tmp-col-header-cell, .tmp-merge-toolbar').length) {
+            if (!$(e.target).closest('.tmp-col-header-cell, .tmp-col-merge-toolbar').length) {
                 $('.tmp-col-header-cell').removeClass('tmp-col-selected');
                 hideMergeToolbar();
             }
@@ -533,7 +551,7 @@
             return col && (col.settings.header_group1 || col.settings.header_group2);
         });
 
-        var $bar = $('<div class="tmp-merge-toolbar">' +
+        var $bar = $('<div class="tmp-col-merge-toolbar">' +
             '<span class="tmp-merge-label">' + keys.length + ' kolommen</span>' +
             '<button type="button" class="button button-primary tmp-merge-g1-btn">Samenvoegen</button>' +
             (anyHasGroup ? '<button type="button" class="button tmp-unmerge-btn" style="margin-left:4px;">' +
@@ -599,7 +617,7 @@
     }
 
     function hideMergeToolbar() {
-        $('.tmp-merge-toolbar').remove();
+        $('.tmp-col-merge-toolbar').remove();
     }
 
     function updateCellMergeToolbar($tr) {
@@ -634,7 +652,7 @@
         var leftOff = topOff.left;
         var rightOff = $last.offset().left + $last.outerWidth();
         var centerX = leftOff + (rightOff - leftOff) / 2;
-        var $bar = $('<div class="tmp-cell-merge-toolbar tmp-merge-toolbar">' +
+        var $bar = $('<div class="tmp-cell-merge-toolbar">' +
             '<span class="tmp-merge-label">' + colKeys.length + ' cel' + (colKeys.length > 1 ? 'len' : '') + '</span>' +
             (canMerge ? '<button type="button" class="button button-primary tmp-cell-merge-btn">Samenvoegen</button>' : '') +
             (anyMerged ? '<button type="button" class="button tmp-cell-unmerge-btn" style="margin-left:4px;">Opheffen</button>' : '') +
@@ -775,6 +793,7 @@
         $tr.find('.tmp-cell-input').on('focus', function () {
             var $div = $(this);
             $div.data('undo-pushed', false);
+            formatUndoPushed = false;
             var colKey = $div.data('col-key') + '';
             var tempId = $tr.data('temp-id') + '';
             var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
@@ -929,12 +948,14 @@
         return activeCell;
     }
 
+    var formatUndoPushed = false;
+
     function syncCellData() {
         if (!activeCell) return;
         var colKey = activeCell.colKey;
         var tempId = activeCell.tempId;
         if (tempId === '__header__') {
-            pushUndo();
+            if (!formatUndoPushed) { pushUndo(); formatUndoPushed = true; } else { isDirty = true; }
             if (colKey.indexOf('__group__') === 0) {
                 var gKeys = colKey.replace('__group__', '').split(',');
                 var newVal = cleanCellHtml(activeCell.$area.html()).trim();
@@ -950,7 +971,7 @@
         }
         var rowObj = rows.find(function (r) { return r.temp_id + '' === tempId; });
         if (rowObj) {
-            pushUndo();
+            if (!formatUndoPushed) { pushUndo(); formatUndoPushed = true; } else { isDirty = true; }
             rowObj.cells[colKey] = cleanCellHtml(activeCell.$area.html());
         }
     }
