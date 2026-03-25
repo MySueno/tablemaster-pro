@@ -553,15 +553,12 @@
             var key     = col.temp_key || col.id;
             var content = row.cells[key] !== undefined ? row.cells[key] : '';
             var cellAlign = (row.cell_aligns && row.cell_aligns[key]) || '';
-            var alignStyle = cellAlign ? ' style="text-align:' + escAttr(cellAlign) + ';"' : '';
+            var alignStyle = cellAlign ? 'text-align:' + escAttr(cellAlign) + ';' : '';
             var placeholder = isGroup ? 'Leeg = samenvoegen \u2192' : '';
-            var hasHtml = /<[a-z][\s\S]*>/i.test(content);
-            return '<td' + alignStyle + '><div class="tmp-cell-wrap">' +
-                (hasHtml ? '<div class="tmp-cell-preview">' + content + '</div>' : '') +
-                '<textarea class="tmp-cell-input' + (hasHtml ? ' tmp-cell-hidden' : '') + '" data-col-key="' + escAttr(key + '') + '" rows="1"' +
-                (placeholder ? ' placeholder="' + escAttr(placeholder) + '"' : '') +
-                (cellAlign ? ' style="text-align:' + escAttr(cellAlign) + ';"' : '') + '>' +
-                escHtml(content) + '</textarea></div></td>';
+            return '<td><div class="tmp-cell-input" contenteditable="true" data-col-key="' + escAttr(key + '') + '"' +
+                (placeholder ? ' data-placeholder="' + escAttr(placeholder) + '"' : '') +
+                (alignStyle ? ' style="' + alignStyle + '"' : '') + '>' +
+                content + '</div></td>';
         }).join('');
 
         var $tr = $('<tr class="' + escAttr(typeClass) + '" data-temp-id="' + escAttr(row.temp_id) + '">' +
@@ -585,61 +582,41 @@
             rebuildRowTable();
         });
 
-        $tr.find('.tmp-cell-preview').on('click', function () {
-            var $preview = $(this);
-            var $wrap = $preview.closest('.tmp-cell-wrap');
-            var $ta = $wrap.find('.tmp-cell-input');
-            $preview.hide();
-            $ta.removeClass('tmp-cell-hidden').focus();
-            $ta[0].style.height = 'auto';
-            $ta[0].style.height = ($ta[0].scrollHeight) + 'px';
-        });
-
-        $tr.find('.tmp-cell-input').on('input change', function () {
-            var $area  = $(this);
-            var colKey = $area.data('col-key') + '';
+        $tr.find('.tmp-cell-input').on('input', function () {
+            var $div  = $(this);
+            var colKey = $div.data('col-key') + '';
             var tempId = $tr.data('temp-id') + '';
             var rowObj = rows.find(function (r) { return r.temp_id + '' === tempId; });
             if (rowObj) {
-                rowObj.cells[colKey] = $area.val();
+                rowObj.cells[colKey] = $div.html();
                 isDirty = true;
             }
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
         });
 
         $tr.find('.tmp-cell-input').on('focus', function () {
-            var $area = $(this);
-            var colKey = $area.data('col-key') + '';
+            var $div = $(this);
+            var colKey = $div.data('col-key') + '';
             var tempId = $tr.data('temp-id') + '';
             var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
             var colLabel = col ? col.label : '';
             var rowObj = rows.find(function (r) { return r.temp_id + '' === tempId; });
             var rowIdx = rowObj ? rows.indexOf(rowObj) + 1 : '';
-            activeCell = { $area: $area, el: $area[0], $tr: $tr, colKey: colKey, tempId: tempId };
+            activeCell = { $area: $div, el: $div[0], $tr: $tr, colKey: colKey, tempId: tempId };
             $('#tmp-cell-toolbar').removeClass('tmp-toolbar-disabled');
             $('#tmp-tb-cell-ref').text(colLabel + ' · rij ' + rowIdx);
             $('.tmp-cell-input').closest('td').removeClass('tmp-cell-active');
-            $area.closest('td').addClass('tmp-cell-active');
+            $div.closest('td').addClass('tmp-cell-active');
             var curAlign = (rowObj && rowObj.cell_aligns && rowObj.cell_aligns[colKey]) || 'left';
             updateAlignButtons(curAlign);
         });
 
         $tr.find('.tmp-cell-input').on('blur', function () {
-            var $ta = $(this);
-            var val = $ta.val();
-            var $wrap = $ta.closest('.tmp-cell-wrap');
-            var $preview = $wrap.find('.tmp-cell-preview');
-            if (/<[a-z][\s\S]*>/i.test(val)) {
-                if ($preview.length) {
-                    $preview.html(val).show();
-                } else {
-                    $('<div class="tmp-cell-preview"></div>').html(val).insertBefore($ta);
-                }
-                $ta.addClass('tmp-cell-hidden');
-            } else {
-                $preview.remove();
-                $ta.removeClass('tmp-cell-hidden');
+            var $div = $(this);
+            var colKey = $div.data('col-key') + '';
+            var tempId = $tr.data('temp-id') + '';
+            var rowObj = rows.find(function (r) { return r.temp_id + '' === tempId; });
+            if (rowObj) {
+                rowObj.cells[colKey] = $div.html();
             }
         });
 
@@ -690,6 +667,10 @@
                 e.preventDefault();
                 toolbarItalic();
             }
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                document.execCommand('insertLineBreak');
+            }
         });
 
         return $tr;
@@ -729,72 +710,44 @@
     /* ===== TOOLBAR FUNCTIONS ===== */
     function ensureCellEditable() {
         if (!activeCell) return null;
-        var $wrap = activeCell.$area.closest('.tmp-cell-wrap');
-        $wrap.find('.tmp-cell-preview').hide();
-        activeCell.$area.removeClass('tmp-cell-hidden');
+        activeCell.$area.focus();
         return activeCell;
     }
 
+    function syncCellData() {
+        if (!activeCell) return;
+        var colKey = activeCell.colKey;
+        var tempId = activeCell.tempId;
+        var rowObj = rows.find(function (r) { return r.temp_id + '' === tempId; });
+        if (rowObj) {
+            rowObj.cells[colKey] = activeCell.$area.html();
+            isDirty = true;
+        }
+    }
+
     function toolbarBold() {
-        var cell = ensureCellEditable();
-        if (!cell) return;
-        var el = cell.el;
-        var start = el.selectionStart;
-        var end = el.selectionEnd;
-        var val = el.value;
-        var sel = val.substring(start, end) || 'tekst';
-        el.value = val.substring(0, start) + '<strong>' + sel + '</strong>' + val.substring(end);
-        cell.$area.trigger('input');
-        el.focus();
-        el.setSelectionRange(start + 8, start + 8 + sel.length);
+        if (!ensureCellEditable()) return;
+        document.execCommand('bold', false, null);
+        syncCellData();
     }
 
     function toolbarItalic() {
-        var cell = ensureCellEditable();
-        if (!cell) return;
-        var el = cell.el;
-        var start = el.selectionStart;
-        var end = el.selectionEnd;
-        var val = el.value;
-        var sel = val.substring(start, end) || 'tekst';
-        el.value = val.substring(0, start) + '<em>' + sel + '</em>' + val.substring(end);
-        cell.$area.trigger('input');
-        el.focus();
-        el.setSelectionRange(start + 4, start + 4 + sel.length);
+        if (!ensureCellEditable()) return;
+        document.execCommand('italic', false, null);
+        syncCellData();
     }
 
     function toolbarLink() {
-        var cell = ensureCellEditable();
-        if (!cell) return;
-        var el = cell.el;
-        var start = el.selectionStart;
-        var end = el.selectionEnd;
-        var sel = el.value.substring(start, end);
-        openLinkModal(cell.$area, el, start, end, sel);
+        if (!ensureCellEditable()) return;
+        var sel = window.getSelection();
+        var selectedText = sel.rangeCount ? sel.toString() : '';
+        openLinkModal(activeCell.$area, activeCell.el, 0, 0, selectedText);
     }
 
     function toolbarBullet() {
-        var cell = ensureCellEditable();
-        if (!cell) return;
-        var el = cell.el;
-        var start = el.selectionStart;
-        var end = el.selectionEnd;
-        var val = el.value;
-        var sel = val.substring(start, end);
-
-        var items;
-        if (sel) {
-            items = sel.split('\n').filter(function (l) { return l.trim() !== ''; });
-        } else {
-            items = ['Item 1'];
-        }
-        var html = '<ul>\n' + items.map(function (item) {
-            return '  <li>' + item.trim() + '</li>';
-        }).join('\n') + '\n</ul>';
-
-        el.value = val.substring(0, start) + html + val.substring(end);
-        cell.$area.trigger('input');
-        el.focus();
+        if (!ensureCellEditable()) return;
+        document.execCommand('insertUnorderedList', false, null);
+        syncCellData();
     }
 
     function toolbarDeleteRow() {
@@ -941,11 +894,10 @@
             if (!url) return;
             var text    = $modal.find('.tmp-link-text').val().trim() || url;
             var newTab  = $modal.find('.tmp-link-newtab').is(':checked');
-            var val     = el.value;
-            var tag     = '<a href="' + url + '"' + (newTab ? ' target="_blank" rel="noopener"' : '') + '>' + text + '</a>';
-            el.value    = val.substring(0, start) + tag + val.substring(end);
-            $area.trigger('input');
-            el.focus();
+            var tag     = '<a href="' + url + '"' + (newTab ? ' target="_blank" rel="noopener"' : '') + '>' + escHtml(text) + '</a>';
+            $area.focus();
+            document.execCommand('insertHTML', false, tag);
+            syncCellData();
             closeLinkModal();
         }
 
@@ -1378,7 +1330,7 @@
                         activeCell = null;
                         $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
                         $('#tmp-tb-cell-ref').text('');
-                        $('.tmp-cell-input').closest('td').removeClass('tmp-cell-active');
+                        $('.tmp-cell-active').removeClass('tmp-cell-active');
                     }
                 }, 100);
             }

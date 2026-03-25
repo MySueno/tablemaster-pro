@@ -323,12 +323,12 @@
 .tmp-type-badge-group_3 { background: #f0f4c3; color: #827717; }
 .tmp-type-badge-footer  { background: #fce4ec; color: #c62828; }
 
-.tmp-admin-row-group_1 .tmp-cell-input::placeholder,
-.tmp-admin-row-group_2 .tmp-cell-input::placeholder,
-.tmp-admin-row-group_3 .tmp-cell-input::placeholder {
+.tmp-cell-input:empty::before {
+    content: attr(data-placeholder);
     color: #bbb;
     font-style: italic;
     font-size: 0.85em;
+    pointer-events: none;
 }
 
 .tmp-row-actions {
@@ -758,36 +758,19 @@
     background: #f0f6fc !important;
 }
 
-/* Cell wrap */
-.tmp-cell-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.tmp-cell-preview {
-    padding: 4px 6px;
-    cursor: pointer;
-    border: 1px solid transparent;
-    border-radius: 3px;
-    min-height: 20px;
-    font-size: 13px;
-    line-height: 1.5;
-}
-
-.tmp-cell-preview:hover {
-    border-color: #c3c4c7;
-    background: #f9f9f9;
-}
-
-.tmp-cell-preview a {
+.tmp-cell-input a {
     color: #0073aa;
     text-decoration: underline;
-    pointer-events: none;
 }
 
-.tmp-cell-hidden {
-    display: none !important;
+.tmp-cell-input ul,
+.tmp-cell-input ol {
+    margin: 2px 0 2px 18px;
+    padding: 0;
+}
+
+.tmp-cell-input li {
+    margin-bottom: 1px;
 }
 
 /* ===================== */
