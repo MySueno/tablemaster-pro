@@ -9,7 +9,7 @@ class TableMaster_Settings {
             'default_per_page'         => 10,
             'enable_export'            => false,
             'border_radius'            => '15',
-            'update_url'               => '',
+            'update_url'               => 'https://table-importer-tool.replit.app/',
             'delete_data_on_uninstall' => '0',
         );
         $options = get_option( 'tablemaster_settings', array() );
