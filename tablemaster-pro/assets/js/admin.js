@@ -170,6 +170,7 @@
     }
 
     function rebuildRowTable() {
+        hideMergeToolbar();
         var $wrapper = $('#tmp-rows-wrapper');
         $wrapper.find('.tmp-rows-empty').hide();
         $wrapper.find('.tmp-admin-table-wrap').remove();
@@ -240,12 +241,13 @@
             if ($th.find('.tmp-col-inline-edit').length) return;
             var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
             if (!col) return;
+            var origLabel = col.label;
             var $label = $th.find('.tmp-col-header-label');
             var $delBtn = $th.find('.tmp-col-delete-btn');
             var $badge = $th.find('.tmp-col-group-badge');
             $label.hide();
             $delBtn.hide();
-            $badge.hide();
+            if ($badge.length) $badge.hide();
             var $input = $('<input type="text" class="tmp-col-inline-edit" value="' + escAttr(col.label) + '">');
             $th.append($input);
             $input.focus().select();
@@ -256,14 +258,21 @@
             function finishEdit() {
                 $label.text(col.label || 'Kolom').show();
                 $delBtn.show();
-                $badge.show();
+                if ($badge.length) $badge.show();
                 $input.remove();
             }
             $input.on('blur', finishEdit);
             $input.on('keydown', function (ev) {
                 if (ev.key === 'Enter') { ev.preventDefault(); finishEdit(); }
-                if (ev.key === 'Escape') { col.label = $label.text(); finishEdit(); }
+                if (ev.key === 'Escape') { col.label = origLabel; finishEdit(); }
             });
+        });
+
+        $(document).off('click.colselect').on('click.colselect', function (e) {
+            if (!$(e.target).closest('.tmp-col-header-cell, .tmp-merge-toolbar').length) {
+                $('.tmp-col-header-cell').removeClass('tmp-col-selected');
+                hideMergeToolbar();
+            }
         });
 
         (function initColDrag() {
