@@ -230,8 +230,20 @@
             }
         });
 
+        var contextMenuJustFired = false;
+        $thead.find('.tmp-col-header-cell').on('contextmenu', function (e) {
+            var $th = $(this);
+            if ($(e.target).hasClass('tmp-col-delete-btn')) return;
+            e.preventDefault();
+            contextMenuJustFired = true;
+            setTimeout(function () { contextMenuJustFired = false; }, 50);
+            $th.toggleClass('tmp-col-selected');
+            updateMergeToolbar();
+        });
+
         $thead.find('.tmp-col-header-cell').on('click', function (e) {
             e.stopPropagation();
+            if (contextMenuJustFired) return;
             if ($(e.target).hasClass('tmp-col-delete-btn')) return;
             if (justDraggedKey) {
                 justDraggedKey = null;
@@ -368,9 +380,8 @@
 
         var $bar = $('<div class="tmp-merge-toolbar">' +
             '<span class="tmp-merge-label">' + keys.length + ' kolommen geselecteerd</span>' +
-            '<button type="button" class="button button-primary tmp-merge-g1-btn" title="Samenvoegen als Niveau 1">Niveau 1</button>' +
-            '<button type="button" class="button tmp-merge-g2-btn" title="Samenvoegen als Niveau 2" style="margin-left:4px;">Niveau 2</button>' +
-            '<button type="button" class="button tmp-merge-g3-btn" title="Samenvoegen als Niveau 3" style="margin-left:4px;">Niveau 3</button>' +
+            '<button type="button" class="button button-primary tmp-merge-g1-btn" title="Samenvoegen als hoofdgroep (bovenste rij)">Hoofdgroep</button>' +
+            '<button type="button" class="button tmp-merge-g2-btn" title="Samenvoegen als subgroep (middelste rij)" style="margin-left:4px;">Subgroep</button>' +
             '<button type="button" class="button tmp-unmerge-btn" title="Groepering opheffen" style="margin-left:8px;">' +
                 '<span class="dashicons dashicons-dismiss" style="vertical-align:middle;font-size:14px;width:14px;height:14px;margin-right:2px;"></span>Opheffen' +
             '</button>' +
@@ -386,20 +397,16 @@
             left: barLeft,
         });
 
-        function doMerge(level) {
-            var groupName = prompt('Naam voor de samengevoegde header (niveau ' + level + '):', '');
+        function doMerge(field) {
+            var levelLabel = field === 'header_group1' ? 'hoofdgroep' : 'subgroep';
+            var groupName = prompt('Naam voor de ' + levelLabel + ':', '');
             if (groupName === null) return;
             groupName = groupName.trim();
             if (!groupName) { alert('Voer een groepnaam in.'); return; }
             keys.forEach(function (k) {
                 var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
                 if (col) {
-                    if (level === 1) col.settings.header_group1 = groupName;
-                    if (level === 2) col.settings.header_group2 = groupName;
-                    if (level === 3) {
-                        if (!col.settings.header_group2) col.settings.header_group2 = col.settings.header_group1 || groupName;
-                        col.settings.header_group1 = groupName;
-                    }
+                    col.settings[field] = groupName;
                 }
             });
             isDirty = true;
@@ -407,11 +414,8 @@
             rebuildRowTable();
         }
 
-        $bar.find('.tmp-merge-g1-btn').on('click', function () { doMerge(1); });
-        $bar.find('.tmp-merge-g2-btn').on('click', function () { doMerge(2); });
-        $bar.find('.tmp-merge-g3-btn').on('click', function () {
-            doMerge(3);
-        });
+        $bar.find('.tmp-merge-g1-btn').on('click', function () { doMerge('header_group1'); });
+        $bar.find('.tmp-merge-g2-btn').on('click', function () { doMerge('header_group2'); });
 
         $bar.find('.tmp-unmerge-btn').on('click', function () {
             keys.forEach(function (k) {
