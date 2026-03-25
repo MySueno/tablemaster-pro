@@ -813,7 +813,7 @@
         var tableSettings = {
             theme:              activeTheme,
             colors:             colors,
-            caption:            '',
+            caption:            ($('#tmp-caption').val() || '').trim(),
             search:             $('#tmp-search').is(':checked'),
             search_position:    $('#tmp-search-position').val(),
             pagination:         $('#tmp-pagination').is(':checked'),

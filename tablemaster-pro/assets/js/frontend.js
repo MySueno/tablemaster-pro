@@ -466,6 +466,8 @@
         var start = (this.currentPage - 1) * this.perPage;
         var end   = start + this.perPage;
 
+        var self = this;
+        var visibleParents = {};
         var dataShown = 0;
         var showing   = 0;
         visibleRows.forEach(function (row) {
@@ -474,14 +476,28 @@
                 if (dataShown >= start && dataShown < end) {
                     row.style.display = '';
                     showing++;
+                    var pid = row.getAttribute('data-parent-id');
+                    while (pid) {
+                        visibleParents[pid] = true;
+                        var parentRow = self.rowMap[pid];
+                        pid = parentRow ? parentRow.getAttribute('data-parent-id') : null;
+                    }
                 } else {
                     row.style.display = 'none';
                 }
                 dataShown++;
-            } else {
-                // Group header: show if any of its children would be shown on this page
-                row.style.display = '';
             }
+        });
+        visibleRows.forEach(function (row) {
+            var rowType = row.getAttribute('data-row-type');
+            if (rowType === 'data') return;
+            if (rowType === 'footer') {
+                row.style.display = '';
+                return;
+            }
+            var rowId = row.getAttribute('data-row-id');
+            var isCollapsed = row.getAttribute('data-collapsed') === '1';
+            row.style.display = (visibleParents[rowId] || isCollapsed) ? '' : 'none';
         });
 
         this.updateInfo(showing, total, this.currentPage, totalPages);
