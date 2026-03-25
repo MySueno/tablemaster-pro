@@ -81,7 +81,7 @@ $page_title = $is_new
                         <button id="tmp-add-footer" class="button button-secondary button-small tmp-footer-btn" title="<?php esc_attr_e( 'Afsluitende rij onderaan de tabel', TMP_TEXT_DOMAIN ); ?>">+ <?php esc_html_e( 'Afsluitrij', TMP_TEXT_DOMAIN ); ?></button>
                     </div>
                 </div>
-                <div class="tmp-rows-hint tmp-hint"><?php esc_html_e( 'Klik op een kolomnaam om instellingen te wijzigen. Klik op een cel om te bewerken. Sleep rijen om te herordenen.', TMP_TEXT_DOMAIN ); ?></div>
+                <div class="tmp-rows-hint tmp-hint"><?php esc_html_e( 'Klik op een kolomnaam om te bewerken. Ctrl+klik op meerdere kolommen om ze samen te voegen. Sleep rijen om te herordenen.', TMP_TEXT_DOMAIN ); ?></div>
                 <div id="tmp-rows-wrapper" class="tmp-rows-wrapper">
                     <div class="tmp-rows-empty tmp-hint"><?php esc_html_e( 'Klik op "+ Kolom" om te beginnen.', TMP_TEXT_DOMAIN ); ?></div>
                 </div>

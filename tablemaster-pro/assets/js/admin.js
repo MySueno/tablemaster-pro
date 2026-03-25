@@ -185,10 +185,11 @@
 
         var headerCols = columns.map(function (col, ci) {
             var key = col.temp_key || col.id;
-            var groupIcon = col.settings.header_group1 ? '<span class="tmp-col-group-indicator" title="Groep: ' + escAttr(col.settings.header_group1) + '">⊞</span>' : '';
+            var groupLabel = col.settings.header_group1 ? ' <span class="tmp-col-group-badge" title="Groep: ' + escAttr(col.settings.header_group1) + '">' + escHtml(col.settings.header_group1) + '</span>' : '';
             return '<th class="tmp-col-header-cell" data-col-key="' + escAttr(key + '') + '" data-col-idx="' + ci + '" draggable="true">' +
                 '<span class="tmp-col-header-label">' + escHtml(col.label || 'Kolom') + '</span>' +
-                groupIcon +
+                groupLabel +
+                '<span class="tmp-col-delete-btn dashicons dashicons-no-alt" title="Kolom verwijderen"></span>' +
             '</th>';
         }).join('');
 
@@ -206,15 +207,63 @@
         var $wrap = $('<div class="tmp-admin-table-wrap"></div>').append($table);
         $wrapper.append($wrap);
 
+        $thead.find('.tmp-col-delete-btn').on('click', function (e) {
+            e.stopPropagation();
+            var $th = $(this).closest('.tmp-col-header-cell');
+            var colKey = $th.data('col-key') + '';
+            if (confirm('Kolom verwijderen?')) {
+                columns = columns.filter(function(c) { return (c.temp_key || c.id) + '' !== colKey; });
+                isDirty = true;
+                rebuildRowTable();
+            }
+        });
+
         $thead.find('.tmp-col-header-cell').on('click', function (e) {
             e.stopPropagation();
+            if ($(e.target).hasClass('tmp-col-delete-btn')) return;
             if (justDraggedKey) {
                 justDraggedKey = null;
                 return;
             }
             var $th = $(this);
             var colKey = $th.data('col-key') + '';
-            openColumnPopover($th, colKey);
+
+            if (e.ctrlKey || e.metaKey || e.shiftKey) {
+                $th.toggleClass('tmp-col-selected');
+                updateMergeToolbar();
+                return;
+            }
+
+            $thead.find('.tmp-col-header-cell').removeClass('tmp-col-selected');
+            hideMergeToolbar();
+
+            if ($th.find('.tmp-col-inline-edit').length) return;
+            var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
+            if (!col) return;
+            var $label = $th.find('.tmp-col-header-label');
+            var $delBtn = $th.find('.tmp-col-delete-btn');
+            var $badge = $th.find('.tmp-col-group-badge');
+            $label.hide();
+            $delBtn.hide();
+            $badge.hide();
+            var $input = $('<input type="text" class="tmp-col-inline-edit" value="' + escAttr(col.label) + '">');
+            $th.append($input);
+            $input.focus().select();
+            $input.on('input', function () {
+                col.label = $(this).val().trim();
+                isDirty = true;
+            });
+            function finishEdit() {
+                $label.text(col.label || 'Kolom').show();
+                $delBtn.show();
+                $badge.show();
+                $input.remove();
+            }
+            $input.on('blur', finishEdit);
+            $input.on('keydown', function (ev) {
+                if (ev.key === 'Enter') { ev.preventDefault(); finishEdit(); }
+                if (ev.key === 'Escape') { col.label = $label.text(); finishEdit(); }
+            });
         });
 
         (function initColDrag() {
@@ -275,137 +324,74 @@
         updatePreview();
     }
 
-    function openColumnPopover($th, colKey) {
-        closeColumnPopover();
-        var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
-        if (!col) return;
+    function getSelectedColKeys() {
+        var keys = [];
+        $('.tmp-col-header-cell.tmp-col-selected').each(function () {
+            keys.push($(this).data('col-key') + '');
+        });
+        return keys;
+    }
 
-        var s = col.settings;
-        var hasG1 = !!(s.header_group1 || '').trim();
-        var g2Display = hasG1 ? '' : 'display:none;';
+    function updateMergeToolbar() {
+        var keys = getSelectedColKeys();
+        hideMergeToolbar();
+        if (keys.length < 2) return;
 
-        var $pop = $('<div class="tmp-col-popover" data-col-key="' + escAttr(colKey) + '">' +
-            '<div class="tmp-pop-section-title">Kolom</div>' +
-            '<div class="tmp-pop-field">' +
-                '<label>Naam</label>' +
-                '<input type="text" class="tmp-pop-label" value="' + escAttr(col.label) + '">' +
-            '</div>' +
-            '<div class="tmp-pop-row">' +
-                '<div class="tmp-pop-half">' +
-                    '<div class="tmp-pop-field">' +
-                        '<label>Breedte</label>' +
-                        '<input type="text" class="tmp-pop-width" value="' + escAttr(s.width || 'auto') + '" placeholder="auto">' +
-                    '</div>' +
-                '</div>' +
-                '<div class="tmp-pop-half">' +
-                    '<div class="tmp-pop-field">' +
-                        '<label>Uitlijning</label>' +
-                        '<select class="tmp-pop-align">' +
-                            '<option value="left"' + (s.align === 'left' ? ' selected' : '') + '>Links</option>' +
-                            '<option value="center"' + (s.align === 'center' ? ' selected' : '') + '>Midden</option>' +
-                            '<option value="right"' + (s.align === 'right' ? ' selected' : '') + '>Rechts</option>' +
-                        '</select>' +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-            '<div class="tmp-pop-divider"></div>' +
-            '<div class="tmp-pop-section-title">Kolomgroepering <span class="tmp-pop-hint">(optioneel)</span></div>' +
-            '<p class="tmp-pop-help">Kolommen met dezelfde groepnaam worden samengevoegd in de header. Bijv. &quot;Ambulant&quot; boven twee kolommen.</p>' +
-            '<div class="tmp-pop-field">' +
-                '<label>Groep (niveau 1)</label>' +
-                '<input type="text" class="tmp-pop-group1" value="' + escAttr(s.header_group1 || '') + '" placeholder="Bijv. Ambulant">' +
-            '</div>' +
-            '<div class="tmp-pop-field tmp-pop-group2-wrap" style="' + g2Display + '">' +
-                '<label>Subgroep (niveau 2)</label>' +
-                '<input type="text" class="tmp-pop-group2" value="' + escAttr(s.header_group2 || '') + '" placeholder="Bijv. sub-groep">' +
-            '</div>' +
-            '<div class="tmp-pop-actions">' +
-                '<button type="button" class="button button-small tmp-pop-delete" style="color:#dc3232;">Kolom verwijderen</button>' +
-            '</div>' +
+        var $sel = $('.tmp-col-header-cell.tmp-col-selected').first();
+        var $last = $('.tmp-col-header-cell.tmp-col-selected').last();
+        var topOff = $sel.offset();
+        var leftOff = topOff.left;
+        var rightOff = $last.offset().left + $last.outerWidth();
+        var centerX = leftOff + (rightOff - leftOff) / 2;
+
+        var $bar = $('<div class="tmp-merge-toolbar">' +
+            '<button type="button" class="button button-primary tmp-merge-btn" title="Kolommen samenvoegen">' +
+                '<span class="dashicons dashicons-columns" style="vertical-align:middle;margin-right:4px;"></span>Samenvoegen (' + keys.length + ')' +
+            '</button>' +
+            '<button type="button" class="button tmp-unmerge-btn" title="Groepering opheffen" style="margin-left:4px;">' +
+                'Opheffen' +
+            '</button>' +
         '</div>');
 
-        $('body').append($pop);
-
-        var thOff = $th.offset();
-        var popW  = 300;
-        var left  = thOff.left + ($th.outerWidth() / 2) - (popW / 2);
-        if (left < 8) left = 8;
-        if (left + popW > $(window).width() - 8) left = $(window).width() - popW - 8;
-
-        var topPos = thOff.top + $th.outerHeight() + 6;
-        var maxTop = $(window).scrollTop() + $(window).height() - 420;
-        if (topPos > maxTop && maxTop > thOff.top - 420) {
-            topPos = thOff.top - $pop.outerHeight() - 6;
-        }
-
-        $pop.css({
-            top:  topPos,
-            left: left,
+        $('body').append($bar);
+        var barW = $bar.outerWidth();
+        var barLeft = centerX - barW / 2;
+        if (barLeft < 8) barLeft = 8;
+        $bar.css({
+            top: topOff.top - $bar.outerHeight() - 8,
+            left: barLeft,
         });
 
-        $pop.find('.tmp-pop-label').on('change input', function () {
-            col.label = $(this).val().trim();
-            $th.find('.tmp-col-header-label').text(col.label || 'Kolom');
+        $bar.find('.tmp-merge-btn').on('click', function () {
+            var groupName = prompt('Naam voor de samengevoegde header:', '');
+            if (groupName === null) return;
+            groupName = groupName.trim();
+            if (!groupName) { alert('Voer een groepnaam in.'); return; }
+            keys.forEach(function (k) {
+                var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
+                if (col) col.settings.header_group1 = groupName;
+            });
             isDirty = true;
-        });
-
-        $pop.find('.tmp-pop-width').on('change', function () {
-            col.settings.width = $(this).val().trim() || 'auto';
-            isDirty = true;
-        });
-
-        $pop.find('.tmp-pop-align').on('change', function () {
-            col.settings.align = $(this).val();
-            isDirty = true;
-        });
-
-        $pop.find('.tmp-pop-group1').on('change input', function () {
-            var val = $(this).val().trim();
-            col.settings.header_group1 = val;
-            if (val) {
-                $pop.find('.tmp-pop-group2-wrap').slideDown(150);
-            } else {
-                col.settings.header_group2 = '';
-                $pop.find('.tmp-pop-group2').val('');
-                $pop.find('.tmp-pop-group2-wrap').slideUp(150);
-            }
-            updateGroupIndicator($th, col);
-            isDirty = true;
-        });
-
-        $pop.find('.tmp-pop-group2').on('change input', function () {
-            col.settings.header_group2 = $(this).val().trim();
-            isDirty = true;
-        });
-
-        $pop.find('.tmp-pop-delete').on('click', function () {
-            if (!confirm('Weet je zeker dat je deze kolom wilt verwijderen?')) return;
-            columns = columns.filter(function(c) { return (c.temp_key || c.id) + '' !== colKey; });
-            closeColumnPopover();
+            hideMergeToolbar();
             rebuildRowTable();
-            isDirty = true;
         });
 
-        setTimeout(function () {
-            $(document).on('click.colpop', function (e) {
-                if (!$(e.target).closest('.tmp-col-popover, .tmp-col-header-cell').length) {
-                    closeColumnPopover();
-                    rebuildRowTable();
+        $bar.find('.tmp-unmerge-btn').on('click', function () {
+            keys.forEach(function (k) {
+                var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
+                if (col) {
+                    col.settings.header_group1 = '';
+                    col.settings.header_group2 = '';
                 }
             });
-        }, 50);
+            isDirty = true;
+            hideMergeToolbar();
+            rebuildRowTable();
+        });
     }
 
-    function updateGroupIndicator($th, col) {
-        $th.find('.tmp-col-group-indicator').remove();
-        if (col.settings.header_group1) {
-            $th.append('<span class="tmp-col-group-indicator" title="Groep: ' + escAttr(col.settings.header_group1) + '">⊞</span>');
-        }
-    }
-
-    function closeColumnPopover() {
-        $('.tmp-col-popover').remove();
-        $(document).off('click.colpop');
+    function hideMergeToolbar() {
+        $('.tmp-merge-toolbar').remove();
     }
 
     var rowTypeOrder = ['data', 'group_1', 'group_2', 'group_3', 'footer'];
