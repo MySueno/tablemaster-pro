@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.29
+Stable tag: 1.3.30
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,12 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.30 =
+* Fix: Kolomlabel rich text (vet/cursief) wordt nu correct opgeslagen — sanitize_text_field vervangen door wp_kses_post in save_table_structure
+* Fix: G2 groep-headers tonen nu rich text correct — esc_html vervangen door wp_kses_post (consistent met G1)
+* Fix: CSV export detecteert kolommen nu via thead headers — werkt correct bij samengevoegde cellen in eerste datarij
+* Fix: Versie-mismatch opgelost — plugin header en TMP_VERSION constant nu consistent
 
 = 1.3.29 =
 * Fix: Sorteren behoudt nu ouder-kind boomstructuur — kinderrijen verschijnen direct onder hun groep in plaats van na alle groepen

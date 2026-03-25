@@ -624,10 +624,15 @@
         if (!table) return;
 
         var rows  = [];
-        var firstDataRow = table.querySelector('tbody .tmp-row[data-row-type="data"]');
         var colIds = [];
-        if (firstDataRow) {
-            firstDataRow.querySelectorAll('.tmp-td[data-col-id]').forEach(function (td) {
+        var allDataRows = table.querySelectorAll('tbody .tmp-row[data-row-type="data"]');
+        var bestRow = null, bestCount = 0;
+        allDataRows.forEach(function (dr) {
+            var tds = dr.querySelectorAll('.tmp-td[data-col-id]');
+            if (tds.length > bestCount) { bestCount = tds.length; bestRow = dr; }
+        });
+        if (bestRow) {
+            bestRow.querySelectorAll('.tmp-td[data-col-id]').forEach(function (td) {
                 colIds.push(td.getAttribute('data-col-id'));
             });
         }

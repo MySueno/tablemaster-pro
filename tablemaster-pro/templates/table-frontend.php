@@ -378,7 +378,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                                     else break;
                                 }
                         ?>
-                            <th class="tmp-th tmp-th-grouped" colspan="<?php echo $g2_colspan; ?>"><?php echo esc_html( $cm['g2'] ); ?></th>
+                            <th class="tmp-th tmp-th-grouped" colspan="<?php echo $g2_colspan; ?>"><?php echo wp_kses_post( $cm['g2'] ); ?></th>
                         <?php endif;
                             $prev_g2_key = $g2_key;
                         endif;

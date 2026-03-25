@@ -665,7 +665,7 @@ class TableMaster_DB {
                 $wpdb->update(
                     "{$wpdb->prefix}tablemaster_columns",
                     array(
-                        'label'       => sanitize_text_field( $col['label'] ),
+                        'label'       => mb_substr( wp_kses_post( $col['label'] ), 0, 500 ),
                         'type'        => sanitize_text_field( $col['type'] ),
                         'order_index' => $order_index,
                         'settings'    => wp_json_encode( $col_settings ),
@@ -682,7 +682,7 @@ class TableMaster_DB {
                     "{$wpdb->prefix}tablemaster_columns",
                     array(
                         'table_id'    => $table_id,
-                        'label'       => sanitize_text_field( $col['label'] ),
+                        'label'       => mb_substr( wp_kses_post( $col['label'] ), 0, 500 ),
                         'type'        => sanitize_text_field( $col['type'] ),
                         'order_index' => $order_index,
                         'settings'    => wp_json_encode( $col_settings ),
