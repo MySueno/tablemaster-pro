@@ -242,7 +242,10 @@ foreach ( $font_css_map as $fk => $selector ) :
                             $uw  = $cm['cs']['width'] ?? 'auto';
                             if ( $uw !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $uw ) ) $uw = 'auto';
                             if ( $uw === 'auto' && $default_col_w !== '' ) $uw = $default_col_w;
-                            $us  = $uw !== 'auto' ? 'width:' . esc_attr( $uw ) . ';' : '';
+                            $ug_align = in_array( $cm['cs']['align'] ?? 'left', $valid_aligns, true ) ? $cm['cs']['align'] : 'left';
+                            $us  = '';
+                            if ( $uw !== 'auto' ) $us .= 'width:' . esc_attr( $uw ) . ';';
+                            $us .= 'text-align:' . esc_attr( $ug_align ) . ';';
                             $ug_sort = ! empty( $table_sortable );
                             $ug_class = 'tmp-th tmp-th-grouped';
                             if ( $ug_sort ) $ug_class .= ' tmp-sortable';
@@ -250,7 +253,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                             <th class="<?php echo esc_attr( $ug_class ); ?>" rowspan="<?php echo $max_depth; ?>"
                                 data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
                                 data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
-                                <?php if ( $us ) echo 'style="' . esc_attr( $us ) . '"'; ?>
+                                style="<?php echo esc_attr( $us ); ?>"
                                 <?php echo $ug_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
                                 <?php echo esc_html( $cm['col']->label ); ?>
                                 <?php if ( $ug_sort ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
@@ -274,6 +277,8 @@ foreach ( $font_css_map as $fk => $selector ) :
                         if ( $lw === 'auto' && $default_col_w !== '' ) $lw = $default_col_w;
                         $ls  = $lw !== 'auto' ? 'width:' . esc_attr( $lw ) . ';' : '';
                         $sort_r2 = ! empty( $table_sortable );
+                        $align_r2 = in_array( $cm['cs']['align'] ?? 'left', $valid_aligns, true ) ? $cm['cs']['align'] : 'left';
+                        $ls_full  = $ls . 'text-align:' . esc_attr( $align_r2 ) . ';';
                         if ( $cm['g2'] === '' && $max_depth === 2 ) :
                             $th2_class = 'tmp-th tmp-th-grouped';
                             if ( $sort_r2 ) $th2_class .= ' tmp-sortable';
@@ -281,7 +286,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                             <th class="<?php echo esc_attr( $th2_class ); ?>"
                                 data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
                                 data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
-                                <?php if ( $ls ) echo 'style="' . esc_attr( $ls ) . '"'; ?>
+                                style="<?php echo esc_attr( $ls_full ); ?>"
                                 <?php echo $sort_r2 ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
                                 <?php echo esc_html( $cm['col']->label ); ?>
                                 <?php if ( $sort_r2 ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
@@ -293,7 +298,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                             <th class="<?php echo esc_attr( $th2_class ); ?>" rowspan="2"
                                 data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
                                 data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
-                                <?php if ( $ls ) echo 'style="' . esc_attr( $ls ) . '"'; ?>
+                                style="<?php echo esc_attr( $ls_full ); ?>"
                                 <?php echo $sort_r2 ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
                                 <?php echo esc_html( $cm['col']->label ); ?>
                                 <?php if ( $sort_r2 ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
@@ -321,13 +326,15 @@ foreach ( $font_css_map as $fk => $selector ) :
                         if ( $lw3 !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $lw3 ) ) $lw3 = 'auto';
                         if ( $lw3 === 'auto' && $default_col_w !== '' ) $lw3 = $default_col_w;
                         $ls3  = $lw3 !== 'auto' ? 'width:' . esc_attr( $lw3 ) . ';' : '';
+                        $align_r3 = in_array( $cs['align'] ?? 'left', $valid_aligns, true ) ? $cs['align'] : 'left';
+                        $ls3_full = $ls3 . 'text-align:' . esc_attr( $align_r3 ) . ';';
                         $th_class = 'tmp-th tmp-th-grouped';
                         if ( $sort )   $th_class .= ' tmp-sortable';
                     ?>
                         <th class="<?php echo esc_attr( $th_class ); ?>"
                             data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
                             data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
-                            <?php if ( $ls3 ) echo 'style="' . esc_attr( $ls3 ) . '"'; ?>
+                            style="<?php echo esc_attr( $ls3_full ); ?>"
                             <?php echo $sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
                             <?php echo esc_html( $cm['col']->label ); ?>
                             <?php if ( $sort ) : ?>

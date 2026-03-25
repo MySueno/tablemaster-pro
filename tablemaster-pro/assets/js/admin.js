@@ -184,8 +184,10 @@
 
         var headerCols = columns.map(function (col, ci) {
             var key = col.temp_key || col.id;
+            var groupIcon = col.settings.header_group1 ? '<span class="tmp-col-group-indicator" title="Groep: ' + escAttr(col.settings.header_group1) + '">⊞</span>' : '';
             return '<th class="tmp-col-header-cell" data-col-key="' + escAttr(key + '') + '" data-col-idx="' + ci + '" draggable="true">' +
                 '<span class="tmp-col-header-label">' + escHtml(col.label || 'Kolom') + '</span>' +
+                groupIcon +
                 '<span class="tmp-col-delete-btn dashicons dashicons-no-alt" title="Kolom verwijderen"></span>' +
             '</th>';
         }).join('');
@@ -313,18 +315,48 @@
         var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
         if (!col) return;
 
+        var s = col.settings;
+        var hasG1 = !!(s.header_group1 || '').trim();
+        var g2Display = hasG1 ? '' : 'display:none;';
+
         var $pop = $('<div class="tmp-col-popover" data-col-key="' + escAttr(colKey) + '">' +
+            '<div class="tmp-pop-section-title">Kolom</div>' +
             '<div class="tmp-pop-field">' +
-                '<label>Kolomnaam</label>' +
+                '<label>Naam</label>' +
                 '<input type="text" class="tmp-pop-label" value="' + escAttr(col.label) + '">' +
             '</div>' +
-            '<div class="tmp-pop-field">' +
-                '<label>Header groep 1</label>' +
-                '<input type="text" class="tmp-pop-group1" value="' + escAttr(col.settings.header_group1 || '') + '" placeholder="Bijv. Ambulant">' +
+            '<div class="tmp-pop-row">' +
+                '<div class="tmp-pop-half">' +
+                    '<div class="tmp-pop-field">' +
+                        '<label>Breedte</label>' +
+                        '<input type="text" class="tmp-pop-width" value="' + escAttr(s.width || 'auto') + '" placeholder="auto">' +
+                    '</div>' +
+                '</div>' +
+                '<div class="tmp-pop-half">' +
+                    '<div class="tmp-pop-field">' +
+                        '<label>Uitlijning</label>' +
+                        '<select class="tmp-pop-align">' +
+                            '<option value="left"' + (s.align === 'left' ? ' selected' : '') + '>Links</option>' +
+                            '<option value="center"' + (s.align === 'center' ? ' selected' : '') + '>Midden</option>' +
+                            '<option value="right"' + (s.align === 'right' ? ' selected' : '') + '>Rechts</option>' +
+                        '</select>' +
+                    '</div>' +
+                '</div>' +
             '</div>' +
+            '<div class="tmp-pop-checks">' +
+                '<label><input type="checkbox" class="tmp-pop-sortable"' + (s.sortable !== false ? ' checked' : '') + '> Sorteerbaar</label>' +
+                '<label><input type="checkbox" class="tmp-pop-filterable"' + (s.filterable !== false ? ' checked' : '') + '> Filterbaar</label>' +
+            '</div>' +
+            '<div class="tmp-pop-divider"></div>' +
+            '<div class="tmp-pop-section-title">Kolomgroepering <span class="tmp-pop-hint">(optioneel)</span></div>' +
+            '<p class="tmp-pop-help">Kolommen met dezelfde groepnaam worden samengevoegd in de header. Bijv. &quot;Ambulant&quot; boven twee kolommen.</p>' +
             '<div class="tmp-pop-field">' +
-                '<label>Header groep 2</label>' +
-                '<input type="text" class="tmp-pop-group2" value="' + escAttr(col.settings.header_group2 || '') + '" placeholder="Bijv. sub-groep">' +
+                '<label>Groep (niveau 1)</label>' +
+                '<input type="text" class="tmp-pop-group1" value="' + escAttr(s.header_group1 || '') + '" placeholder="Bijv. Ambulant">' +
+            '</div>' +
+            '<div class="tmp-pop-field tmp-pop-group2-wrap" style="' + g2Display + '">' +
+                '<label>Subgroep (niveau 2)</label>' +
+                '<input type="text" class="tmp-pop-group2" value="' + escAttr(s.header_group2 || '') + '" placeholder="Bijv. sub-groep">' +
             '</div>' +
             '<div class="tmp-pop-actions">' +
                 '<button type="button" class="button button-small tmp-pop-delete" style="color:#dc3232;">Kolom verwijderen</button>' +
@@ -339,8 +371,14 @@
         if (left < 8) left = 8;
         if (left + popW > $(window).width() - 8) left = $(window).width() - popW - 8;
 
+        var topPos = thOff.top + $th.outerHeight() + 6;
+        var maxTop = $(window).scrollTop() + $(window).height() - 420;
+        if (topPos > maxTop && maxTop > thOff.top - 420) {
+            topPos = thOff.top - $pop.outerHeight() - 6;
+        }
+
         $pop.css({
-            top:  thOff.top + $th.outerHeight() + 6,
+            top:  topPos,
             left: left,
         });
 
@@ -350,8 +388,37 @@
             isDirty = true;
         });
 
+        $pop.find('.tmp-pop-width').on('change', function () {
+            col.settings.width = $(this).val().trim() || 'auto';
+            isDirty = true;
+        });
+
+        $pop.find('.tmp-pop-align').on('change', function () {
+            col.settings.align = $(this).val();
+            isDirty = true;
+        });
+
+        $pop.find('.tmp-pop-sortable').on('change', function () {
+            col.settings.sortable = $(this).is(':checked');
+            isDirty = true;
+        });
+
+        $pop.find('.tmp-pop-filterable').on('change', function () {
+            col.settings.filterable = $(this).is(':checked');
+            isDirty = true;
+        });
+
         $pop.find('.tmp-pop-group1').on('change input', function () {
-            col.settings.header_group1 = $(this).val().trim();
+            var val = $(this).val().trim();
+            col.settings.header_group1 = val;
+            if (val) {
+                $pop.find('.tmp-pop-group2-wrap').slideDown(150);
+            } else {
+                col.settings.header_group2 = '';
+                $pop.find('.tmp-pop-group2').val('');
+                $pop.find('.tmp-pop-group2-wrap').slideUp(150);
+            }
+            updateGroupIndicator($th, col);
             isDirty = true;
         });
 
@@ -361,6 +428,7 @@
         });
 
         $pop.find('.tmp-pop-delete').on('click', function () {
+            if (!confirm('Weet je zeker dat je deze kolom wilt verwijderen?')) return;
             columns = columns.filter(function(c) { return (c.temp_key || c.id) + '' !== colKey; });
             closeColumnPopover();
             rebuildRowTable();
@@ -375,6 +443,13 @@
                 }
             });
         }, 50);
+    }
+
+    function updateGroupIndicator($th, col) {
+        $th.find('.tmp-col-group-indicator').remove();
+        if (col.settings.header_group1) {
+            $th.append('<span class="tmp-col-group-indicator" title="Groep: ' + escAttr(col.settings.header_group1) + '">⊞</span>');
+        }
     }
 
     function closeColumnPopover() {

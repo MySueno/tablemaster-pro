@@ -34,8 +34,13 @@ Functies:
 == Changelog ==
 
 = 1.3.9 =
-* Nieuw: Header groep 1 en groep 2 velden toegevoegd aan de kolom-popover in de admin
-* Fix: Gegroepeerde kolomkoppen (met colspan) worden nu gecentreerd weergegeven
+* Nieuw: Volledig vernieuwde kolom-popover met alle instellingen (naam, breedte, uitlijning, sorteerbaar, filterbaar, groepering)
+* Nieuw: Header groepering — kolommen samenvoegen met Groep niveau 1 en 2 voor multi-level tabelkoppen
+* Nieuw: Visuele indicator op kolomkoppen met actieve groepering in de admin
+* Nieuw: Hulptekst en conditionele weergave van groep-velden (niveau 2 verschijnt pas bij ingevuld niveau 1)
+* Nieuw: Bevestigingsdialoog bij kolom verwijderen
+* Fix: Gegroepeerde kolomkoppen worden nu gecentreerd weergegeven
+* Fix: Per-kolom uitlijning werkt nu correct in gegroepeerde header-modus
 * Fix: Subtiele randen tussen gegroepeerde kolomkoppen voor betere visuele scheiding
 
 = 1.3.8 =

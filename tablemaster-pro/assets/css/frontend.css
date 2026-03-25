@@ -199,7 +199,8 @@
     border-right: 1px solid rgba(255,255,255,0.25);
 }
 
-.tmp-th-grouped[colspan]:first-child {
+.tmp-th-grouped[colspan]:first-child,
+.tmp-toggle-col + .tmp-th-grouped[colspan] {
     border-left: none;
 }
 
