@@ -386,18 +386,19 @@
         var colType   = sortHeader ? sortHeader.getAttribute('data-col-type') : 'text';
         var sortColId = sortHeader ? sortHeader.getAttribute('data-col-id') : null;
         var dir       = this.sortDir === 'asc' ? 1 : -1;
-        var collapsible = this.collapsible;
 
-        // Group rows by parent to sort within groups
-        var groups = {}; // parentId => [rows]
+        var groups = {};
+        var parentOrder = [];
         this.allRows.forEach(function (row) {
             var pid = row.getAttribute('data-parent-id') || '__root__';
-            if (!groups[pid]) groups[pid] = [];
+            if (!groups[pid]) {
+                groups[pid] = [];
+                parentOrder.push(pid);
+            }
             groups[pid].push(row);
         });
 
-        // Sort data rows within each group
-        Object.keys(groups).forEach(function (pid) {
+        parentOrder.forEach(function (pid) {
             var groupRows = groups[pid];
             var dataRows  = groupRows.filter(function (r) { return r.getAttribute('data-row-type') === 'data'; });
             var nonData   = groupRows.filter(function (r) { var t = r.getAttribute('data-row-type'); return t !== 'data' && t !== 'footer'; });
@@ -432,11 +433,12 @@
                 return dir * va.localeCompare(vb, undefined, { numeric: true });
             });
 
-            // Re-append: non-data rows first (group headers), then sorted data, then footer rows at the end
             nonData.concat(dataRows).concat(footerRows).forEach(function (row) {
                 self.tbody.appendChild(row);
             });
         });
+
+        this.allRows = Array.prototype.slice.call(this.tbody.querySelectorAll('.tmp-row'));
     };
 
     TableMasterInstance.prototype.applyPagination = function () {
@@ -495,8 +497,7 @@
                 return;
             }
             var rowId = row.getAttribute('data-row-id');
-            var isCollapsed = row.getAttribute('data-collapsed') === '1';
-            row.style.display = (visibleParents[rowId] || isCollapsed) ? '' : 'none';
+            row.style.display = visibleParents[rowId] ? '' : 'none';
         });
 
         this.updateInfo(showing, total, this.currentPage, totalPages);
