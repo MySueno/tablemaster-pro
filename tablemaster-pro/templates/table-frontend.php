@@ -277,6 +277,15 @@ foreach ( $font_css_map as $fk => $selector ) :
                     endforeach; ?>
                 </tr>
             <?php else : ?>
+                <?php
+                $g1_has_g2 = array();
+                foreach ( $col_meta as $cm ) {
+                    if ( $cm['g1'] !== '' && $cm['g2'] !== '' ) {
+                        $g1_has_g2[ $cm['g1'] ] = true;
+                    }
+                }
+                $rows_below = ( $max_depth - 1 );
+                ?>
                 <tr class="tmp-header-row tmp-header-row-1">
                     <?php if ( $collapsible ) : ?>
                         <th class="tmp-toggle-col" rowspan="<?php echo $max_depth; ?>" aria-hidden="true"></th>
@@ -311,8 +320,23 @@ foreach ( $font_css_map as $fk => $selector ) :
                                 if ( $col_meta[ $j ]['g1'] === $cm['g1'] ) $g1_colspan++;
                                 else break;
                             }
+                            $g1_no_sub = ! isset( $g1_has_g2[ $cm['g1'] ] );
+                            $g1_sort   = $g1_no_sub && ! empty( $table_sortable );
+                            $g1_class  = 'tmp-th tmp-th-grouped';
+                            if ( $g1_sort ) $g1_class .= ' tmp-sortable';
+                            $g1_align  = in_array( $cm['cs']['align'] ?? 'left', $valid_aligns, true ) ? $cm['cs']['align'] : 'left';
+                            $g1_style  = 'text-align:' . esc_attr( $g1_align ) . ';';
                         ?>
-                            <th class="tmp-th tmp-th-grouped" colspan="<?php echo $g1_colspan; ?>"><?php echo esc_html( $cm['g1'] ); ?></th>
+                            <th class="<?php echo esc_attr( $g1_class ); ?>"
+                                colspan="<?php echo $g1_colspan; ?>"
+                                <?php if ( $g1_no_sub ) : ?>rowspan="<?php echo $rows_below + 1; ?>"<?php endif; ?>
+                                <?php if ( $g1_no_sub ) : ?>data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"<?php endif; ?>
+                                <?php if ( $g1_no_sub ) : ?>data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"<?php endif; ?>
+                                style="<?php echo esc_attr( $g1_style ); ?>"
+                                <?php echo $g1_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
+                                <?php echo esc_html( $cm['g1'] ); ?>
+                                <?php if ( $g1_sort ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
+                            </th>
                         <?php endif;
                         $prev_g1 = $cm['g1'];
                     endforeach; ?>
@@ -322,6 +346,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                     $prev_g2_key = null;
                     foreach ( $col_meta as $idx => $cm ) :
                         if ( $cm['g1'] === '' ) continue;
+                        if ( ! isset( $g1_has_g2[ $cm['g1'] ] ) ) continue;
                         $lw  = $cm['cs']['width'] ?? 'auto';
                         if ( $lw !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $lw ) ) $lw = 'auto';
                         if ( $lw === 'auto' && $default_col_w !== '' ) $lw = $default_col_w;
@@ -360,6 +385,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                 <tr class="tmp-header-row tmp-header-row-3">
                     <?php foreach ( $col_meta as $idx => $cm ) :
                         if ( $cm['g1'] === '' ) continue;
+                        if ( ! isset( $g1_has_g2[ $cm['g1'] ] ) ) continue;
                         if ( $cm['g2'] === '' ) continue;
                         $cs     = $cm['cs'];
                         $sort   = ! empty( $table_sortable );

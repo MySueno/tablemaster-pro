@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.20
+Stable tag: 1.3.21
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,9 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.21 =
+* Fix: Samengevoegde kolomkoppen (g1 zonder g2-subgroepen) tonen nu als één brede cel — geen extra sub-rijen meer op de frontend
 
 = 1.3.20 =
 * Nieuw: WYSIWYG celeditor — vet, cursief en links worden visueel weergegeven in de admin (geen ruwe HTML-tags meer)
