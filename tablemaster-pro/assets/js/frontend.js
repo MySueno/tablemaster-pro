@@ -388,55 +388,63 @@
         var dir       = this.sortDir === 'asc' ? 1 : -1;
 
         var groups = {};
-        var parentOrder = [];
         this.allRows.forEach(function (row) {
             var pid = row.getAttribute('data-parent-id') || '__root__';
-            if (!groups[pid]) {
-                groups[pid] = [];
-                parentOrder.push(pid);
-            }
+            if (!groups[pid]) groups[pid] = [];
             groups[pid].push(row);
         });
 
-        parentOrder.forEach(function (pid) {
-            var groupRows = groups[pid];
-            var dataRows  = groupRows.filter(function (r) { return r.getAttribute('data-row-type') === 'data'; });
-            var nonData   = groupRows.filter(function (r) { var t = r.getAttribute('data-row-type'); return t !== 'data' && t !== 'footer'; });
-            var footerRows = groupRows.filter(function (r) { return r.getAttribute('data-row-type') === 'footer'; });
+        function compareCells(a, b) {
+            var cellA = sortColId ? a.querySelector('.tmp-td[data-col-id="' + sortColId + '"]') : null;
+            var cellB = sortColId ? b.querySelector('.tmp-td[data-col-id="' + sortColId + '"]') : null;
+            var va = cellA ? cellA.textContent.trim() : '';
+            var vb = cellB ? cellB.textContent.trim() : '';
 
-            dataRows.sort(function (a, b) {
-                var cellA = sortColId ? a.querySelector('.tmp-td[data-col-id="' + sortColId + '"]') : null;
-                var cellB = sortColId ? b.querySelector('.tmp-td[data-col-id="' + sortColId + '"]') : null;
-                var va = cellA ? cellA.textContent.trim() : '';
-                var vb = cellB ? cellB.textContent.trim() : '';
+            if (va === '' && vb === '') return 0;
+            if (va === '') return 1;
+            if (vb === '') return -1;
 
-                if (va === '' && vb === '') return 0;
-                if (va === '') return 1;
-                if (vb === '') return -1;
+            if (colType === 'number') {
+                var na = parseLocalNumber(va);
+                var nb = parseLocalNumber(vb);
+                if (isNaN(na) && isNaN(nb)) return 0;
+                if (isNaN(na)) return 1;
+                if (isNaN(nb)) return -1;
+                return dir * (na - nb);
+            }
+            if (colType === 'date') {
+                var da = new Date(va).getTime();
+                var db = new Date(vb).getTime();
+                if (isNaN(da) && isNaN(db)) return 0;
+                if (isNaN(da)) return 1;
+                if (isNaN(db)) return -1;
+                return dir * (da - db);
+            }
+            return dir * va.localeCompare(vb, undefined, { numeric: true });
+        }
 
-                if (colType === 'number') {
-                    var na = parseLocalNumber(va);
-                    var nb = parseLocalNumber(vb);
-                    if (isNaN(na) && isNaN(nb)) return 0;
-                    if (isNaN(na)) return 1;
-                    if (isNaN(nb)) return -1;
-                    return dir * (na - nb);
-                }
-                if (colType === 'date') {
-                    var da = new Date(va).getTime();
-                    var db = new Date(vb).getTime();
-                    if (isNaN(da) && isNaN(db)) return 0;
-                    if (isNaN(da)) return 1;
-                    if (isNaN(db)) return -1;
-                    return dir * (da - db);
-                }
-                return dir * va.localeCompare(vb, undefined, { numeric: true });
-            });
-
-            nonData.concat(dataRows).concat(footerRows).forEach(function (row) {
-                self.tbody.appendChild(row);
-            });
+        Object.keys(groups).forEach(function (pid) {
+            var rows = groups[pid];
+            var dataRows = rows.filter(function (r) { return r.getAttribute('data-row-type') === 'data'; });
+            dataRows.sort(compareCells);
+            var nonData = rows.filter(function (r) { var t = r.getAttribute('data-row-type'); return t !== 'data' && t !== 'footer'; });
+            var footerRows = rows.filter(function (r) { return r.getAttribute('data-row-type') === 'footer'; });
+            groups[pid] = nonData.concat(dataRows).concat(footerRows);
         });
+
+        var visited = {};
+        function appendTree(parentId) {
+            if (visited[parentId]) return;
+            visited[parentId] = true;
+            var rows = groups[parentId];
+            if (!rows) return;
+            rows.forEach(function (row) {
+                self.tbody.appendChild(row);
+                var rowId = row.getAttribute('data-row-id');
+                if (groups[rowId]) appendTree(rowId);
+            });
+        }
+        appendTree('__root__');
 
         this.allRows = Array.prototype.slice.call(this.tbody.querySelectorAll('.tmp-row'));
     };

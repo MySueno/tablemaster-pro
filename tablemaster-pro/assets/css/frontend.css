@@ -287,16 +287,19 @@
 .tmp-type-group_1 {
     background: var(--tmp-group1-bg, #D32637);
     color: var(--tmp-group1-text, #fff);
+    height: 34px;
 }
 
 .tmp-type-group_2 {
     background: var(--tmp-group2-bg, #F9E6E7);
     color: var(--tmp-group2-text, #1a1a1a);
+    height: 34px;
 }
 
 .tmp-type-group_3 {
     background: var(--tmp-group3-bg, #ffffff);
     color: var(--tmp-group3-text, #1a1a1a);
+    height: 34px;
 }
 
 .tmp-type-group_1 .tmp-td,

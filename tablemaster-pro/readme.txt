@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.28
+Stable tag: 1.3.29
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.29 =
+* Fix: Sorteren behoudt nu ouder-kind boomstructuur — kinderrijen verschijnen direct onder hun groep in plaats van na alle groepen
+* Fix: sortRows herschreven met recursieve appendTree() functie voor correcte DOM-volgorde na sortering
 
 = 1.3.28 =
 * Fix: Groepsrijen zonder kinderrijen worden nu altijd getoond op de frontend — waren onzichtbaar door pagineringslogica
