@@ -366,12 +366,11 @@
 
         var self      = this;
         var colIdx    = this.sortColIndex;
-        var colType   = (this.headers[colIdx] || {}).getAttribute ? this.headers[colIdx].getAttribute('data-col-type') : 'text';
+        var sortHeader = this.headers[colIdx];
+        var colType   = sortHeader ? sortHeader.getAttribute('data-col-type') : 'text';
+        var sortColId = sortHeader ? sortHeader.getAttribute('data-col-id') : null;
         var dir       = this.sortDir === 'asc' ? 1 : -1;
         var collapsible = this.collapsible;
-
-        // Adjust colIdx for toggle column
-        var actualCellIdx = collapsible ? colIdx + 1 : colIdx;
 
         // Group rows by parent to sort within groups
         var groups = {}; // parentId => [rows]
@@ -389,8 +388,8 @@
             var footerRows = groupRows.filter(function (r) { return r.getAttribute('data-row-type') === 'footer'; });
 
             dataRows.sort(function (a, b) {
-                var cellA = a.querySelectorAll('td')[actualCellIdx];
-                var cellB = b.querySelectorAll('td')[actualCellIdx];
+                var cellA = sortColId ? a.querySelector('.tmp-td[data-col-id="' + sortColId + '"]') : null;
+                var cellB = sortColId ? b.querySelector('.tmp-td[data-col-id="' + sortColId + '"]') : null;
                 var va = cellA ? cellA.textContent.trim() : '';
                 var vb = cellB ? cellB.textContent.trim() : '';
 

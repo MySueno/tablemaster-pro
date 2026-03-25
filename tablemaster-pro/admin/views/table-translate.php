@@ -131,6 +131,50 @@ foreach ( $columns as $col ) {
     if ( $translated !== '' ) $translated_fields++;
 }
 
+$registered_hg = array();
+$has_hg = false;
+foreach ( $columns as $col ) {
+    $cs = json_decode( $col->settings, true );
+    $g1 = trim( $cs['header_group1'] ?? '' );
+    $g2 = trim( $cs['header_group2'] ?? '' );
+    if ( $g1 !== '' && ! isset( $registered_hg[ 'g1_' . $g1 ] ) ) {
+        if ( ! $has_hg ) {
+            $translate_rows[] = array( 'section' => __( 'Kolomgroepen', TMP_TEXT_DOMAIN ) );
+            $has_hg = true;
+        }
+        $gname = 'header_group1_' . md5( $g1 );
+        $gt    = tmp_get_translation( $context, $gname, $target_lang );
+        $translate_rows[] = array(
+            'section' => '',
+            'label'   => $g1 . ' (niveau 1)',
+            'name'    => $gname,
+            'original'=> $g1,
+            'type'    => 'input',
+        );
+        $total_fields++;
+        if ( $gt !== '' ) $translated_fields++;
+        $registered_hg[ 'g1_' . $g1 ] = true;
+    }
+    if ( $g2 !== '' && ! isset( $registered_hg[ 'g2_' . $g2 ] ) ) {
+        if ( ! $has_hg ) {
+            $translate_rows[] = array( 'section' => __( 'Kolomgroepen', TMP_TEXT_DOMAIN ) );
+            $has_hg = true;
+        }
+        $gname = 'header_group2_' . md5( $g2 );
+        $gt    = tmp_get_translation( $context, $gname, $target_lang );
+        $translate_rows[] = array(
+            'section' => '',
+            'label'   => $g2 . ' (niveau 2)',
+            'name'    => $gname,
+            'original'=> $g2,
+            'type'    => 'input',
+        );
+        $total_fields++;
+        if ( $gt !== '' ) $translated_fields++;
+        $registered_hg[ 'g2_' . $g2 ] = true;
+    }
+}
+
 $known_translations = array();
 
 foreach ( $translate_rows as $tr ) {

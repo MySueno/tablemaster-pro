@@ -100,6 +100,25 @@ class TableMaster_WPML {
             $current_names[] = $name;
         }
 
+        $registered_groups = array();
+        foreach ( $data['columns'] as $col ) {
+            $cs = json_decode( $col->settings, true );
+            $g1 = trim( $cs['header_group1'] ?? '' );
+            $g2 = trim( $cs['header_group2'] ?? '' );
+            if ( $g1 !== '' && ! isset( $registered_groups[ 'g1_' . $g1 ] ) ) {
+                $gname = 'header_group1_' . md5( $g1 );
+                self::wpml_register_string( $context, $gname, $g1 );
+                $current_names[] = $gname;
+                $registered_groups[ 'g1_' . $g1 ] = true;
+            }
+            if ( $g2 !== '' && ! isset( $registered_groups[ 'g2_' . $g2 ] ) ) {
+                $gname = 'header_group2_' . md5( $g2 );
+                self::wpml_register_string( $context, $gname, $g2 );
+                $current_names[] = $gname;
+                $registered_groups[ 'g2_' . $g2 ] = true;
+            }
+        }
+
         foreach ( $data['rows'] as $row ) {
             foreach ( $row->cells as $col_id => $content ) {
                 if ( trim( $content ) === '' ) continue;

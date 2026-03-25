@@ -66,6 +66,26 @@ class TableMaster_Shortcode {
                 $col->label,
                 $lang
             );
+
+            $cs = json_decode( $col->settings, true );
+            $changed = false;
+            $g1 = trim( $cs['header_group1'] ?? '' );
+            $g2 = trim( $cs['header_group2'] ?? '' );
+            if ( $g1 !== '' ) {
+                $cs['header_group1'] = TableMaster_WPML::translate_string(
+                    $context, 'header_group1_' . md5( $g1 ), $g1, $lang
+                );
+                $changed = true;
+            }
+            if ( $g2 !== '' ) {
+                $cs['header_group2'] = TableMaster_WPML::translate_string(
+                    $context, 'header_group2_' . md5( $g2 ), $g2, $lang
+                );
+                $changed = true;
+            }
+            if ( $changed ) {
+                $col->settings = wp_json_encode( $cs );
+            }
         }
         unset( $col );
 

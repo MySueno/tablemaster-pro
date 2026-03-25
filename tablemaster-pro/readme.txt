@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.10
+Stable tag: 1.3.11
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,13 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.11 =
+* Fix: Sortering werkt nu correct bij tabellen met samengevoegde kolomkoppen (data-col-id lookup)
+* Fix: Klik buiten tabel deselecteert kolommen en verbergt samenvoeg-toolbar
+* Fix: Escape bij kolomnaam bewerken herstelt nu correct de originele naam
+* Fix: Merge toolbar wordt netjes opgeruimd bij tabel-rebuild
+* Nieuw: WPML-vertaling voor kolomgroepsnamen (niveau 1 en 2) — registratie, vertaalweergave en frontend
 
 = 1.3.10 =
 * Fix: Versie bump om browser-caching van admin JS/CSS te doorbreken
