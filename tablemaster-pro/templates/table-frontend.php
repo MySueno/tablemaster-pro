@@ -494,6 +494,7 @@ foreach ( $font_css_map as $fk => $selector ) :
 
     <div class="tmp-controls tmp-controls-bottom">
         <?php if ( $show_pagination ) : ?>
+            <span class="tmp-info-text"></span>
             <nav class="tmp-pagination" aria-label="<?php esc_attr_e( 'Tabel paginering', TMP_TEXT_DOMAIN ); ?>"></nav>
         <?php endif; ?>
     </div>

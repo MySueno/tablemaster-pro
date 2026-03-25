@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.11
+Stable tag: 1.3.12
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,12 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.12 =
+* Fix: Zoeken en kolomfilters verbergen nu daadwerkelijk gefilterde rijen (ontbrekende CSS regel)
+* Fix: CSV-export matcht kolomkoppen correct met celdata bij samengevoegde headers
+* Fix: Sticky header checkbox triggert nu "onopgeslagen wijzigingen" waarschuwing
+* Nieuw: Paginering toont nu "X–Y van Z resultaten" tekst onder de tabel
 
 = 1.3.11 =
 * Fix: Sortering werkt nu correct bij tabellen met samengevoegde kolomkoppen (data-col-id lookup)

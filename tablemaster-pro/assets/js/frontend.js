@@ -560,10 +560,18 @@
         if (!table) return;
 
         var rows  = [];
-        var ths   = table.querySelectorAll('thead .tmp-th[data-col-id]');
+        var firstDataRow = table.querySelector('tbody .tmp-row[data-row-type="data"]');
+        var colIds = [];
+        if (firstDataRow) {
+            firstDataRow.querySelectorAll('.tmp-td[data-col-id]').forEach(function (td) {
+                colIds.push(td.getAttribute('data-col-id'));
+            });
+        }
+
         var hRow  = [];
-        ths.forEach(function (th) {
-            hRow.push('"' + th.textContent.replace(/"/g, '""').trim() + '"');
+        colIds.forEach(function (colId) {
+            var th = table.querySelector('thead .tmp-th[data-col-id="' + colId + '"]');
+            hRow.push('"' + (th ? th.textContent.replace(/"/g, '""').trim() : '') + '"');
         });
         rows.push(hRow.join(','));
 
@@ -573,10 +581,9 @@
             var rowType = row.getAttribute('data-row-type');
             if (rowType !== 'data') return;
             var cols = [];
-            row.querySelectorAll('.tmp-td').forEach(function (td) {
-                if (!td.classList.contains('tmp-toggle-cell')) {
-                    cols.push('"' + td.textContent.replace(/"/g, '""').trim() + '"');
-                }
+            colIds.forEach(function (colId) {
+                var td = row.querySelector('.tmp-td[data-col-id="' + colId + '"]');
+                cols.push('"' + (td ? td.textContent.replace(/"/g, '""').trim() : '') + '"');
             });
             rows.push(cols.join(','));
         });

@@ -362,8 +362,9 @@
     border-radius: 2px;
 }
 
-/* Hidden rows (collapsed) */
-.tmp-row-hidden {
+/* Hidden rows (collapsed / filtered) */
+.tmp-row-hidden,
+.tmp-row-filtered {
     display: none !important;
 }
 
@@ -374,6 +375,12 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 0.5em;
+}
+
+.tmp-info-text {
+    font-size: 0.85em;
+    color: #888;
+    white-space: nowrap;
 }
 
 .tmp-pagination {
