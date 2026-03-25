@@ -88,7 +88,7 @@
 
 .tmp-search-wrap input.tmp-search:focus {
     border-color: var(--tmp-accent, #D32637);
-    box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.15);
+    box-shadow: 0 0 0 2px rgba(211, 38, 55, 0.15);
 }
 
 .tmp-per-page-wrap {

@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.12
+Stable tag: 1.3.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,13 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.13 =
+* Fix: Sortering — lege cellen sorteren altijd naar onderaan, NaN-guards voor nummer- en datumkolommen
+* Fix: Europese nummernotatie (1.250,50) wordt correct geparsed bij sortering
+* Fix: Frontend CSV-export gebruikt nu puntkomma (;) als scheidingsteken, consistent met admin-export
+* Fix: Zoekbalk focus-schaduw gebruikt nu de accentkleur in plaats van hardcoded groen
+* Opgeschoond: Ongebruikte getVisibleDataRows methode verwijderd
 
 = 1.3.12 =
 * Fix: Zoeken en kolomfilters verbergen nu daadwerkelijk gefilterde rijen (ontbrekende CSS regel)

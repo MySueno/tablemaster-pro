@@ -7,6 +7,30 @@
 
     var DEBOUNCE_DELAY = 300;
 
+    function parseLocalNumber(str) {
+        if (typeof str !== 'string') return NaN;
+        str = str.replace(/[€$£%\s]/g, '').trim();
+        if (str === '') return NaN;
+        var hasComma = str.indexOf(',') !== -1;
+        var hasDot   = str.indexOf('.') !== -1;
+        if (hasComma && hasDot) {
+            if (str.lastIndexOf(',') > str.lastIndexOf('.')) {
+                str = str.replace(/\./g, '').replace(',', '.');
+            } else {
+                str = str.replace(/,/g, '');
+            }
+        } else if (hasComma) {
+            var parts = str.split(',');
+            if (parts.length === 2 && parts[1].length <= 2) {
+                str = str.replace(',', '.');
+            } else {
+                str = str.replace(/,/g, '');
+            }
+        }
+        var n = parseFloat(str);
+        return n;
+    }
+
     function debounce(fn, delay) {
         var timer;
         return function () {
@@ -230,13 +254,6 @@
         });
     };
 
-    TableMasterInstance.prototype.getVisibleDataRows = function () {
-        return this.allRows.filter(function (row) {
-            return row.getAttribute('data-row-type') === 'data' &&
-                   !row.classList.contains('tmp-row-filtered');
-        });
-    };
-
     TableMasterInstance.prototype.applyFilters = function () {
         var self      = this;
         var term      = this.searchTerm;
@@ -393,11 +410,25 @@
                 var va = cellA ? cellA.textContent.trim() : '';
                 var vb = cellB ? cellB.textContent.trim() : '';
 
+                if (va === '' && vb === '') return 0;
+                if (va === '') return 1;
+                if (vb === '') return -1;
+
                 if (colType === 'number') {
-                    return dir * (parseFloat(va) - parseFloat(vb));
+                    var na = parseLocalNumber(va);
+                    var nb = parseLocalNumber(vb);
+                    if (isNaN(na) && isNaN(nb)) return 0;
+                    if (isNaN(na)) return 1;
+                    if (isNaN(nb)) return -1;
+                    return dir * (na - nb);
                 }
                 if (colType === 'date') {
-                    return dir * (new Date(va) - new Date(vb));
+                    var da = new Date(va).getTime();
+                    var db = new Date(vb).getTime();
+                    if (isNaN(da) && isNaN(db)) return 0;
+                    if (isNaN(da)) return 1;
+                    if (isNaN(db)) return -1;
+                    return dir * (da - db);
                 }
                 return dir * va.localeCompare(vb, undefined, { numeric: true });
             });
@@ -573,7 +604,7 @@
             var th = table.querySelector('thead .tmp-th[data-col-id="' + colId + '"]');
             hRow.push('"' + (th ? th.textContent.replace(/"/g, '""').trim() : '') + '"');
         });
-        rows.push(hRow.join(','));
+        rows.push(hRow.join(';'));
 
         table.querySelectorAll('tbody .tmp-row').forEach(function (row) {
             if (row.classList.contains('tmp-row-filtered')) return;
@@ -585,7 +616,7 @@
                 var td = row.querySelector('.tmp-td[data-col-id="' + colId + '"]');
                 cols.push('"' + (td ? td.textContent.replace(/"/g, '""').trim() : '') + '"');
             });
-            rows.push(cols.join(','));
+            rows.push(cols.join(';'));
         });
 
         var csv  = rows.join('\r\n');

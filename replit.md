@@ -71,7 +71,7 @@ Express 5 API server. Routes live in `src/routes/` and use `@workspace/api-zod` 
 
 WordPress plugin in `tablemaster-pro/` folder. ZIP built at root as `tablemaster-pro.zip`.
 
-- ~65KB ZIP, current version 1.2.9
+- ~65KB ZIP, current version 1.3.13
 - Features: unlimited tables, 3-level grouping, multi-level column headers (3-level), footer/closing rows (full-width spanning banner with configurable colors), color theming (red/blue/grey/custom), search/sort/pagination, responsive (horizontal scroll), shortcode `[tablemaster id="X"]`, Gutenberg block, WPML with built-in translation editor, auto-updates
 - WPML integration: uses **modern WPML filter/action API only** (`wpml_register_single_string`, `wpml_translate_single_string`, `wpml_active_languages`, `wpml_current_language`, `wpml_default_language`). No deprecated `icl_*` functions. All DB queries to WPML tables include table existence checks. Translation completeness (100% required) enforced via `get_translation_progress()`.
 - WPML Translation Editor: custom admin page (`tablemaster-translate`) with side-by-side layout (original left, translation right), covers table name, caption, column labels, and all cell content; saves directly to WPML string translations via `icl_string_translations` table
