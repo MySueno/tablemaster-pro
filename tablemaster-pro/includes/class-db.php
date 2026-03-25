@@ -50,6 +50,7 @@ class TableMaster_DB {
             column_id bigint(20) unsigned NOT NULL,
             content longtext NOT NULL,
             lang varchar(10) NOT NULL DEFAULT '',
+            align varchar(10) NOT NULL DEFAULT '',
             PRIMARY KEY  (id),
             KEY row_id (row_id),
             KEY column_id (column_id)
@@ -524,6 +525,7 @@ class TableMaster_DB {
                             'column_id' => $new_col_id,
                             'content'   => $cell->content,
                             'lang'      => $cell->lang,
+                            'align'     => isset( $cell->align ) ? $cell->align : '',
                         )
                     );
                 }
@@ -566,8 +568,9 @@ class TableMaster_DB {
             $table_id
         ) );
 
-        $row_ids = wp_list_pluck( $rows, 'id' );
-        $cells   = array();
+        $row_ids     = wp_list_pluck( $rows, 'id' );
+        $cells       = array();
+        $cell_aligns = array();
         if ( $row_ids ) {
             $placeholders = implode( ',', array_fill( 0, count( $row_ids ), '%d' ) );
             $lang_clause = '';
@@ -585,11 +588,16 @@ class TableMaster_DB {
                 if ( ! isset( $cells[$cell->row_id][$cell->column_id] ) ) {
                     $cells[$cell->row_id][$cell->column_id] = $cell->content;
                 }
+                $cell_align = isset( $cell->align ) ? $cell->align : '';
+                if ( $cell_align !== '' && ! isset( $cell_aligns[$cell->row_id][$cell->column_id] ) ) {
+                    $cell_aligns[$cell->row_id][$cell->column_id] = $cell_align;
+                }
             }
         }
 
         foreach ( $rows as &$row ) {
             $row->cells = $cells[$row->id] ?? array();
+            $row->cell_aligns = $cell_aligns[$row->id] ?? array();
         }
 
         $result = array(
@@ -725,6 +733,8 @@ class TableMaster_DB {
             $temp_id = $row['temp_id'] ?? ( 'r' . $order_index );
             $row_id_map[$temp_id] = $row_db_id;
 
+            $row_cell_aligns = isset( $row['cell_aligns'] ) && is_array( $row['cell_aligns'] ) ? $row['cell_aligns'] : array();
+
             if ( ! empty( $row['cells'] ) ) {
                 foreach ( $row['cells'] as $temp_col_key => $content ) {
                     $col_db_id = $col_id_map[$temp_col_key] ?? null;
@@ -736,11 +746,15 @@ class TableMaster_DB {
                     ) );
 
                     $sanitized_content = wp_kses_post( $content );
+                    $cell_align = '';
+                    if ( isset( $row_cell_aligns[ $temp_col_key ] ) ) {
+                        $cell_align = in_array( $row_cell_aligns[ $temp_col_key ], array( 'left', 'center', 'right' ), true ) ? $row_cell_aligns[ $temp_col_key ] : '';
+                    }
 
                     if ( $existing_cell ) {
                         $wpdb->update(
                             "{$wpdb->prefix}tablemaster_cells",
-                            array( 'content' => $sanitized_content ),
+                            array( 'content' => $sanitized_content, 'align' => $cell_align ),
                             array( 'id' => $existing_cell->id )
                         );
                     } else {
@@ -751,6 +765,7 @@ class TableMaster_DB {
                                 'column_id' => $col_db_id,
                                 'content'   => $sanitized_content,
                                 'lang'      => $lang,
+                                'align'     => $cell_align,
                             )
                         );
                     }

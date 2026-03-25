@@ -380,40 +380,54 @@ foreach ( $font_css_map as $fk => $selector ) :
                             $total_cols_footer = count( $columns );
                             if ( $collapsible ) $total_cols_footer++;
                             $footer_content_parts = array();
+                            $footer_align = '';
                             foreach ( $columns as $fcol ) {
                                 $fc = trim( $row->cells[ $fcol->id ] ?? '' );
-                                if ( $fc !== '' ) $footer_content_parts[] = $fc;
+                                if ( $fc !== '' ) {
+                                    $footer_content_parts[] = $fc;
+                                    if ( $footer_align === '' && isset( $row->cell_aligns[ $fcol->id ] ) && in_array( $row->cell_aligns[ $fcol->id ], $valid_aligns, true ) ) {
+                                        $footer_align = $row->cell_aligns[ $fcol->id ];
+                                    }
+                                }
                             }
                             $footer_label = implode( ' ', $footer_content_parts );
+                            $footer_align_style = $footer_align !== '' ? 'text-align:' . esc_attr( $footer_align ) . ';' : '';
                         ?>
                             <?php if ( $sticky_first_col && $total_cols_footer > 1 ) : ?>
-                                <td class="tmp-td tmp-footer-cell tmp-sticky-label">
+                                <td class="tmp-td tmp-footer-cell tmp-sticky-label"<?php echo $footer_align_style ? ' style="' . esc_attr( $footer_align_style ) . '"' : ''; ?>>
                                     <?php echo wp_kses_post( $footer_label ); ?>
                                 </td>
                                 <td class="tmp-td tmp-footer-cell" colspan="<?php echo esc_attr( $total_cols_footer - 1 ); ?>"></td>
                             <?php else : ?>
-                                <td class="tmp-td tmp-footer-cell" colspan="<?php echo esc_attr( $total_cols_footer ); ?>">
+                                <td class="tmp-td tmp-footer-cell" colspan="<?php echo esc_attr( $total_cols_footer ); ?>"<?php echo $footer_align_style ? ' style="' . esc_attr( $footer_align_style ) . '"' : ''; ?>>
                                     <?php echo wp_kses_post( $footer_label ); ?>
                                 </td>
                             <?php endif; ?>
                         <?php elseif ( $is_group ) :
                             $filled_count = 0;
                             $first_filled = '';
+                            $group_align  = '';
                             foreach ( $columns as $gcol ) {
                                 $gc = trim( $row->cells[ $gcol->id ] ?? '' );
                                 if ( $gc !== '' ) {
                                     $filled_count++;
-                                    if ( $first_filled === '' ) $first_filled = $gc;
+                                    if ( $first_filled === '' ) {
+                                        $first_filled = $gc;
+                                        if ( isset( $row->cell_aligns[ $gcol->id ] ) && in_array( $row->cell_aligns[ $gcol->id ], $valid_aligns, true ) ) {
+                                            $group_align = $row->cell_aligns[ $gcol->id ];
+                                        }
+                                    }
                                 }
                             }
                             $use_colspan = ( $row->row_type === 'group_1' || $filled_count <= 1 );
+                            $group_align_style = $group_align !== '' ? ' style="text-align:' . esc_attr( $group_align ) . ';"' : '';
 
                             if ( $use_colspan ) :
                                 $total_cols = count( $columns );
                                 if ( $collapsible ) $total_cols++;
                         ?>
                             <?php if ( $sticky_first_col && $total_cols > 1 ) : ?>
-                                <td class="tmp-td tmp-group-cell tmp-sticky-label">
+                                <td class="tmp-td tmp-group-cell tmp-sticky-label"<?php echo $group_align_style; ?>>
                                     <div class="tmp-group-cell-inner">
                                         <?php if ( $collapsible ) : ?>
                                             <button class="tmp-toggle-btn" aria-expanded="<?php echo $row->is_collapsed ? 'false' : 'true'; ?>" aria-label="<?php esc_attr_e( 'In-/uitklappen', TMP_TEXT_DOMAIN ); ?>">
@@ -425,7 +439,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                                 </td>
                                 <td class="tmp-td tmp-group-cell" colspan="<?php echo esc_attr( $total_cols - 1 ); ?>"></td>
                             <?php else : ?>
-                                <td class="tmp-td tmp-group-cell" colspan="<?php echo esc_attr( $total_cols ); ?>">
+                                <td class="tmp-td tmp-group-cell" colspan="<?php echo esc_attr( $total_cols ); ?>"<?php echo $group_align_style; ?>>
                                     <div class="tmp-group-cell-inner">
                                         <?php if ( $collapsible ) : ?>
                                             <button class="tmp-toggle-btn" aria-expanded="<?php echo $row->is_collapsed ? 'false' : 'true'; ?>" aria-label="<?php esc_attr_e( 'In-/uitklappen', TMP_TEXT_DOMAIN ); ?>">
@@ -447,7 +461,9 @@ foreach ( $font_css_map as $fk => $selector ) :
                                 foreach ( $columns as $gcol2 ) :
                                     $gc_content = trim( $row->cells[ $gcol2->id ] ?? '' );
                                     $cs_g       = json_decode( $gcol2->settings, true );
-                                    $align_g    = in_array( $cs_g['align'] ?? 'left', $valid_aligns, true ) ? $cs_g['align'] : 'left';
+                                    $col_align_g = in_array( $cs_g['align'] ?? 'left', $valid_aligns, true ) ? $cs_g['align'] : 'left';
+                                    $cell_align_g = isset( $row->cell_aligns[ $gcol2->id ] ) && in_array( $row->cell_aligns[ $gcol2->id ], $valid_aligns, true ) ? $row->cell_aligns[ $gcol2->id ] : '';
+                                    $align_g = $cell_align_g !== '' ? $cell_align_g : $col_align_g;
                             ?>
                                 <td class="tmp-td tmp-group-cell"
                                     style="text-align:<?php echo esc_attr( $align_g ); ?>;">
@@ -462,7 +478,9 @@ foreach ( $font_css_map as $fk => $selector ) :
 
                             <?php foreach ( $columns as $col ) :
                                 $cs       = json_decode( $col->settings, true );
-                                $align    = in_array( $cs['align'] ?? 'left', $valid_aligns, true ) ? $cs['align'] : 'left';
+                                $col_align = in_array( $cs['align'] ?? 'left', $valid_aligns, true ) ? $cs['align'] : 'left';
+                                $cell_align_val = isset( $row->cell_aligns[ $col->id ] ) && in_array( $row->cell_aligns[ $col->id ], $valid_aligns, true ) ? $row->cell_aligns[ $col->id ] : '';
+                                $align    = $cell_align_val !== '' ? $cell_align_val : $col_align;
                                 $col_type = sanitize_text_field( $col->type );
                                 $td_class = 'tmp-td';
 

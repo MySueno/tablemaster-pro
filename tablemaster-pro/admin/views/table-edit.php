@@ -96,6 +96,12 @@ $page_title = $is_new
                         <button type="button" id="tmp-tb-bullet" class="tmp-tb-btn" title="<?php esc_attr_e( 'Opsommingslijst', TMP_TEXT_DOMAIN ); ?>"><span class="dashicons dashicons-editor-ul"></span></button>
                     </div>
                     <span class="tmp-toolbar-sep"></span>
+                    <div class="tmp-toolbar-group tmp-align-group">
+                        <button type="button" id="tmp-tb-align-left" class="tmp-tb-btn tmp-tb-align tmp-tb-align-active" data-align="left" title="<?php esc_attr_e( 'Links uitlijnen', TMP_TEXT_DOMAIN ); ?>"><span class="dashicons dashicons-editor-alignleft"></span></button>
+                        <button type="button" id="tmp-tb-align-center" class="tmp-tb-btn tmp-tb-align" data-align="center" title="<?php esc_attr_e( 'Centreren', TMP_TEXT_DOMAIN ); ?>"><span class="dashicons dashicons-editor-aligncenter"></span></button>
+                        <button type="button" id="tmp-tb-align-right" class="tmp-tb-btn tmp-tb-align" data-align="right" title="<?php esc_attr_e( 'Rechts uitlijnen', TMP_TEXT_DOMAIN ); ?>"><span class="dashicons dashicons-editor-alignright"></span></button>
+                    </div>
+                    <span class="tmp-toolbar-sep"></span>
                     <div class="tmp-toolbar-group">
                         <button type="button" id="tmp-tb-delete-row" class="tmp-tb-btn tmp-tb-danger" title="<?php esc_attr_e( 'Rij verwijderen', TMP_TEXT_DOMAIN ); ?>"><span class="dashicons dashicons-table-row-delete"></span></button>
                         <button type="button" id="tmp-tb-delete-col" class="tmp-tb-btn tmp-tb-danger" title="<?php esc_attr_e( 'Kolom verwijderen', TMP_TEXT_DOMAIN ); ?>"><span class="dashicons dashicons-table-col-delete"></span></button>

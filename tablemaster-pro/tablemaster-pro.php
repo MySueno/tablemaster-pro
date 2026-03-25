@@ -3,7 +3,7 @@
  * Plugin Name: TableMaster Pro
  * Plugin URI:  https://example.com/tablemaster-pro
  * Description: Maak krachtige, interactieve tabellen met groepering, sortering, filtering en paginering. Beheer via een intuïtief dashboard en publiceer via shortcode of Gutenberg block.
- * Version:     1.3.17
+ * Version:     1.3.18
  * Author:      TableMaster Pro
  * Author URI:  https://example.com
  * License:     GPL-2.0-or-later
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'TMP_VERSION',     '1.3.17' );
+define( 'TMP_VERSION',     '1.3.18' );
 define( 'TMP_PLUGIN_FILE', __FILE__ );
 define( 'TMP_PLUGIN_DIR',  plugin_dir_path( __FILE__ ) );
 define( 'TMP_PLUGIN_URL',  plugin_dir_url( __FILE__ ) );
@@ -56,6 +56,11 @@ require_once TMP_PLUGIN_DIR . 'includes/class-updater.php';
 register_activation_hook( __FILE__, array( 'TableMaster_DB', 'install' ) );
 
 function tablemaster_pro_init() {
+    $db_version = get_option( 'tablemaster_db_version', '0' );
+    if ( version_compare( $db_version, TMP_VERSION, '<' ) ) {
+        TableMaster_DB::install();
+    }
+
     $plugin = new TableMaster();
     $plugin->run();
 

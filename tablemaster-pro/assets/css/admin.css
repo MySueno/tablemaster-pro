@@ -693,6 +693,12 @@
     font-size: 14px;
 }
 
+.tmp-tb-align-active {
+    background: #e0ecf9;
+    border-color: #2271b1;
+    color: #2271b1;
+}
+
 .tmp-tb-danger {
     color: #9e2a2a;
 }

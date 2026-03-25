@@ -164,6 +164,7 @@
             parent_temp_id: parentTempId || '',
             is_collapsed:   false,
             cells:          cells,
+            cell_aligns:    {},
         };
         rows.push(row);
         rebuildRowTable();
@@ -419,12 +420,15 @@
         var cellInputs = columns.map(function (col) {
             var key     = col.temp_key || col.id;
             var content = row.cells[key] !== undefined ? row.cells[key] : '';
+            var cellAlign = (row.cell_aligns && row.cell_aligns[key]) || '';
+            var alignStyle = cellAlign ? ' style="text-align:' + escAttr(cellAlign) + ';"' : '';
             var placeholder = isGroup ? 'Leeg = samenvoegen \u2192' : '';
             var hasHtml = /<[a-z][\s\S]*>/i.test(content);
-            return '<td><div class="tmp-cell-wrap">' +
+            return '<td' + alignStyle + '><div class="tmp-cell-wrap">' +
                 (hasHtml ? '<div class="tmp-cell-preview">' + content + '</div>' : '') +
                 '<textarea class="tmp-cell-input' + (hasHtml ? ' tmp-cell-hidden' : '') + '" data-col-key="' + escAttr(key + '') + '" rows="1"' +
-                (placeholder ? ' placeholder="' + escAttr(placeholder) + '"' : '') + '>' +
+                (placeholder ? ' placeholder="' + escAttr(placeholder) + '"' : '') +
+                (cellAlign ? ' style="text-align:' + escAttr(cellAlign) + ';"' : '') + '>' +
                 escHtml(content) + '</textarea></div></td>';
         }).join('');
 
@@ -485,6 +489,8 @@
             $('#tmp-tb-cell-ref').text(colLabel + ' · rij ' + rowIdx);
             $('.tmp-cell-input').closest('td').removeClass('tmp-cell-active');
             $area.closest('td').addClass('tmp-cell-active');
+            var curAlign = (rowObj && rowObj.cell_aligns && rowObj.cell_aligns[colKey]) || 'left';
+            updateAlignButtons(curAlign);
         });
 
         $tr.find('.tmp-cell-input').on('blur', function () {
@@ -514,10 +520,17 @@
             for (var k in rowObj.cells) {
                 newCells[k] = rowObj.cells[k];
             }
+            var newAligns = {};
+            if (rowObj.cell_aligns) {
+                for (var ak in rowObj.cell_aligns) {
+                    newAligns[ak] = rowObj.cell_aligns[ak];
+                }
+            }
             var newRow = {
                 temp_id:      newTempId,
                 row_type:     rowObj.row_type,
                 cells:        newCells,
+                cell_aligns:  newAligns,
                 sort_order:   0,
                 is_collapsed: false,
                 parent_id:    rowObj.parent_id || null,
@@ -558,6 +571,27 @@
             if (existing) newOrder.push(existing);
         });
         rows = newOrder;
+    }
+
+    /* ===== ALIGNMENT ===== */
+    function updateAlignButtons(align) {
+        $('.tmp-tb-align').removeClass('tmp-tb-align-active');
+        $('#tmp-tb-align-' + (align || 'left')).addClass('tmp-tb-align-active');
+    }
+
+    function toolbarAlign(align) {
+        if (!activeCell) return;
+        var rowObj = rows.find(function (r) { return r.temp_id + '' === activeCell.tempId; });
+        if (!rowObj) return;
+        if (!rowObj.cell_aligns) rowObj.cell_aligns = {};
+        rowObj.cell_aligns[activeCell.colKey] = align === 'left' ? '' : align;
+        var $td = activeCell.$area.closest('td');
+        var styleVal = align === 'left' ? '' : align;
+        $td.css('text-align', styleVal || '');
+        activeCell.$area.css('text-align', styleVal || '');
+        updateAlignButtons(align);
+        isDirty = true;
+        activeCell.$area.focus();
     }
 
     /* ===== TOOLBAR FUNCTIONS ===== */
@@ -956,6 +990,7 @@
                     parent_temp_id: '',
                     is_collapsed:   false,
                     cells:          cells,
+                    cell_aligns:    {},
                 });
             });
 
@@ -1010,11 +1045,15 @@
             rows = [];
             (d.rows || []).forEach(function (row) {
                 var cells = {};
+                var cellAligns = {};
                 var rowCells = row.cells || {};
+                var rowCellAligns = row.cell_aligns || {};
                 columns.forEach(function (col) {
-                    // rowCells keys are string column IDs from PHP JSON
                     var dbColId = col.id + '';
                     cells[col.temp_key] = rowCells[dbColId] !== undefined ? rowCells[dbColId] : '';
+                    if (rowCellAligns[dbColId]) {
+                        cellAligns[col.temp_key] = rowCellAligns[dbColId];
+                    }
                 });
 
                 rows.push({
@@ -1025,6 +1064,7 @@
                     parent_temp_id: row.parent_id ? 'db_' + row.parent_id : '',
                     is_collapsed:   row.is_collapsed === '1' || row.is_collapsed === 1,
                     cells:          cells,
+                    cell_aligns:    cellAligns,
                 });
             });
 
@@ -1128,6 +1168,7 @@
                     parent_temp_id: row.parent_temp_id || '',
                     is_collapsed:   row.is_collapsed ? 1 : 0,
                     cells:          row.cells,
+                    cell_aligns:    row.cell_aligns || {},
                 };
             });
 
@@ -1194,6 +1235,7 @@
         $('#tmp-tb-italic').on('mousedown', function (e) { e.preventDefault(); toolbarItalic(); });
         $('#tmp-tb-link').on('mousedown', function (e) { e.preventDefault(); toolbarLink(); });
         $('#tmp-tb-bullet').on('mousedown', function (e) { e.preventDefault(); toolbarBullet(); });
+        $('.tmp-tb-align').on('mousedown', function (e) { e.preventDefault(); toolbarAlign($(this).data('align')); });
         $('#tmp-tb-delete-row').on('mousedown', function (e) { e.preventDefault(); toolbarDeleteRow(); });
         $('#tmp-tb-delete-col').on('mousedown', function (e) { e.preventDefault(); toolbarDeleteCol(); });
 

@@ -173,12 +173,19 @@ class TableMaster_Ajax {
         }
         unset( $col );
 
+        $allowed_aligns = array( 'left', 'center', 'right' );
         foreach ( $rows as &$row ) {
             if ( isset( $row['cells'] ) && is_array( $row['cells'] ) ) {
                 foreach ( $row['cells'] as $cell_key => &$cell_val ) {
                     $cell_val = wp_kses_post( $cell_val );
                 }
                 unset( $cell_val );
+            }
+            if ( isset( $row['cell_aligns'] ) && is_array( $row['cell_aligns'] ) ) {
+                foreach ( $row['cell_aligns'] as $ca_key => &$ca_val ) {
+                    $ca_val = in_array( $ca_val, $allowed_aligns, true ) ? $ca_val : '';
+                }
+                unset( $ca_val );
             }
         }
         unset( $row );
