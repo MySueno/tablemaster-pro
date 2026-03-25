@@ -133,7 +133,7 @@
     opacity: 1 !important;
 }
 
-/* Column settings popover */
+/* Column selection & merge toolbar */
 .tmp-col-header-cell.tmp-col-selected {
     outline: 3px solid #2271b1 !important;
     outline-offset: -3px;
