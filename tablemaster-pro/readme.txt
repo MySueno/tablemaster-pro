@@ -34,6 +34,10 @@ Functies:
 == Changelog ==
 
 = 1.3.15 =
+* Nieuw: Excel-achtige toolbar boven de tabel met Vet, Cursief, Link, Opsommingslijst, Rij verwijderen, Kolom verwijderen
+* Toolbar toont actieve cel-referentie (kolom · rij) en is context-afhankelijk
+* Actieve cel krijgt visuele highlight (blauwe rand)
+* Nieuw: Opsommingslijst (bullet points) — selecteer tekst en klik op het lijst-icoon om automatisch een `<ul><li>` lijst te genereren
 * Nieuw: CSV-import — importeer data vanuit CSV, TSV of puntkomma-gescheiden bestanden
 * CSV-parser met automatische delimiter-detectie (komma, puntkomma, tab)
 * Ondersteuning voor quoted velden, escaped aanhalingstekens, en newlines binnen velden

@@ -574,7 +574,108 @@
     }
 }
 
-/* Cell formatting buttons (Bold / Link) */
+/* Cell toolbar (Excel-like) */
+.tmp-cell-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    transition: opacity 0.15s;
+}
+
+.tmp-cell-toolbar.tmp-toolbar-disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.tmp-toolbar-group {
+    display: flex;
+    gap: 2px;
+}
+
+.tmp-toolbar-sep {
+    display: inline-block;
+    width: 1px;
+    height: 22px;
+    background: #ccc;
+    margin: 0 6px;
+    vertical-align: middle;
+}
+
+.tmp-toolbar-ref {
+    font-size: 0.8em;
+    color: #666;
+    font-weight: 500;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.tmp-tb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    height: 28px;
+    padding: 0 6px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #1d2327;
+    transition: background 0.1s, border-color 0.1s;
+    line-height: 1;
+}
+
+.tmp-tb-btn:hover {
+    background: #e8f0fe;
+    border-color: #2271b1;
+    color: #2271b1;
+}
+
+.tmp-tb-btn:active {
+    background: #d0e3f7;
+}
+
+.tmp-tb-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.tmp-tb-btn strong {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.tmp-tb-btn em {
+    font-style: italic;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 14px;
+}
+
+.tmp-tb-danger {
+    color: #9e2a2a;
+}
+
+.tmp-tb-danger:hover {
+    background: #fde8e8;
+    border-color: #dc3232;
+    color: #dc3232;
+}
+
+.tmp-cell-active {
+    outline: 2px solid #2271b1;
+    outline-offset: -2px;
+    background: #f0f6fc !important;
+}
+
+/* Cell wrap */
 .tmp-cell-wrap {
     display: flex;
     flex-direction: column;
@@ -604,46 +705,6 @@
 
 .tmp-cell-hidden {
     display: none !important;
-}
-
-.tmp-cell-fmt {
-    display: flex;
-    gap: 3px;
-    opacity: 0;
-    transition: opacity 0.15s;
-    height: 0;
-    overflow: hidden;
-}
-
-.tmp-cell-wrap:focus-within .tmp-cell-fmt,
-.tmp-cell-wrap:hover .tmp-cell-fmt {
-    opacity: 1;
-    height: auto;
-}
-
-.tmp-fmt-btn {
-    background: #f0f0f1;
-    border: 1px solid #c3c4c7;
-    border-radius: 3px;
-    padding: 1px 5px;
-    font-size: 11px;
-    line-height: 1.4;
-    cursor: pointer;
-    color: #1d2327;
-}
-
-.tmp-fmt-btn:hover {
-    background: #dcdcde;
-    border-color: #a7aaad;
-}
-
-.tmp-fmt-btn b {
-    font-weight: 700;
-}
-
-.tmp-fmt-btn i {
-    font-style: italic;
-    font-family: Georgia, serif;
 }
 
 /* ===================== */

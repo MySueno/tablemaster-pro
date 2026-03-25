@@ -87,7 +87,22 @@ $page_title = $is_new
                         <input type="file" id="tmp-csv-file" accept=".csv,.tsv,.txt" style="display:none;">
                     </div>
                 </div>
-                <div class="tmp-rows-hint tmp-hint"><?php esc_html_e( 'Klik op een kolomnaam om te bewerken. Ctrl+klik op meerdere kolommen om ze samen te voegen. Sleep rijen om te herordenen.', TMP_TEXT_DOMAIN ); ?></div>
+                <div class="tmp-rows-hint tmp-hint"><?php esc_html_e( 'Klik op een kolomnaam om instellingen te wijzigen. Klik op een cel om te bewerken. Sleep rijen om te herordenen.', TMP_TEXT_DOMAIN ); ?></div>
+                <div id="tmp-cell-toolbar" class="tmp-cell-toolbar tmp-toolbar-disabled">
+                    <div class="tmp-toolbar-group">
+                        <button type="button" id="tmp-tb-bold" class="tmp-tb-btn" title="<?php esc_attr_e( 'Vet (Ctrl+B)', TMP_TEXT_DOMAIN ); ?>"><strong>B</strong></button>
+                        <button type="button" id="tmp-tb-italic" class="tmp-tb-btn" title="<?php esc_attr_e( 'Cursief (Ctrl+I)', TMP_TEXT_DOMAIN ); ?>"><em>I</em></button>
+                        <button type="button" id="tmp-tb-link" class="tmp-tb-btn" title="<?php esc_attr_e( 'Link invoegen', TMP_TEXT_DOMAIN ); ?>"><span class="dashicons dashicons-admin-links"></span></button>
+                        <button type="button" id="tmp-tb-bullet" class="tmp-tb-btn" title="<?php esc_attr_e( 'Opsommingslijst', TMP_TEXT_DOMAIN ); ?>"><span class="dashicons dashicons-editor-ul"></span></button>
+                    </div>
+                    <span class="tmp-toolbar-sep"></span>
+                    <div class="tmp-toolbar-group">
+                        <button type="button" id="tmp-tb-delete-row" class="tmp-tb-btn tmp-tb-danger" title="<?php esc_attr_e( 'Rij verwijderen', TMP_TEXT_DOMAIN ); ?>"><span class="dashicons dashicons-table-row-delete"></span></button>
+                        <button type="button" id="tmp-tb-delete-col" class="tmp-tb-btn tmp-tb-danger" title="<?php esc_attr_e( 'Kolom verwijderen', TMP_TEXT_DOMAIN ); ?>"><span class="dashicons dashicons-table-col-delete"></span></button>
+                    </div>
+                    <span class="tmp-toolbar-sep"></span>
+                    <span id="tmp-tb-cell-ref" class="tmp-toolbar-ref"></span>
+                </div>
                 <div id="tmp-rows-wrapper" class="tmp-rows-wrapper">
                     <div class="tmp-rows-empty tmp-hint"><?php esc_html_e( 'Klik op "+ Kolom" om te beginnen.', TMP_TEXT_DOMAIN ); ?></div>
                 </div>

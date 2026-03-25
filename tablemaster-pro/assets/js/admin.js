@@ -21,6 +21,7 @@
     var rowTempIdx    = 0;
     var isDirty       = false;
     var justDraggedKey = null;
+    var activeCell    = null;
 
     /* ===== BOOT ===== */
     $(document).ready(function () {
@@ -170,6 +171,9 @@
     }
 
     function rebuildRowTable() {
+        activeCell = null;
+        $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
+        $('#tmp-tb-cell-ref').text('');
         hideMergeToolbar();
         var $wrapper = $('#tmp-rows-wrapper');
         $wrapper.find('.tmp-rows-empty').hide();
@@ -416,14 +420,8 @@
             var key     = col.temp_key || col.id;
             var content = row.cells[key] !== undefined ? row.cells[key] : '';
             var placeholder = isGroup ? 'Leeg = samenvoegen \u2192' : '';
-            var fmtBtns = '<div class="tmp-cell-fmt">' +
-                '<button type="button" class="tmp-fmt-btn tmp-fmt-bold" title="Vet (Ctrl+B)"><b>B</b></button>' +
-                '<button type="button" class="tmp-fmt-btn tmp-fmt-italic" title="Cursief (Ctrl+I)"><i>I</i></button>' +
-                '<button type="button" class="tmp-fmt-btn tmp-fmt-link" title="Link invoegen">&#128279;</button>' +
-                '</div>';
             var hasHtml = /<[a-z][\s\S]*>/i.test(content);
-            var previewHtml = hasHtml ? content : '';
-            return '<td><div class="tmp-cell-wrap">' + fmtBtns +
+            return '<td><div class="tmp-cell-wrap">' +
                 (hasHtml ? '<div class="tmp-cell-preview">' + content + '</div>' : '') +
                 '<textarea class="tmp-cell-input' + (hasHtml ? ' tmp-cell-hidden' : '') + '" data-col-key="' + escAttr(key + '') + '" rows="1"' +
                 (placeholder ? ' placeholder="' + escAttr(placeholder) + '"' : '') + '>' +
@@ -472,6 +470,21 @@
             }
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        $tr.find('.tmp-cell-input').on('focus', function () {
+            var $area = $(this);
+            var colKey = $area.data('col-key') + '';
+            var tempId = $tr.data('temp-id') + '';
+            var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
+            var colLabel = col ? col.label : '';
+            var rowObj = rows.find(function (r) { return r.temp_id + '' === tempId; });
+            var rowIdx = rowObj ? rows.indexOf(rowObj) + 1 : '';
+            activeCell = { $area: $area, el: $area[0], $tr: $tr, colKey: colKey, tempId: tempId };
+            $('#tmp-cell-toolbar').removeClass('tmp-toolbar-disabled');
+            $('#tmp-tb-cell-ref').text(colLabel + ' · rij ' + rowIdx);
+            $('.tmp-cell-input').closest('td').removeClass('tmp-cell-active');
+            $area.closest('td').addClass('tmp-cell-active');
         });
 
         $tr.find('.tmp-cell-input').on('blur', function () {
@@ -523,59 +536,15 @@
             isDirty = true;
         });
 
-        $tr.find('.tmp-fmt-bold').on('click', function () {
-            var $wrap = $(this).closest('.tmp-cell-wrap');
-            var $area = $wrap.find('.tmp-cell-input');
-            $wrap.find('.tmp-cell-preview').hide();
-            $area.removeClass('tmp-cell-hidden');
-            var el    = $area[0];
-            var start = el.selectionStart;
-            var end   = el.selectionEnd;
-            var val   = el.value;
-            var sel   = val.substring(start, end) || 'tekst';
-            el.value  = val.substring(0, start) + '<strong>' + sel + '</strong>' + val.substring(end);
-            $area.trigger('input');
-            el.focus();
-            el.setSelectionRange(start + 8, start + 8 + sel.length);
-        });
-
-        $tr.find('.tmp-fmt-italic').on('click', function () {
-            var $wrap = $(this).closest('.tmp-cell-wrap');
-            var $area = $wrap.find('.tmp-cell-input');
-            $wrap.find('.tmp-cell-preview').hide();
-            $area.removeClass('tmp-cell-hidden');
-            var el    = $area[0];
-            var start = el.selectionStart;
-            var end   = el.selectionEnd;
-            var val   = el.value;
-            var sel   = val.substring(start, end) || 'tekst';
-            el.value  = val.substring(0, start) + '<em>' + sel + '</em>' + val.substring(end);
-            $area.trigger('input');
-            el.focus();
-            el.setSelectionRange(start + 4, start + 4 + sel.length);
-        });
-
         $tr.find('.tmp-cell-input').on('keydown', function (e) {
             if (e.ctrlKey && e.key === 'b') {
                 e.preventDefault();
-                $(this).closest('.tmp-cell-wrap').find('.tmp-fmt-bold').trigger('click');
+                toolbarBold();
             }
             if (e.ctrlKey && e.key === 'i') {
                 e.preventDefault();
-                $(this).closest('.tmp-cell-wrap').find('.tmp-fmt-italic').trigger('click');
+                toolbarItalic();
             }
-        });
-
-        $tr.find('.tmp-fmt-link').on('click', function () {
-            var $wrap = $(this).closest('.tmp-cell-wrap');
-            var $area = $wrap.find('.tmp-cell-input');
-            $wrap.find('.tmp-cell-preview').hide();
-            $area.removeClass('tmp-cell-hidden');
-            var el    = $area[0];
-            var start = el.selectionStart;
-            var end   = el.selectionEnd;
-            var sel   = el.value.substring(start, end);
-            openLinkModal($area, el, start, end, sel);
         });
 
         return $tr;
@@ -589,6 +558,98 @@
             if (existing) newOrder.push(existing);
         });
         rows = newOrder;
+    }
+
+    /* ===== TOOLBAR FUNCTIONS ===== */
+    function ensureCellEditable() {
+        if (!activeCell) return null;
+        var $wrap = activeCell.$area.closest('.tmp-cell-wrap');
+        $wrap.find('.tmp-cell-preview').hide();
+        activeCell.$area.removeClass('tmp-cell-hidden');
+        return activeCell;
+    }
+
+    function toolbarBold() {
+        var cell = ensureCellEditable();
+        if (!cell) return;
+        var el = cell.el;
+        var start = el.selectionStart;
+        var end = el.selectionEnd;
+        var val = el.value;
+        var sel = val.substring(start, end) || 'tekst';
+        el.value = val.substring(0, start) + '<strong>' + sel + '</strong>' + val.substring(end);
+        cell.$area.trigger('input');
+        el.focus();
+        el.setSelectionRange(start + 8, start + 8 + sel.length);
+    }
+
+    function toolbarItalic() {
+        var cell = ensureCellEditable();
+        if (!cell) return;
+        var el = cell.el;
+        var start = el.selectionStart;
+        var end = el.selectionEnd;
+        var val = el.value;
+        var sel = val.substring(start, end) || 'tekst';
+        el.value = val.substring(0, start) + '<em>' + sel + '</em>' + val.substring(end);
+        cell.$area.trigger('input');
+        el.focus();
+        el.setSelectionRange(start + 4, start + 4 + sel.length);
+    }
+
+    function toolbarLink() {
+        var cell = ensureCellEditable();
+        if (!cell) return;
+        var el = cell.el;
+        var start = el.selectionStart;
+        var end = el.selectionEnd;
+        var sel = el.value.substring(start, end);
+        openLinkModal(cell.$area, el, start, end, sel);
+    }
+
+    function toolbarBullet() {
+        var cell = ensureCellEditable();
+        if (!cell) return;
+        var el = cell.el;
+        var start = el.selectionStart;
+        var end = el.selectionEnd;
+        var val = el.value;
+        var sel = val.substring(start, end);
+
+        var items;
+        if (sel) {
+            items = sel.split('\n').filter(function (l) { return l.trim() !== ''; });
+        } else {
+            items = ['Item 1'];
+        }
+        var html = '<ul>\n' + items.map(function (item) {
+            return '  <li>' + item.trim() + '</li>';
+        }).join('\n') + '\n</ul>';
+
+        el.value = val.substring(0, start) + html + val.substring(end);
+        cell.$area.trigger('input');
+        el.focus();
+    }
+
+    function toolbarDeleteRow() {
+        if (!activeCell) return;
+        var tempId = activeCell.tempId;
+        var rowObj = rows.find(function (r) { return r.temp_id + '' === tempId; });
+        if (!rowObj) { activeCell = null; return; }
+        rows = rows.filter(function (r) { return r.temp_id + '' !== tempId; });
+        isDirty = true;
+        rebuildRowTable();
+    }
+
+    function toolbarDeleteCol() {
+        if (!activeCell) return;
+        var colKey = activeCell.colKey;
+        var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
+        if (!col) { activeCell = null; return; }
+        if (!confirm('Kolom "' + (col.label || 'Kolom') + '" verwijderen?')) return;
+        columns = columns.filter(function(c) { return (c.temp_key || c.id) + '' !== colKey; });
+        isDirty = true;
+        rebuildRowTable();
     }
 
     /* ===== LINK MODAL ===== */
@@ -1125,6 +1186,27 @@
             var file = this.files[0];
             if (file) handleCSVImport(file);
             $(this).val('');
+        });
+
+        // Toolbar buttons
+        $('#tmp-tb-bold').on('mousedown', function (e) { e.preventDefault(); toolbarBold(); });
+        $('#tmp-tb-italic').on('mousedown', function (e) { e.preventDefault(); toolbarItalic(); });
+        $('#tmp-tb-link').on('mousedown', function (e) { e.preventDefault(); toolbarLink(); });
+        $('#tmp-tb-bullet').on('mousedown', function (e) { e.preventDefault(); toolbarBullet(); });
+        $('#tmp-tb-delete-row').on('mousedown', function (e) { e.preventDefault(); toolbarDeleteRow(); });
+        $('#tmp-tb-delete-col').on('mousedown', function (e) { e.preventDefault(); toolbarDeleteCol(); });
+
+        $(document).on('mousedown', function (e) {
+            if (!$(e.target).closest('.tmp-cell-input, .tmp-cell-toolbar, .tmp-link-modal, .tmp-link-overlay').length) {
+                setTimeout(function () {
+                    if (!$('.tmp-cell-input:focus').length) {
+                        activeCell = null;
+                        $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
+                        $('#tmp-tb-cell-ref').text('');
+                        $('.tmp-cell-input').closest('td').removeClass('tmp-cell-active');
+                    }
+                }, 100);
+            }
         });
 
         // Add row / groups
