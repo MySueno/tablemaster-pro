@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.19
+Stable tag: 1.3.20
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,15 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.20 =
+* Nieuw: WYSIWYG celeditor — vet, cursief en links worden visueel weergegeven in de admin (geen ruwe HTML-tags meer)
+* Nieuw: Plak-handler schoont automatisch rommel-HTML op bij plakken vanuit Word/Excel
+* Nieuw: Link invoegen modal met curseurpositie-behoud — links worden altijd op de juiste plek ingevoegd
+* Fix: Sorteren + paginering — na sorteren toonde paginering rijen in de verkeerde volgorde
+* Fix: Groepsvolgorde bleef nu behouden bij sorteren (was eerder onvoorspelbaar)
+* Fix: Ingeklapte groepskoppen verschijnen niet meer op pagina's zonder bijbehorende kinderrijen
+* Fix: Lege groeps- en afsluitrijen worden correct samengevoegd — br-tags en &amp;nbsp; tellen niet meer als gevulde cellen
 
 = 1.3.19 =
 * Nieuw: Kolom-headers samenvoegen (Hoofdgroep/Subgroep) — selecteer kolommen en groepeer ze met één klik
