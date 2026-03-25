@@ -369,8 +369,10 @@
     background: transparent;
     cursor: pointer;
     transition: border-color 0.15s, background 0.15s;
-    resize: none;
     min-height: 28px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.4;
 }
 
 .tmp-cell-input:hover {

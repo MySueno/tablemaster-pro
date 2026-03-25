@@ -660,6 +660,32 @@
             isDirty = true;
         });
 
+        $tr.find('.tmp-cell-input').on('paste', function (e) {
+            e.preventDefault();
+            var clip = (e.originalEvent || e).clipboardData;
+            if (!clip) return;
+            var html = clip.getData('text/html');
+            var text = clip.getData('text/plain');
+            var clean = '';
+            if (html) {
+                var $tmp = $('<div>').html(html);
+                $tmp.find('style, script, meta, link, head, title, xml').remove();
+                $tmp.find('[style]').removeAttr('style');
+                $tmp.find('[class]').removeAttr('class');
+                $tmp.find('[id]').removeAttr('id');
+                clean = $tmp.html()
+                    .replace(/<!--[\s\S]*?-->/g, '')
+                    .replace(/<\/?span[^>]*>/gi, '')
+                    .replace(/<\/?div[^>]*>/gi, '')
+                    .replace(/<\/?p[^>]*>/gi, '<br>')
+                    .replace(/(<br\s*\/?>){3,}/gi, '<br><br>')
+                    .trim();
+            } else {
+                clean = escHtml(text);
+            }
+            document.execCommand('insertHTML', false, clean);
+        });
+
         $tr.find('.tmp-cell-input').on('keydown', function (e) {
             if (e.ctrlKey && e.key === 'b') {
                 e.preventDefault();
@@ -739,8 +765,21 @@
         syncCellData();
     }
 
+    var savedRange = null;
+    function saveSelection() {
+        var sel = window.getSelection();
+        if (sel.rangeCount > 0) savedRange = sel.getRangeAt(0).cloneRange();
+    }
+    function restoreSelection() {
+        if (!savedRange) return;
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
+    }
+
     function toolbarLink() {
         if (!ensureCellEditable()) return;
+        saveSelection();
         var sel = window.getSelection();
         var selectedText = sel.rangeCount ? sel.toString() : '';
         openLinkModal(activeCell.$area, activeCell.el, 0, 0, selectedText);
@@ -898,7 +937,9 @@
             var newTab  = $modal.find('.tmp-link-newtab').is(':checked');
             var tag     = '<a href="' + url + '"' + (newTab ? ' target="_blank" rel="noopener"' : '') + '>' + escHtml(text) + '</a>';
             $area.focus();
+            restoreSelection();
             document.execCommand('insertHTML', false, tag);
+            savedRange = null;
             syncCellData();
             closeLinkModal();
         }
