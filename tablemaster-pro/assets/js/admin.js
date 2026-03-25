@@ -270,6 +270,8 @@
             var $label = $th.find('.tmp-col-header-label');
             var $delBtn = $th.find('.tmp-col-delete-btn');
             var $badge = $th.find('.tmp-col-group-badge');
+            var frozenW = $th.outerWidth();
+            $th.css('min-width', frozenW + 'px');
             $label.hide();
             $delBtn.hide();
             if ($badge.length) $badge.hide();
@@ -285,6 +287,7 @@
                 $delBtn.show();
                 if ($badge.length) $badge.show();
                 $input.remove();
+                $th.css('min-width', '');
             }
             $input.on('blur', finishEdit);
             $input.on('keydown', function (ev) {
