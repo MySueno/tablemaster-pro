@@ -223,6 +223,59 @@ foreach ( $font_css_map as $fk => $selector ) :
                         </th>
                     <?php endforeach; ?>
                 </tr>
+            <?php elseif ( $max_depth === 2 ) : ?>
+                <tr class="tmp-header-row">
+                    <?php if ( $collapsible ) : ?>
+                        <th class="tmp-toggle-col" aria-hidden="true"></th>
+                    <?php endif; ?>
+                    <?php
+                    $prev_g1 = null;
+                    $col_count_total = count( $col_meta );
+                    foreach ( $col_meta as $idx => $cm ) :
+                        if ( $cm['g1'] === '' ) :
+                            $uw  = $cm['cs']['width'] ?? 'auto';
+                            if ( $uw !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $uw ) ) $uw = 'auto';
+                            if ( $uw === 'auto' && $default_col_w !== '' ) $uw = $default_col_w;
+                            $ug_align = in_array( $cm['cs']['align'] ?? 'left', $valid_aligns, true ) ? $cm['cs']['align'] : 'left';
+                            $us  = '';
+                            if ( $uw !== 'auto' ) $us .= 'width:' . esc_attr( $uw ) . ';';
+                            $us .= 'text-align:' . esc_attr( $ug_align ) . ';';
+                            $ug_sort = ! empty( $table_sortable );
+                            $ug_class = 'tmp-th';
+                            if ( $ug_sort ) $ug_class .= ' tmp-sortable';
+                        ?>
+                            <th class="<?php echo esc_attr( $ug_class ); ?>"
+                                data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
+                                data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
+                                style="<?php echo esc_attr( $us ); ?>"
+                                <?php echo $ug_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
+                                <?php echo esc_html( $cm['col']->label ); ?>
+                                <?php if ( $ug_sort ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
+                            </th>
+                        <?php elseif ( $cm['g1'] !== $prev_g1 ) :
+                            $g1_colspan = 1;
+                            for ( $j = $idx + 1; $j < $col_count_total; $j++ ) {
+                                if ( $col_meta[ $j ]['g1'] === $cm['g1'] ) $g1_colspan++;
+                                else break;
+                            }
+                            $g1_sort = ! empty( $table_sortable );
+                            $g1_class = 'tmp-th';
+                            if ( $g1_sort ) $g1_class .= ' tmp-sortable';
+                            $g1_align = in_array( $cm['cs']['align'] ?? 'left', $valid_aligns, true ) ? $cm['cs']['align'] : 'left';
+                            $g1_style = 'text-align:' . esc_attr( $g1_align ) . ';';
+                        ?>
+                            <th class="<?php echo esc_attr( $g1_class ); ?>" colspan="<?php echo $g1_colspan; ?>"
+                                data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
+                                data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
+                                style="<?php echo esc_attr( $g1_style ); ?>"
+                                <?php echo $g1_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
+                                <?php echo esc_html( $cm['g1'] ); ?>
+                                <?php if ( $g1_sort ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
+                            </th>
+                        <?php endif;
+                        $prev_g1 = $cm['g1'];
+                    endforeach; ?>
+                </tr>
             <?php else : ?>
                 <tr class="tmp-header-row tmp-header-row-1">
                     <?php if ( $collapsible ) : ?>
@@ -264,7 +317,6 @@ foreach ( $font_css_map as $fk => $selector ) :
                         $prev_g1 = $cm['g1'];
                     endforeach; ?>
                 </tr>
-                <?php if ( $max_depth >= 2 ) : ?>
                 <tr class="tmp-header-row tmp-header-row-2">
                     <?php
                     $prev_g2_key = null;
@@ -277,19 +329,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                         $sort_r2 = ! empty( $table_sortable );
                         $align_r2 = in_array( $cm['cs']['align'] ?? 'left', $valid_aligns, true ) ? $cm['cs']['align'] : 'left';
                         $ls_full  = $ls . 'text-align:' . esc_attr( $align_r2 ) . ';';
-                        if ( $cm['g2'] === '' && $max_depth === 2 ) :
-                            $th2_class = 'tmp-th tmp-th-grouped';
-                            if ( $sort_r2 ) $th2_class .= ' tmp-sortable';
-                        ?>
-                            <th class="<?php echo esc_attr( $th2_class ); ?>"
-                                data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
-                                data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
-                                style="<?php echo esc_attr( $ls_full ); ?>"
-                                <?php echo $sort_r2 ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
-                                <?php echo esc_html( $cm['col']->label ); ?>
-                                <?php if ( $sort_r2 ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
-                            </th>
-                        <?php elseif ( $cm['g2'] === '' && $max_depth === 3 ) :
+                        if ( $cm['g2'] === '' ) :
                             $th2_class = 'tmp-th tmp-th-grouped';
                             if ( $sort_r2 ) $th2_class .= ' tmp-sortable';
                         ?>
@@ -317,8 +357,6 @@ foreach ( $font_css_map as $fk => $selector ) :
                         endif;
                     endforeach; ?>
                 </tr>
-                <?php endif; ?>
-                <?php if ( $max_depth === 3 ) : ?>
                 <tr class="tmp-header-row tmp-header-row-3">
                     <?php foreach ( $col_meta as $idx => $cm ) :
                         if ( $cm['g1'] === '' ) continue;
@@ -346,7 +384,6 @@ foreach ( $font_css_map as $fk => $selector ) :
                         </th>
                     <?php endforeach; ?>
                 </tr>
-                <?php endif; ?>
             <?php endif; ?>
             </thead>
             <tbody class="tmp-tbody">
