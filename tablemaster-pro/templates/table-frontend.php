@@ -541,13 +541,18 @@ foreach ( $font_css_map as $fk => $selector ) :
                                 <td class="tmp-toggle-cell">&nbsp;</td>
                             <?php endif; ?>
 
-                            <?php foreach ( $columns as $col ) :
+                            <?php
+                            $data_skip = 0;
+                            foreach ( $columns as $col ) :
+                                if ( $data_skip > 0 ) { $data_skip--; continue; }
                                 $cs       = json_decode( $col->settings, true );
                                 $col_align = in_array( $cs['align'] ?? 'left', $valid_aligns, true ) ? $cs['align'] : 'left';
                                 $cell_align_val = isset( $row->cell_aligns[ $col->id ] ) && in_array( $row->cell_aligns[ $col->id ], $valid_aligns, true ) ? $row->cell_aligns[ $col->id ] : '';
                                 $align    = $cell_align_val !== '' ? $cell_align_val : $col_align;
                                 $col_type = sanitize_text_field( $col->type );
                                 $td_class = 'tmp-td';
+                                $cell_colspan = isset( $row->cell_merges[ $col->id ] ) ? intval( $row->cell_merges[ $col->id ] ) : 1;
+                                if ( $cell_colspan > 1 ) $data_skip = $cell_colspan - 1;
 
                                 $raw_content = $row->cells[$col->id] ?? '';
                             ?>
@@ -555,7 +560,8 @@ foreach ( $font_css_map as $fk => $selector ) :
                                     style="text-align:<?php echo esc_attr( $align ); ?>;"
                                     data-col-id="<?php echo esc_attr( $col->id ); ?>"
                                     data-col-type="<?php echo esc_attr( $col_type ); ?>"
-                                    data-label="<?php echo esc_attr( $col->label ); ?>">
+                                    data-label="<?php echo esc_attr( $col->label ); ?>"
+                                    <?php if ( $cell_colspan > 1 ) : ?>colspan="<?php echo $cell_colspan; ?>"<?php endif; ?>>
                                     <?php if ( $col_type === 'link' ) : ?>
                                         <?php if ( filter_var( $raw_content, FILTER_VALIDATE_URL ) ) : ?>
                                             <a href="<?php echo esc_url( $raw_content ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $raw_content ); ?></a>

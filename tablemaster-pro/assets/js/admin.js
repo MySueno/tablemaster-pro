@@ -165,6 +165,7 @@
             is_collapsed:   false,
             cells:          cells,
             cell_aligns:    {},
+            cell_merges:    {},
         };
         rows.push(row);
         rebuildRowTable();
@@ -562,6 +563,78 @@
         $('.tmp-merge-toolbar').remove();
     }
 
+    function updateCellMergeToolbar($tr) {
+        hideCellMergeToolbar();
+        var $selected = $tr.find('td.tmp-cell-selected');
+        if ($selected.length < 1) return;
+        var colKeys = [];
+        $selected.each(function () {
+            var $inp = $(this).find('.tmp-cell-input');
+            if ($inp.length) colKeys.push($inp.data('col-key') + '');
+        });
+        if (colKeys.length < 1) return;
+        var tempId = $tr.data('temp-id') + '';
+        var rowObj = rows.find(function (r) { return r.temp_id + '' === tempId; });
+        var anyMerged = colKeys.some(function (k) { return rowObj && rowObj.cell_merges && rowObj.cell_merges[k] && parseInt(rowObj.cell_merges[k]) > 1; });
+        var colIndices = colKeys.map(function (k) {
+            for (var i = 0; i < columns.length; i++) {
+                if ((columns[i].temp_key || columns[i].id) + '' === k) return i;
+            }
+            return -1;
+        }).sort(function (a, b) { return a - b; });
+        var contiguous = true;
+        for (var ci = 1; ci < colIndices.length; ci++) {
+            if (colIndices[ci] !== colIndices[ci - 1] + 1) { contiguous = false; break; }
+        }
+        var canMerge = colKeys.length >= 2 && contiguous;
+        if (!canMerge && !anyMerged) return;
+        var $first = $selected.first();
+        var $last = $selected.last();
+        var topOff = $first.offset();
+        var bottomY = topOff.top + $first.outerHeight();
+        var leftOff = topOff.left;
+        var rightOff = $last.offset().left + $last.outerWidth();
+        var centerX = leftOff + (rightOff - leftOff) / 2;
+        var $bar = $('<div class="tmp-cell-merge-toolbar tmp-merge-toolbar">' +
+            '<span class="tmp-merge-label">' + colKeys.length + ' cel' + (colKeys.length > 1 ? 'len' : '') + '</span>' +
+            (canMerge ? '<button type="button" class="button button-primary tmp-cell-merge-btn">Samenvoegen</button>' : '') +
+            (anyMerged ? '<button type="button" class="button tmp-cell-unmerge-btn" style="margin-left:4px;">Opheffen</button>' : '') +
+        '</div>');
+        $('body').append($bar);
+        var barW = $bar.outerWidth();
+        var barLeft = centerX - barW / 2;
+        if (barLeft < 8) barLeft = 8;
+        $bar.css({ top: bottomY + 6, left: barLeft });
+        $bar.find('.tmp-cell-merge-btn').on('click', function () {
+            if (!rowObj) return;
+            if (!rowObj.cell_merges) rowObj.cell_merges = {};
+            var sortedKeys = [];
+            for (var si = colIndices[0]; si <= colIndices[colIndices.length - 1]; si++) {
+                sortedKeys.push((columns[si].temp_key || columns[si].id) + '');
+            }
+            rowObj.cell_merges[sortedKeys[0]] = sortedKeys.length;
+            for (var mi = 1; mi < sortedKeys.length; mi++) {
+                delete rowObj.cell_merges[sortedKeys[mi]];
+            }
+            isDirty = true;
+            hideCellMergeToolbar();
+            $('td.tmp-cell-selected').removeClass('tmp-cell-selected');
+            rebuildRowTable();
+        });
+        $bar.find('.tmp-cell-unmerge-btn').on('click', function () {
+            if (!rowObj || !rowObj.cell_merges) return;
+            colKeys.forEach(function (k) { delete rowObj.cell_merges[k]; });
+            isDirty = true;
+            hideCellMergeToolbar();
+            $('td.tmp-cell-selected').removeClass('tmp-cell-selected');
+            rebuildRowTable();
+        });
+    }
+
+    function hideCellMergeToolbar() {
+        $('.tmp-cell-merge-toolbar').remove();
+    }
+
     var rowTypeOrder = ['data', 'group_1', 'group_2', 'group_3', 'footer'];
     var rowTypeLabels = { data: 'Data', group_1: 'G1', group_2: 'G2', group_3: 'G3', footer: 'Afsluit' };
 
@@ -571,17 +644,25 @@
         var badgeText = rowTypeLabels[row.row_type] || 'Data';
         var isGroup   = row.row_type && row.row_type !== 'data';
 
-        var cellInputs = columns.map(function (col) {
-            var key     = col.temp_key || col.id;
+        var cellMerges = row.cell_merges || {};
+        var cellInputs = '';
+        var skipCols = 0;
+        for (var ci = 0; ci < columns.length; ci++) {
+            if (skipCols > 0) { skipCols--; continue; }
+            var col = columns[ci];
+            var key = col.temp_key || col.id;
             var content = row.cells[key] !== undefined ? row.cells[key] : '';
             var cellAlign = (row.cell_aligns && row.cell_aligns[key]) || '';
             var alignStyle = cellAlign ? 'text-align:' + escAttr(cellAlign) + ';' : '';
             var placeholder = isGroup ? 'Leeg = samenvoegen \u2192' : '';
-            return '<td><div class="tmp-cell-input" contenteditable="true" data-col-key="' + escAttr(key + '') + '"' +
+            var cspan = cellMerges[key] ? parseInt(cellMerges[key]) : 1;
+            if (cspan > 1) skipCols = cspan - 1;
+            cellInputs += '<td' + (cspan > 1 ? ' colspan="' + cspan + '"' : '') + '>' +
+                '<div class="tmp-cell-input" contenteditable="true" data-col-key="' + escAttr(key + '') + '"' +
                 (placeholder ? ' data-placeholder="' + escAttr(placeholder) + '"' : '') +
                 (alignStyle ? ' style="' + alignStyle + '"' : '') + '>' +
                 content + '</div></td>';
-        }).join('');
+        }
 
         var $tr = $('<tr class="' + escAttr(typeClass) + '" data-temp-id="' + escAttr(row.temp_id) + '">' +
             '<td><span class="tmp-drag-handle dashicons dashicons-menu"></span></td>' +
@@ -612,6 +693,21 @@
             if (rowObj) {
                 rowObj.cells[colKey] = cleanCellHtml($div.html());
                 isDirty = true;
+            }
+        });
+
+        $tr.find('.tmp-cell-input').on('mousedown', function (e) {
+            if (e.ctrlKey || e.metaKey) {
+                e.preventDefault();
+                e.stopPropagation();
+                var $td = $(this).closest('td');
+                $tr.siblings().find('td.tmp-cell-selected').removeClass('tmp-cell-selected');
+                $td.toggleClass('tmp-cell-selected');
+                updateCellMergeToolbar($tr);
+                return false;
+            } else {
+                $('td.tmp-cell-selected').removeClass('tmp-cell-selected');
+                hideCellMergeToolbar();
             }
         });
 
@@ -659,11 +755,18 @@
                     newAligns[ak] = rowObj.cell_aligns[ak];
                 }
             }
+            var newMerges = {};
+            if (rowObj.cell_merges) {
+                for (var mk in rowObj.cell_merges) {
+                    newMerges[mk] = rowObj.cell_merges[mk];
+                }
+            }
             var newRow = {
                 temp_id:      newTempId,
                 row_type:     rowObj.row_type,
                 cells:        newCells,
                 cell_aligns:  newAligns,
+                cell_merges:  newMerges,
                 sort_order:   0,
                 is_collapsed: false,
                 parent_id:    rowObj.parent_id || null,
@@ -845,6 +948,23 @@
         if (!col) { activeCell = null; return; }
         if (!confirm('Kolom "' + (col.label || 'Kolom') + '" verwijderen?')) return;
         columns = columns.filter(function(c) { return (c.temp_key || c.id) + '' !== colKey; });
+        rows.forEach(function (r) {
+            if (!r.cell_merges) return;
+            var newMerges = {};
+            Object.keys(r.cell_merges).forEach(function (mk) {
+                if (mk === colKey) return;
+                var span = parseInt(r.cell_merges[mk]) || 1;
+                if (span <= 1) { newMerges[mk] = 1; return; }
+                var anchorIdx = -1, delIdx = -1;
+                for (var ci = 0; ci < columns.length; ci++) {
+                    var ck = (columns[ci].temp_key || columns[ci].id) + '';
+                    if (ck === mk) anchorIdx = ci;
+                }
+                if (anchorIdx === -1) return;
+                newMerges[mk] = Math.max(1, span - 1);
+            });
+            r.cell_merges = newMerges;
+        });
         isDirty = true;
         rebuildRowTable();
     }
@@ -1155,6 +1275,7 @@
                     is_collapsed:   false,
                     cells:          cells,
                     cell_aligns:    {},
+                    cell_merges:    {},
                 });
             });
 
@@ -1210,13 +1331,18 @@
             (d.rows || []).forEach(function (row) {
                 var cells = {};
                 var cellAligns = {};
+                var cellMerges = {};
                 var rowCells = row.cells || {};
                 var rowCellAligns = row.cell_aligns || {};
+                var rowCellMerges = row.cell_merges || {};
                 columns.forEach(function (col) {
                     var dbColId = col.id + '';
                     cells[col.temp_key] = rowCells[dbColId] !== undefined ? rowCells[dbColId] : '';
                     if (rowCellAligns[dbColId]) {
                         cellAligns[col.temp_key] = rowCellAligns[dbColId];
+                    }
+                    if (rowCellMerges[dbColId] && parseInt(rowCellMerges[dbColId]) > 1) {
+                        cellMerges[col.temp_key] = parseInt(rowCellMerges[dbColId]);
                     }
                 });
 
@@ -1229,6 +1355,7 @@
                     is_collapsed:   row.is_collapsed === '1' || row.is_collapsed === 1,
                     cells:          cells,
                     cell_aligns:    cellAligns,
+                    cell_merges:    cellMerges,
                 });
             });
 
@@ -1333,6 +1460,7 @@
                     is_collapsed:   row.is_collapsed ? 1 : 0,
                     cells:          row.cells,
                     cell_aligns:    row.cell_aligns || {},
+                    cell_merges:    row.cell_merges || {},
                 };
             });
 
@@ -1404,7 +1532,7 @@
         $('#tmp-tb-delete-col').on('mousedown', function (e) { e.preventDefault(); toolbarDeleteCol(); });
 
         $(document).on('mousedown', function (e) {
-            if (!$(e.target).closest('.tmp-cell-input, .tmp-cell-toolbar, .tmp-link-modal, .tmp-link-overlay, .tmp-col-inline-edit').length) {
+            if (!$(e.target).closest('.tmp-cell-input, .tmp-cell-toolbar, .tmp-link-modal, .tmp-link-overlay, .tmp-col-inline-edit, .tmp-cell-merge-toolbar').length) {
                 setTimeout(function () {
                     if (!$('.tmp-cell-input:focus').length) {
                         activeCell = null;

@@ -187,6 +187,12 @@ class TableMaster_Ajax {
                 }
                 unset( $ca_val );
             }
+            if ( isset( $row['cell_merges'] ) && is_array( $row['cell_merges'] ) ) {
+                foreach ( $row['cell_merges'] as $cm_key => &$cm_val ) {
+                    $cm_val = max( 1, intval( $cm_val ) );
+                }
+                unset( $cm_val );
+            }
         }
         unset( $row );
 

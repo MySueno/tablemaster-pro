@@ -51,6 +51,7 @@ class TableMaster_DB {
             content longtext NOT NULL,
             lang varchar(10) NOT NULL DEFAULT '',
             align varchar(10) NOT NULL DEFAULT '',
+            colspan int(11) NOT NULL DEFAULT 1,
             PRIMARY KEY  (id),
             KEY row_id (row_id),
             KEY column_id (column_id)
@@ -526,6 +527,7 @@ class TableMaster_DB {
                             'content'   => $cell->content,
                             'lang'      => $cell->lang,
                             'align'     => isset( $cell->align ) ? $cell->align : '',
+                            'colspan'   => isset( $cell->colspan ) ? intval( $cell->colspan ) : 1,
                         )
                     );
                 }
@@ -571,6 +573,7 @@ class TableMaster_DB {
         $row_ids     = wp_list_pluck( $rows, 'id' );
         $cells       = array();
         $cell_aligns = array();
+        $cell_merges = array();
         if ( $row_ids ) {
             $placeholders = implode( ',', array_fill( 0, count( $row_ids ), '%d' ) );
             $lang_clause = '';
@@ -592,12 +595,17 @@ class TableMaster_DB {
                 if ( $cell_align !== '' && ! isset( $cell_aligns[$cell->row_id][$cell->column_id] ) ) {
                     $cell_aligns[$cell->row_id][$cell->column_id] = $cell_align;
                 }
+                $cell_colspan = isset( $cell->colspan ) ? intval( $cell->colspan ) : 1;
+                if ( $cell_colspan > 1 && ! isset( $cell_merges[$cell->row_id][$cell->column_id] ) ) {
+                    $cell_merges[$cell->row_id][$cell->column_id] = $cell_colspan;
+                }
             }
         }
 
         foreach ( $rows as &$row ) {
             $row->cells = $cells[$row->id] ?? array();
             $row->cell_aligns = $cell_aligns[$row->id] ?? array();
+            $row->cell_merges = $cell_merges[$row->id] ?? array();
         }
 
         $result = array(
@@ -734,6 +742,7 @@ class TableMaster_DB {
             $row_id_map[$temp_id] = $row_db_id;
 
             $row_cell_aligns = isset( $row['cell_aligns'] ) && is_array( $row['cell_aligns'] ) ? $row['cell_aligns'] : array();
+            $row_cell_merges = isset( $row['cell_merges'] ) && is_array( $row['cell_merges'] ) ? $row['cell_merges'] : array();
 
             if ( ! empty( $row['cells'] ) ) {
                 foreach ( $row['cells'] as $temp_col_key => $content ) {
@@ -750,11 +759,15 @@ class TableMaster_DB {
                     if ( isset( $row_cell_aligns[ $temp_col_key ] ) ) {
                         $cell_align = in_array( $row_cell_aligns[ $temp_col_key ], array( 'left', 'center', 'right' ), true ) ? $row_cell_aligns[ $temp_col_key ] : '';
                     }
+                    $cell_colspan = 1;
+                    if ( isset( $row_cell_merges[ $temp_col_key ] ) ) {
+                        $cell_colspan = max( 1, intval( $row_cell_merges[ $temp_col_key ] ) );
+                    }
 
                     if ( $existing_cell ) {
                         $wpdb->update(
                             "{$wpdb->prefix}tablemaster_cells",
-                            array( 'content' => $sanitized_content, 'align' => $cell_align ),
+                            array( 'content' => $sanitized_content, 'align' => $cell_align, 'colspan' => $cell_colspan ),
                             array( 'id' => $existing_cell->id )
                         );
                     } else {
@@ -766,6 +779,7 @@ class TableMaster_DB {
                                 'content'   => $sanitized_content,
                                 'lang'      => $lang,
                                 'align'     => $cell_align,
+                                'colspan'   => $cell_colspan,
                             )
                         );
                     }
