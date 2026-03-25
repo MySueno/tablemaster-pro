@@ -1066,6 +1066,7 @@
             default_sort_col:   $('#tmp-default-sort-col').val(),
             default_sort_dir:   $('#tmp-default-sort-dir').val(),
             default_col_width:  $('#tmp-default-col-width').val().trim(),
+            max_width:          $('#tmp-max-width').val().trim(),
             fonts:              (function () {
                 var f = {};
                 $('.tmp-font-size').each(function () {

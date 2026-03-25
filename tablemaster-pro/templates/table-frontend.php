@@ -42,6 +42,8 @@ $sticky_first_col  = ! empty( $settings['sticky_first_col'] );
 $sticky_header     = ! empty( $settings['sticky_header'] );
 $table_sortable    = $settings['sortable'] ?? true;
 $fonts             = $settings['fonts'] ?? array();
+$max_width         = sanitize_text_field( $settings['max_width'] ?? '' );
+if ( $max_width !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%|vw)$/', $max_width ) ) $max_width = '';
 
 $columns = $data['columns'];
 $rows    = $data['rows'];
@@ -83,6 +85,9 @@ foreach ( $font_css_map as $fk => $selector ) :
 ?>
 #<?php echo esc_attr( $table_uid ); ?> <?php echo $selector; ?> { <?php echo implode( ';', $rules ); ?>; }
 <?php endif; endforeach; ?>
+<?php if ( $max_width !== '' ) : ?>
+#<?php echo esc_attr( $table_uid ); ?> { max-width: <?php echo esc_attr( $max_width ); ?>; }
+<?php endif; ?>
 </style>
 
 <div id="<?php echo esc_attr( $table_uid ); ?>"

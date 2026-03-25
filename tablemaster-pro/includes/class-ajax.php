@@ -88,6 +88,12 @@ class TableMaster_Ajax {
         }
         $clean['default_col_width']  = $dcw;
 
+        $mw = trim( $settings['max_width'] ?? '' );
+        if ( $mw !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%|vw)$/', $mw ) ) {
+            $mw = '';
+        }
+        $clean['max_width'] = $mw;
+
         if ( isset( $settings['colors'] ) && is_array( $settings['colors'] ) ) {
             $clean['colors'] = TableMaster_Settings::sanitize_colors( $settings['colors'] );
         }
