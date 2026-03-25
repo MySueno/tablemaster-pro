@@ -17,9 +17,10 @@
 
     var columns    = [];   // [{id, label, type, settings:{width,align,sortable,filterable}}, ...]
     var rows       = [];   // [{id, temp_id, row_type, parent_id, parent_temp_id, cells:{col_key: content}, is_collapsed}, ...]
-    var colTempIdx = 0;
-    var rowTempIdx = 0;
-    var isDirty    = false;
+    var colTempIdx    = 0;
+    var rowTempIdx    = 0;
+    var isDirty       = false;
+    var justDraggedKey = null;
 
     /* ===== BOOT ===== */
     $(document).ready(function () {
@@ -188,7 +189,6 @@
             return '<th class="tmp-col-header-cell" data-col-key="' + escAttr(key + '') + '" data-col-idx="' + ci + '" draggable="true">' +
                 '<span class="tmp-col-header-label">' + escHtml(col.label || 'Kolom') + '</span>' +
                 groupIcon +
-                '<span class="tmp-col-delete-btn dashicons dashicons-no-alt" title="Kolom verwijderen"></span>' +
             '</th>';
         }).join('');
 
@@ -206,22 +206,10 @@
         var $wrap = $('<div class="tmp-admin-table-wrap"></div>').append($table);
         $wrapper.append($wrap);
 
-        $thead.find('.tmp-col-delete-btn').on('click', function (e) {
-            e.stopPropagation();
-            var $th = $(this).closest('.tmp-col-header-cell');
-            var colKey = $th.data('col-key') + '';
-            if (confirm('Kolom verwijderen?')) {
-                columns = columns.filter(function(c) { return (c.temp_key || c.id) + '' !== colKey; });
-                isDirty = true;
-                rebuildRowTable();
-            }
-        });
-
         $thead.find('.tmp-col-header-cell').on('click', function (e) {
             e.stopPropagation();
-            if ($(e.target).hasClass('tmp-col-delete-btn')) return;
-            if ($(this).hasClass('tmp-col-just-dragged')) {
-                $(this).removeClass('tmp-col-just-dragged');
+            if (justDraggedKey) {
+                justDraggedKey = null;
                 return;
             }
             var $th = $(this);
@@ -265,8 +253,8 @@
                 var moved = columns.splice(dragSrcIdx, 1)[0];
                 columns.splice(targetIdx, 0, moved);
                 isDirty = true;
+                justDraggedKey = $(this).data('col-key') + '';
                 rebuildRowTable();
-                $(this).addClass('tmp-col-just-dragged');
             });
 
             $thead.find('.tmp-col-header-cell').on('dragend', function () {
