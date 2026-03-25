@@ -640,7 +640,7 @@ class TableMaster_DB {
                 'align'         => in_array( $raw_align, $allowed_aligns, true ) ? $raw_align : 'left',
                 'sortable'      => ! empty( $col['settings']['sortable'] ),
                 'filterable'    => ! empty( $col['settings']['filterable'] ),
-                'header_group1' => mb_substr( sanitize_text_field( $col['settings']['header_group1'] ?? '' ), 0, 200 ),
+                'header_group1' => mb_substr( wp_kses_post( $col['settings']['header_group1'] ?? '' ), 0, 500 ),
                 'header_group2' => mb_substr( sanitize_text_field( $col['settings']['header_group2'] ?? '' ), 0, 200 ),
             );
             $temp_key = sanitize_text_field( $col['temp_key'] ?? '' );

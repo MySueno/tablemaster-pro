@@ -214,13 +214,13 @@
                     'data-group-name="' + escAttr(g1) + '" ' +
                     'draggable="true" ' +
                     (colspan > 1 ? 'colspan="' + colspan + '" ' : '') + '>' +
-                    '<span class="tmp-col-header-label">' + escHtml(g1) + '</span>' +
+                    '<span class="tmp-col-header-label">' + g1 + '</span>' +
                     '<span class="tmp-col-unmerge-btn dashicons dashicons-editor-unlink" title="Groep opheffen"></span>' +
                 '</th>';
                 ci = groupEndIdx + 1;
             } else {
                 headerCols += '<th class="tmp-col-header-cell" data-col-key="' + escAttr(key) + '" data-col-idx="' + ci + '" draggable="true">' +
-                    '<span class="tmp-col-header-label">' + escHtml(col.label || 'Kolom') + '</span>' +
+                    '<span class="tmp-col-header-label">' + (col.label || 'Kolom') + '</span>' +
                     '<span class="tmp-col-delete-btn dashicons dashicons-no-alt" title="Kolom verwijderen"></span>' +
                 '</th>';
                 ci++;
@@ -304,31 +304,43 @@
                 $th.css('min-width', frozenW + 'px');
                 $label.hide();
                 $unlinkBtn.hide();
-                var $input = $('<input type="text" class="tmp-col-inline-edit" value="' + escAttr(groupName) + '">');
-                $th.append($input);
-                $input.focus().select();
+                var $editDiv = $('<div class="tmp-col-inline-edit tmp-cell-input" contenteditable="true"></div>');
+                $editDiv.html(groupName);
+                $th.append($editDiv);
+                $editDiv.focus();
+                var rng = document.createRange();
+                rng.selectNodeContents($editDiv[0]);
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(rng);
+                activeCell = { $area: $editDiv, el: $editDiv[0], $tr: null, colKey: '__group__' + groupKeys.join(','), tempId: '__header__' };
+                $('#tmp-cell-toolbar').removeClass('tmp-toolbar-disabled');
+                $('#tmp-tb-cell-ref').text(groupName);
                 function finishGroupNameEdit() {
-                    var newVal = $input.val().trim();
+                    var newVal = cleanCellHtml($editDiv.html()).trim();
+                    activeCell = null;
+                    $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
+                    $('#tmp-tb-cell-ref').text('');
                     if (newVal && newVal !== origGroupName) {
                         groupKeys.forEach(function (k) {
                             var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
                             if (col) col.settings.header_group1 = newVal;
                         });
                         isDirty = true;
-                        $input.remove();
+                        $editDiv.remove();
                         $th.css('min-width', '');
                         rebuildRowTable();
                     } else {
                         $label.show();
                         $unlinkBtn.show();
-                        $input.remove();
+                        $editDiv.remove();
                         $th.css('min-width', '');
                     }
                 }
-                $input.on('blur', finishGroupNameEdit);
-                $input.on('keydown', function (ev) {
+                $editDiv.on('blur', function () { setTimeout(finishGroupNameEdit, 150); });
+                $editDiv.on('keydown', function (ev) {
                     if (ev.key === 'Enter') { ev.preventDefault(); finishGroupNameEdit(); }
-                    if (ev.key === 'Escape') { $label.show(); $unlinkBtn.show(); $input.remove(); $th.css('min-width', ''); }
+                    if (ev.key === 'Escape') { activeCell = null; $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled'); $label.show(); $unlinkBtn.show(); $editDiv.remove(); $th.css('min-width', ''); }
                 });
             } else {
                 var colKey = $th.data('col-key') + '';
@@ -341,23 +353,33 @@
                 $th.css('min-width', frozenW + 'px');
                 $label.hide();
                 $delBtn.hide();
-                var $input = $('<input type="text" class="tmp-col-inline-edit" value="' + escAttr(col.label) + '">');
-                $th.append($input);
-                $input.focus().select();
-                $input.on('input', function () {
-                    col.label = $(this).val().trim();
-                    isDirty = true;
-                });
+                var $editDiv = $('<div class="tmp-col-inline-edit tmp-cell-input" contenteditable="true"></div>');
+                $editDiv.html(col.label || '');
+                $th.append($editDiv);
+                $editDiv.focus();
+                var rng = document.createRange();
+                rng.selectNodeContents($editDiv[0]);
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(rng);
+                activeCell = { $area: $editDiv, el: $editDiv[0], $tr: null, colKey: colKey, tempId: '__header__' };
+                $('#tmp-cell-toolbar').removeClass('tmp-toolbar-disabled');
+                $('#tmp-tb-cell-ref').text(col.label || 'Kolom');
                 function finishEdit() {
-                    $label.text(col.label || 'Kolom').show();
+                    col.label = cleanCellHtml($editDiv.html()).trim() || origLabel;
+                    isDirty = true;
+                    activeCell = null;
+                    $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
+                    $('#tmp-tb-cell-ref').text('');
+                    $label.html(col.label || 'Kolom').show();
                     $delBtn.show();
-                    $input.remove();
+                    $editDiv.remove();
                     $th.css('min-width', '');
                 }
-                $input.on('blur', finishEdit);
-                $input.on('keydown', function (ev) {
+                $editDiv.on('blur', function () { setTimeout(finishEdit, 150); });
+                $editDiv.on('keydown', function (ev) {
                     if (ev.key === 'Enter') { ev.preventDefault(); finishEdit(); }
-                    if (ev.key === 'Escape') { col.label = origLabel; finishEdit(); }
+                    if (ev.key === 'Escape') { col.label = origLabel; activeCell = null; $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled'); finishEdit(); }
                 });
             }
         });
@@ -746,6 +768,21 @@
         if (!activeCell) return;
         var colKey = activeCell.colKey;
         var tempId = activeCell.tempId;
+        if (tempId === '__header__') {
+            isDirty = true;
+            if (colKey.indexOf('__group__') === 0) {
+                var gKeys = colKey.replace('__group__', '').split(',');
+                var newVal = cleanCellHtml(activeCell.$area.html()).trim();
+                gKeys.forEach(function (k) {
+                    var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
+                    if (col) col.settings.header_group1 = newVal;
+                });
+            } else {
+                var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
+                if (col) col.label = cleanCellHtml(activeCell.$area.html()).trim();
+            }
+            return;
+        }
         var rowObj = rows.find(function (r) { return r.temp_id + '' === tempId; });
         if (rowObj) {
             rowObj.cells[colKey] = cleanCellHtml(activeCell.$area.html());
@@ -1367,7 +1404,7 @@
         $('#tmp-tb-delete-col').on('mousedown', function (e) { e.preventDefault(); toolbarDeleteCol(); });
 
         $(document).on('mousedown', function (e) {
-            if (!$(e.target).closest('.tmp-cell-input, .tmp-cell-toolbar, .tmp-link-modal, .tmp-link-overlay').length) {
+            if (!$(e.target).closest('.tmp-cell-input, .tmp-cell-toolbar, .tmp-link-modal, .tmp-link-overlay, .tmp-col-inline-edit').length) {
                 setTimeout(function () {
                     if (!$('.tmp-cell-input:focus').length) {
                         activeCell = null;

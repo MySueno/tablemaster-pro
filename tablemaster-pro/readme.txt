@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.22
+Stable tag: 1.3.23
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,7 +33,8 @@ Functies:
 
 == Changelog ==
 
-= 1.3.22 =
+= 1.3.23 =
+* Nieuw: Toolbar (vet, cursief, link, lijst) werkt nu ook bij het bewerken van kolomtitels en groepsnamen
 * Fix: Samenvoeg-popup verschijnt nu onder de kolomkop in plaats van erboven — toolbar is niet meer geblokkeerd
 
 = 1.3.21 =

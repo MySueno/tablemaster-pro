@@ -167,7 +167,7 @@ class TableMaster_Ajax {
         }
 
         foreach ( $columns as &$col ) {
-            $col['label'] = isset( $col['label'] ) ? mb_substr( sanitize_text_field( $col['label'] ), 0, 200 ) : '';
+            $col['label'] = isset( $col['label'] ) ? mb_substr( wp_kses_post( $col['label'] ), 0, 500 ) : '';
             $allowed_types = array( 'text', 'number', 'date', 'link', 'image', 'html' );
             $col['type']  = isset( $col['type'] ) && in_array( $col['type'], $allowed_types, true ) ? $col['type'] : 'text';
         }

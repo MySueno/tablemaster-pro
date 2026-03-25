@@ -249,7 +249,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                                 data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
                                 style="<?php echo esc_attr( $us ); ?>"
                                 <?php echo $ug_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
-                                <?php echo esc_html( $cm['col']->label ); ?>
+                                <?php echo wp_kses_post( $cm['col']->label ); ?>
                                 <?php if ( $ug_sort ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
                             </th>
                         <?php elseif ( $cm['g1'] !== $prev_g1 ) :
@@ -269,7 +269,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                                 data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
                                 style="<?php echo esc_attr( $g1_style ); ?>"
                                 <?php echo $g1_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
-                                <?php echo esc_html( $cm['g1'] ); ?>
+                                <?php echo wp_kses_post( $cm['g1'] ); ?>
                                 <?php if ( $g1_sort ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
                             </th>
                         <?php endif;
@@ -311,7 +311,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                                 data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
                                 style="<?php echo esc_attr( $us ); ?>"
                                 <?php echo $ug_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
-                                <?php echo esc_html( $cm['col']->label ); ?>
+                                <?php echo wp_kses_post( $cm['col']->label ); ?>
                                 <?php if ( $ug_sort ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
                             </th>
                         <?php elseif ( $cm['g1'] !== $prev_g1 ) :
@@ -334,7 +334,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                                 <?php if ( $g1_no_sub ) : ?>data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"<?php endif; ?>
                                 style="<?php echo esc_attr( $g1_style ); ?>"
                                 <?php echo $g1_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
-                                <?php echo esc_html( $cm['g1'] ); ?>
+                                <?php echo wp_kses_post( $cm['g1'] ); ?>
                                 <?php if ( $g1_sort ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
                             </th>
                         <?php endif;
@@ -363,7 +363,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                                 data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
                                 style="<?php echo esc_attr( $ls_full ); ?>"
                                 <?php echo $sort_r2 ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
-                                <?php echo esc_html( $cm['col']->label ); ?>
+                                <?php echo wp_kses_post( $cm['col']->label ); ?>
                                 <?php if ( $sort_r2 ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
                             </th>
                         <?php else :
@@ -403,7 +403,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                             data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
                             style="<?php echo esc_attr( $ls3_full ); ?>"
                             <?php echo $sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
-                            <?php echo esc_html( $cm['col']->label ); ?>
+                            <?php echo wp_kses_post( $cm['col']->label ); ?>
                             <?php if ( $sort ) : ?>
                                 <span class="tmp-sort-icon" aria-hidden="true"></span>
                             <?php endif; ?>
