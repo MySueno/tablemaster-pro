@@ -89,7 +89,7 @@
 
 /* Column header cells (clickable) */
 .tmp-col-header-cell {
-    cursor: grab;
+    cursor: pointer;
     user-select: none;
     position: relative;
     transition: background 0.15s;
@@ -167,7 +167,7 @@
 }
 
 .tmp-col-merged-group {
-    text-align: center;
+    text-align: left;
     background: rgba(0, 115, 170, 0.06);
 }
 

@@ -268,38 +268,30 @@
             rebuildRowTable();
         });
 
-        var contextMenuJustFired = false;
-        $thead.find('.tmp-col-header-cell').on('contextmenu', function (e) {
-            var $th = $(this);
-            if ($(e.target).hasClass('tmp-col-delete-btn') || $(e.target).hasClass('tmp-col-unmerge-btn')) return;
-            e.preventDefault();
-            contextMenuJustFired = true;
-            setTimeout(function () { contextMenuJustFired = false; }, 50);
-            $th.toggleClass('tmp-col-selected');
-            updateMergeToolbar();
-        });
-
+        var clickTimer = null;
         $thead.find('.tmp-col-header-cell').on('click', function (e) {
             e.stopPropagation();
-            if (contextMenuJustFired) return;
             if ($(e.target).hasClass('tmp-col-delete-btn') || $(e.target).hasClass('tmp-col-unmerge-btn')) return;
             if (justDraggedKey) {
                 justDraggedKey = null;
                 return;
             }
             var $th = $(this);
-
-            var hasSelected = $('.tmp-col-header-cell.tmp-col-selected').length > 0;
-            if (e.ctrlKey || e.metaKey || e.shiftKey || hasSelected) {
-                e.preventDefault();
+            if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; return; }
+            clickTimer = setTimeout(function () {
+                clickTimer = null;
                 $th.toggleClass('tmp-col-selected');
                 updateMergeToolbar();
-                return;
-            }
+            }, 250);
+        });
 
-            $thead.find('.tmp-col-header-cell').removeClass('tmp-col-selected');
+        $thead.find('.tmp-col-header-cell').on('dblclick', function (e) {
+            if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
+            e.stopPropagation();
+            if ($(e.target).hasClass('tmp-col-delete-btn') || $(e.target).hasClass('tmp-col-unmerge-btn')) return;
+            var $th = $(this);
+            $th.removeClass('tmp-col-selected');
             hideMergeToolbar();
-
             if ($th.find('.tmp-col-inline-edit').length) return;
 
             if ($th.hasClass('tmp-col-merged-group')) {
@@ -474,23 +466,17 @@
         var rightOff = $last.offset().left + $last.outerWidth();
         var centerX = leftOff + (rightOff - leftOff) / 2;
 
-        var allHaveG1 = keys.every(function (k) {
-            var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
-            return col && col.settings.header_group1;
-        });
         var anyHasGroup = keys.some(function (k) {
             var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
             return col && (col.settings.header_group1 || col.settings.header_group2);
         });
 
         var $bar = $('<div class="tmp-merge-toolbar">' +
-            '<span class="tmp-merge-label">' + keys.length + ' kolommen geselecteerd</span>' +
-            '<button type="button" class="button button-primary tmp-merge-g1-btn" title="Samenvoegen als hoofdgroep (bovenste rij)">Hoofdgroep</button>' +
-            (allHaveG1 ? '<button type="button" class="button tmp-merge-g2-btn" title="Samenvoegen als subgroep (middelste rij)" style="margin-left:4px;">Subgroep</button>' : '') +
-            (anyHasGroup ? '<button type="button" class="button tmp-unmerge-btn" title="Groepering opheffen" style="margin-left:8px;">' +
-                '<span class="dashicons dashicons-dismiss" style="vertical-align:middle;font-size:14px;width:14px;height:14px;margin-right:2px;"></span>Opheffen' +
+            '<span class="tmp-merge-label">' + keys.length + ' kolommen</span>' +
+            '<button type="button" class="button button-primary tmp-merge-g1-btn">Samenvoegen</button>' +
+            (anyHasGroup ? '<button type="button" class="button tmp-unmerge-btn" style="margin-left:4px;">' +
+                '<span class="dashicons dashicons-editor-unlink" style="vertical-align:middle;font-size:14px;width:14px;height:14px;margin-right:2px;"></span>Opheffen' +
             '</button>' : '') +
-            '<button type="button" class="button tmp-deselect-btn" title="Deselecteren" style="margin-left:4px;">Deselecteren</button>' +
         '</div>');
 
         $('body').append($bar);
@@ -535,7 +521,6 @@
         }
 
         $bar.find('.tmp-merge-g1-btn').on('click', function () { doMerge('header_group1'); });
-        $bar.find('.tmp-merge-g2-btn').on('click', function () { doMerge('header_group2'); });
 
         $bar.find('.tmp-unmerge-btn').on('click', function () {
             keys.forEach(function (k) {
@@ -548,11 +533,6 @@
             isDirty = true;
             hideMergeToolbar();
             rebuildRowTable();
-        });
-
-        $bar.find('.tmp-deselect-btn').on('click', function () {
-            $('.tmp-col-header-cell').removeClass('tmp-col-selected');
-            hideMergeToolbar();
         });
     }
 
