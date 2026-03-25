@@ -79,6 +79,12 @@ $page_title = $is_new
                         <button id="tmp-add-group2" class="button button-secondary button-small tmp-group2-btn" title="<?php esc_attr_e( 'Groepsrij niveau 2 — sub-groep onder G1', TMP_TEXT_DOMAIN ); ?>">+ <?php esc_html_e( 'Groep 2', TMP_TEXT_DOMAIN ); ?></button>
                         <button id="tmp-add-group3" class="button button-secondary button-small tmp-group3-btn" title="<?php esc_attr_e( 'Groepsrij niveau 3 — sub-groep onder G2', TMP_TEXT_DOMAIN ); ?>">+ <?php esc_html_e( 'Groep 3', TMP_TEXT_DOMAIN ); ?></button>
                         <button id="tmp-add-footer" class="button button-secondary button-small tmp-footer-btn" title="<?php esc_attr_e( 'Afsluitende rij onderaan de tabel', TMP_TEXT_DOMAIN ); ?>">+ <?php esc_html_e( 'Afsluitrij', TMP_TEXT_DOMAIN ); ?></button>
+                        <span class="tmp-btn-separator"></span>
+                        <button id="tmp-import-csv" class="button button-secondary button-small" title="<?php esc_attr_e( 'Importeer data vanuit een CSV-bestand', TMP_TEXT_DOMAIN ); ?>">
+                            <span class="dashicons dashicons-upload" style="margin-top:3px;margin-right:2px;font-size:14px;"></span>
+                            <?php esc_html_e( 'CSV importeren', TMP_TEXT_DOMAIN ); ?>
+                        </button>
+                        <input type="file" id="tmp-csv-file" accept=".csv,.tsv,.txt" style="display:none;">
                     </div>
                 </div>
                 <div class="tmp-rows-hint tmp-hint"><?php esc_html_e( 'Klik op een kolomnaam om te bewerken. Ctrl+klik op meerdere kolommen om ze samen te voegen. Sleep rijen om te herordenen.', TMP_TEXT_DOMAIN ); ?></div>

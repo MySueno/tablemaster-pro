@@ -734,6 +734,181 @@
         if (linkSearchTimer) clearTimeout(linkSearchTimer);
     }
 
+    /* ===== CSV IMPORT ===== */
+    function parseCSVWithDelimiter(text, delim) {
+        var lines = [];
+        var row = [];
+        var field = '';
+        var inQuote = false;
+        var i = 0;
+        var len = text.length;
+
+        while (i < len) {
+            var ch = text[i];
+            if (inQuote) {
+                if (ch === '"') {
+                    if (i + 1 < len && text[i + 1] === '"') {
+                        field += '"';
+                        i += 2;
+                    } else {
+                        inQuote = false;
+                        i++;
+                    }
+                } else {
+                    field += ch;
+                    i++;
+                }
+            } else {
+                if (ch === '"') {
+                    inQuote = true;
+                    i++;
+                } else if (ch === delim) {
+                    row.push(field);
+                    field = '';
+                    i++;
+                } else if (ch === '\r') {
+                    row.push(field);
+                    field = '';
+                    lines.push(row);
+                    row = [];
+                    i++;
+                    if (i < len && text[i] === '\n') i++;
+                } else if (ch === '\n') {
+                    row.push(field);
+                    field = '';
+                    lines.push(row);
+                    row = [];
+                    i++;
+                } else {
+                    field += ch;
+                    i++;
+                }
+            }
+        }
+        if (field !== '' || row.length > 0) {
+            row.push(field);
+            lines.push(row);
+        }
+        return lines;
+    }
+
+    function detectDelimiter(text) {
+        var delimiters = [',', ';', '\t'];
+        var best = ',';
+        var bestScore = 0;
+
+        for (var d = 0; d < delimiters.length; d++) {
+            var delim = delimiters[d];
+            var testRows = parseCSVWithDelimiter(text, delim);
+            if (testRows.length < 2) continue;
+
+            var headerLen = testRows[0].length;
+            if (headerLen < 2) continue;
+
+            var consistent = 0;
+            var total = Math.min(testRows.length, 10);
+            for (var r = 0; r < total; r++) {
+                if (testRows[r].length === headerLen) consistent++;
+            }
+
+            var score = (consistent / total) * headerLen;
+            if (score > bestScore) {
+                bestScore = score;
+                best = delim;
+            }
+        }
+        return best;
+    }
+
+    function handleCSVImport(file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var text = e.target.result;
+            if (!text || !text.trim()) {
+                alert('Het CSV-bestand is leeg.');
+                return;
+            }
+
+            if (text.charCodeAt(0) === 0xFEFF) text = text.substring(1);
+
+            var delimiter = detectDelimiter(text);
+            var parsed = parseCSVWithDelimiter(text, delimiter);
+
+            parsed = parsed.filter(function (row) {
+                return row.some(function (cell) { return cell.trim() !== ''; });
+            });
+
+            if (parsed.length < 2) {
+                alert('Het CSV-bestand bevat te weinig data (minimaal een kopregel en één datarij).');
+                return;
+            }
+
+            var headers = parsed[0];
+            var dataRows = parsed.slice(1);
+
+            var maxCols = headers.length;
+            dataRows.forEach(function (r) {
+                if (r.length > maxCols) maxCols = r.length;
+            });
+            while (headers.length < maxCols) {
+                headers.push('Kolom ' + (headers.length + 1));
+            }
+
+            var colCount = headers.length;
+            var rowCount = dataRows.length;
+
+            var msg = 'CSV gelezen: ' + colCount + ' kolommen, ' + rowCount + ' rijen.\n\n';
+            if (columns.length > 0 || rows.length > 0) {
+                msg += 'Er zijn al gegevens in de tabel.\n';
+                msg += 'Wilt u de bestaande data VERVANGEN?\n\n';
+                msg += 'OK = Vervangen\nAnnuleren = Import annuleren';
+                if (!confirm(msg)) return;
+            }
+
+            columns = [];
+            rows = [];
+            colTempIdx = 0;
+            rowTempIdx = 0;
+
+            headers.forEach(function (label, idx) {
+                var tempKey = 'new_' + (++colTempIdx);
+                columns.push({
+                    id:       0,
+                    temp_key: tempKey,
+                    label:    label.trim() || ('Kolom ' + (idx + 1)),
+                    type:     'text',
+                    settings: { width: 'auto', align: 'left', sortable: true, filterable: true, header_group1: '', header_group2: '' }
+                });
+            });
+
+            dataRows.forEach(function (csvRow) {
+                var tempId = 'new_row_' + (++rowTempIdx);
+                var cells = {};
+                columns.forEach(function (col, ci) {
+                    cells[col.temp_key] = (csvRow[ci] !== undefined ? csvRow[ci] : '').trim();
+                });
+                rows.push({
+                    id:             0,
+                    temp_id:        tempId,
+                    row_type:       'data',
+                    parent_id:      0,
+                    parent_temp_id: '',
+                    is_collapsed:   false,
+                    cells:          cells,
+                });
+            });
+
+            rebuildRowTable();
+            isDirty = true;
+        };
+
+        reader.onerror = function () {
+            alert('Fout bij het lezen van het bestand.');
+        };
+
+        reader.readAsText(file, 'UTF-8');
+    }
+
     /* ===== LOAD STRUCTURE ===== */
     function loadStructure() {
         $.post(ajaxurl, {
@@ -940,6 +1115,16 @@
         // Add column
         $('#tmp-add-column').on('click', function () {
             addColumn();
+        });
+
+        // CSV Import
+        $('#tmp-import-csv').on('click', function () {
+            $('#tmp-csv-file').val('').trigger('click');
+        });
+        $('#tmp-csv-file').on('change', function () {
+            var file = this.files[0];
+            if (file) handleCSVImport(file);
+            $(this).val('');
         });
 
         // Add row / groups

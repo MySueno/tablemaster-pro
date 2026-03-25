@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.14
+Stable tag: 1.3.15
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,13 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.15 =
+* Nieuw: CSV-import — importeer data vanuit CSV, TSV of puntkomma-gescheiden bestanden
+* CSV-parser met automatische delimiter-detectie (komma, puntkomma, tab)
+* Ondersteuning voor quoted velden, escaped aanhalingstekens, en newlines binnen velden
+* BOM-stripping voor Excel-exports (UTF-8 met BOM)
+* Bevestigingsdialoog bij vervangen van bestaande tabeldata
 
 = 1.3.14 =
 * Fix: Caption (onderschrift) wordt nu correct opgeslagen — was hardcoded als lege string in saveAll()
