@@ -380,9 +380,10 @@ foreach ( $font_css_map as $fk => $selector ) :
                             $footer_content_parts = array();
                             $footer_align = '';
                             foreach ( $columns as $fcol ) {
-                                $fc = trim( $row->cells[ $fcol->id ] ?? '' );
+                                $fc_raw = $row->cells[ $fcol->id ] ?? '';
+                                $fc = trim( strip_tags( str_replace( array( '&nbsp;', "\xC2\xA0" ), ' ', $fc_raw ) ) );
                                 if ( $fc !== '' ) {
-                                    $footer_content_parts[] = $fc;
+                                    $footer_content_parts[] = $fc_raw;
                                     if ( $footer_align === '' && isset( $row->cell_aligns[ $fcol->id ] ) && in_array( $row->cell_aligns[ $fcol->id ], $valid_aligns, true ) ) {
                                         $footer_align = $row->cell_aligns[ $fcol->id ];
                                     }
@@ -402,15 +403,18 @@ foreach ( $font_css_map as $fk => $selector ) :
                                 </td>
                             <?php endif; ?>
                         <?php elseif ( $is_group ) :
-                            $filled_count = 0;
-                            $first_filled = '';
-                            $group_align  = '';
+                            $filled_count   = 0;
+                            $first_filled   = '';
+                            $group_align    = '';
+                            $filled_cells   = array();
                             foreach ( $columns as $gcol ) {
-                                $gc = trim( $row->cells[ $gcol->id ] ?? '' );
-                                if ( $gc !== '' ) {
+                                $gc_raw = $row->cells[ $gcol->id ] ?? '';
+                                $gc_text = trim( strip_tags( str_replace( array( '&nbsp;', "\xC2\xA0" ), ' ', $gc_raw ) ) );
+                                if ( $gc_text !== '' ) {
                                     $filled_count++;
+                                    $filled_cells[ $gcol->id ] = $gc_raw;
                                     if ( $first_filled === '' ) {
-                                        $first_filled = $gc;
+                                        $first_filled = $gc_raw;
                                         if ( isset( $row->cell_aligns[ $gcol->id ] ) && in_array( $row->cell_aligns[ $gcol->id ], $valid_aligns, true ) ) {
                                             $group_align = $row->cell_aligns[ $gcol->id ];
                                         }
@@ -457,7 +461,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                                     </td>
                                 <?php endif;
                                 foreach ( $columns as $gcol2 ) :
-                                    $gc_content = trim( $row->cells[ $gcol2->id ] ?? '' );
+                                    $gc_content = isset( $filled_cells[ $gcol2->id ] ) ? $filled_cells[ $gcol2->id ] : '';
                                     $cs_g       = json_decode( $gcol2->settings, true );
                                     $col_align_g = in_array( $cs_g['align'] ?? 'left', $valid_aligns, true ) ? $cs_g['align'] : 'left';
                                     $cell_align_g = isset( $row->cell_aligns[ $gcol2->id ] ) && in_array( $row->cell_aligns[ $gcol2->id ], $valid_aligns, true ) ? $row->cell_aligns[ $gcol2->id ] : '';

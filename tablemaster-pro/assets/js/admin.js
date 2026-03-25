@@ -588,7 +588,7 @@
             var tempId = $tr.data('temp-id') + '';
             var rowObj = rows.find(function (r) { return r.temp_id + '' === tempId; });
             if (rowObj) {
-                rowObj.cells[colKey] = $div.html();
+                rowObj.cells[colKey] = cleanCellHtml($div.html());
                 isDirty = true;
             }
         });
@@ -616,7 +616,9 @@
             var tempId = $tr.data('temp-id') + '';
             var rowObj = rows.find(function (r) { return r.temp_id + '' === tempId; });
             if (rowObj) {
-                rowObj.cells[colKey] = $div.html();
+                var html = cleanCellHtml($div.html());
+                if (html === '') $div.html('');
+                rowObj.cells[colKey] = html;
             }
         });
 
@@ -720,7 +722,7 @@
         var tempId = activeCell.tempId;
         var rowObj = rows.find(function (r) { return r.temp_id + '' === tempId; });
         if (rowObj) {
-            rowObj.cells[colKey] = activeCell.$area.html();
+            rowObj.cells[colKey] = cleanCellHtml(activeCell.$area.html());
             isDirty = true;
         }
     }
@@ -1433,6 +1435,11 @@
         $ta[0].select();
         document.execCommand('copy');
         $ta.remove();
+    }
+
+    function cleanCellHtml(html) {
+        var stripped = html.replace(/<br\s*\/?>/gi, '').replace(/&nbsp;/gi, ' ').replace(/\s+/g, '').trim();
+        return stripped === '' ? '' : html;
     }
 
     function escHtml(str) {
