@@ -189,9 +189,22 @@
 
 /* Multi-level grouped headers */
 .tmp-th-grouped {
-    text-align: left !important;
     border-right: none;
     border-bottom: none;
+}
+
+.tmp-th-grouped[colspan] {
+    text-align: center;
+    border-left: 1px solid rgba(255,255,255,0.25);
+    border-right: 1px solid rgba(255,255,255,0.25);
+}
+
+.tmp-th-grouped[colspan]:first-child {
+    border-left: none;
+}
+
+.tmp-th-grouped[colspan]:last-child {
+    border-right: none;
 }
 
 .tmp-header-row-1 .tmp-th-grouped,

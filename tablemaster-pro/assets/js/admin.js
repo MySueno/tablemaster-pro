@@ -318,6 +318,14 @@
                 '<label>Kolomnaam</label>' +
                 '<input type="text" class="tmp-pop-label" value="' + escAttr(col.label) + '">' +
             '</div>' +
+            '<div class="tmp-pop-field">' +
+                '<label>Header groep 1</label>' +
+                '<input type="text" class="tmp-pop-group1" value="' + escAttr(col.settings.header_group1 || '') + '" placeholder="Bijv. Ambulant">' +
+            '</div>' +
+            '<div class="tmp-pop-field">' +
+                '<label>Header groep 2</label>' +
+                '<input type="text" class="tmp-pop-group2" value="' + escAttr(col.settings.header_group2 || '') + '" placeholder="Bijv. sub-groep">' +
+            '</div>' +
             '<div class="tmp-pop-actions">' +
                 '<button type="button" class="button button-small tmp-pop-delete" style="color:#dc3232;">Kolom verwijderen</button>' +
             '</div>' +
@@ -339,6 +347,16 @@
         $pop.find('.tmp-pop-label').on('change input', function () {
             col.label = $(this).val().trim();
             $th.find('.tmp-col-header-label').text(col.label || 'Kolom');
+            isDirty = true;
+        });
+
+        $pop.find('.tmp-pop-group1').on('change input', function () {
+            col.settings.header_group1 = $(this).val().trim();
+            isDirty = true;
+        });
+
+        $pop.find('.tmp-pop-group2').on('change input', function () {
+            col.settings.header_group2 = $(this).val().trim();
             isDirty = true;
         });
 
