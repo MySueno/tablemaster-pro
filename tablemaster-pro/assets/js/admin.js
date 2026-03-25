@@ -195,8 +195,8 @@
             var g2 = col.settings.header_group2 || '';
             var hasGroup = !!(g1 || g2);
             var badges = '';
-            if (g1) badges += '<span class="tmp-col-group-badge" title="Niveau 1: ' + escAttr(g1) + '">N1: ' + escHtml(g1) + '</span>';
-            if (g2) badges += '<span class="tmp-col-group-badge tmp-col-group-badge-2" title="Niveau 2: ' + escAttr(g2) + '">N2: ' + escHtml(g2) + '</span>';
+            if (g1) badges += '<span class="tmp-col-group-badge" data-group-field="header_group1" title="Hoofdgroep: ' + escAttr(g1) + '">N1: ' + escHtml(g1) + '</span>';
+            if (g2) badges += '<span class="tmp-col-group-badge tmp-col-group-badge-2" data-group-field="header_group2" title="Subgroep: ' + escAttr(g2) + '">N2: ' + escHtml(g2) + '</span>';
             var thClass = 'tmp-col-header-cell' + (hasGroup ? ' tmp-col-has-group' : '');
             return '<th class="' + thClass + '" data-col-key="' + escAttr(key + '') + '" data-col-idx="' + ci + '" draggable="true">' +
                 '<span class="tmp-col-header-label">' + escHtml(col.label || 'Kolom') + '</span>' +
@@ -300,6 +300,43 @@
             }
         });
 
+        $thead.find('.tmp-col-group-badge').on('click', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var $badge = $(this);
+            var field = $badge.data('group-field');
+            var $th = $badge.closest('.tmp-col-header-cell');
+            var colKey = $th.data('col-key') + '';
+            var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
+            if (!col) return;
+            var origValue = col.settings[field] || '';
+            var prefix = field === 'header_group1' ? 'N1: ' : 'N2: ';
+            $badge.empty();
+            var $input = $('<input type="text" class="tmp-group-inline-edit" value="' + escAttr(origValue) + '">');
+            $badge.append($input);
+            $input.focus().select();
+            function finishGroupEdit() {
+                var newVal = $input.val().trim();
+                if (newVal && newVal !== origValue) {
+                    columns.forEach(function(c) {
+                        if (c.settings[field] === origValue) {
+                            c.settings[field] = newVal;
+                        }
+                    });
+                    isDirty = true;
+                    rebuildRowTable();
+                } else {
+                    $input.remove();
+                    $badge.text(prefix + origValue);
+                }
+            }
+            $input.on('blur', finishGroupEdit);
+            $input.on('keydown', function (ev) {
+                if (ev.key === 'Enter') { ev.preventDefault(); finishGroupEdit(); }
+                if (ev.key === 'Escape') { $input.remove(); $badge.text(prefix + origValue); }
+            });
+        });
+
         (function initColDrag() {
             var dragSrcIdx = null;
 
@@ -398,11 +435,8 @@
         });
 
         function doMerge(field) {
-            var levelLabel = field === 'header_group1' ? 'hoofdgroep' : 'subgroep';
-            var groupName = prompt('Naam voor de ' + levelLabel + ':', '');
-            if (groupName === null) return;
-            groupName = groupName.trim();
-            if (!groupName) { alert('Voer een groepnaam in.'); return; }
+            var firstCol = columns.find(function(c) { return (c.temp_key || c.id) + '' === keys[0]; });
+            var groupName = firstCol ? firstCol.label : 'Groep';
             keys.forEach(function (k) {
                 var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
                 if (col) {

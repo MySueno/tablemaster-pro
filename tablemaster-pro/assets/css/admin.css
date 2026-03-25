@@ -204,6 +204,19 @@
     outline: none;
     box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.3);
 }
+.tmp-group-inline-edit {
+    width: 80px;
+    box-sizing: border-box;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 4px;
+    border: 1px solid #0073aa;
+    border-radius: 3px;
+    background: #fff;
+    color: #1d2327;
+    outline: none;
+}
+.tmp-col-group-badge { cursor: pointer; }
 
 .tmp-btn-separator {
     display: inline-block;
