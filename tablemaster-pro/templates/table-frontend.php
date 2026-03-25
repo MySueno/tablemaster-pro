@@ -223,27 +223,14 @@ foreach ( $font_css_map as $fk => $selector ) :
                         </th>
                     <?php endforeach; ?>
                 </tr>
-            <?php else :
-                $g1_groups = array();
-                $g2_groups = array();
-                $ungrouped = array();
-                foreach ( $col_meta as $idx => $cm ) {
-                    if ( $cm['g1'] === '' ) {
-                        $ungrouped[] = $idx;
-                    } else {
-                        $g1_groups[ $cm['g1'] ][] = $idx;
-                        if ( $cm['g2'] !== '' ) {
-                            $g2_groups[ $cm['g1'] . '|||' . $cm['g2'] ][] = $idx;
-                        }
-                    }
-                }
-            ?>
+            <?php else : ?>
                 <tr class="tmp-header-row tmp-header-row-1">
                     <?php if ( $collapsible ) : ?>
                         <th class="tmp-toggle-col" rowspan="<?php echo $max_depth; ?>" aria-hidden="true"></th>
                     <?php endif; ?>
                     <?php
                     $prev_g1 = null;
+                    $col_count_total = count( $col_meta );
                     foreach ( $col_meta as $idx => $cm ) :
                         if ( $cm['g1'] === '' ) :
                             $uw  = $cm['cs']['width'] ?? 'auto';
@@ -266,9 +253,13 @@ foreach ( $font_css_map as $fk => $selector ) :
                                 <?php if ( $ug_sort ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
                             </th>
                         <?php elseif ( $cm['g1'] !== $prev_g1 ) :
-                            $colspan = count( $g1_groups[ $cm['g1'] ] );
+                            $g1_colspan = 1;
+                            for ( $j = $idx + 1; $j < $col_count_total; $j++ ) {
+                                if ( $col_meta[ $j ]['g1'] === $cm['g1'] ) $g1_colspan++;
+                                else break;
+                            }
                         ?>
-                            <th class="tmp-th tmp-th-grouped" colspan="<?php echo $colspan; ?>"><?php echo esc_html( $cm['g1'] ); ?></th>
+                            <th class="tmp-th tmp-th-grouped" colspan="<?php echo $g1_colspan; ?>"><?php echo esc_html( $cm['g1'] ); ?></th>
                         <?php endif;
                         $prev_g1 = $cm['g1'];
                     endforeach; ?>
@@ -313,7 +304,12 @@ foreach ( $font_css_map as $fk => $selector ) :
                         <?php else :
                             $g2_key = $cm['g1'] . '|||' . $cm['g2'];
                             if ( $g2_key !== $prev_g2_key ) :
-                                $g2_colspan = count( $g2_groups[ $g2_key ] );
+                                $g2_colspan = 1;
+                                for ( $j = $idx + 1; $j < $col_count_total; $j++ ) {
+                                    $j_g2_key = $col_meta[ $j ]['g1'] . '|||' . $col_meta[ $j ]['g2'];
+                                    if ( $j_g2_key === $g2_key ) $g2_colspan++;
+                                    else break;
+                                }
                         ?>
                             <th class="tmp-th tmp-th-grouped" colspan="<?php echo $g2_colspan; ?>"><?php echo esc_html( $cm['g2'] ); ?></th>
                         <?php endif;

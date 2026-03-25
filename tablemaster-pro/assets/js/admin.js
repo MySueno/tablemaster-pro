@@ -415,13 +415,22 @@
         var rightOff = $last.offset().left + $last.outerWidth();
         var centerX = leftOff + (rightOff - leftOff) / 2;
 
+        var allHaveG1 = keys.every(function (k) {
+            var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
+            return col && col.settings.header_group1;
+        });
+        var anyHasGroup = keys.some(function (k) {
+            var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
+            return col && (col.settings.header_group1 || col.settings.header_group2);
+        });
+
         var $bar = $('<div class="tmp-merge-toolbar">' +
             '<span class="tmp-merge-label">' + keys.length + ' kolommen geselecteerd</span>' +
             '<button type="button" class="button button-primary tmp-merge-g1-btn" title="Samenvoegen als hoofdgroep (bovenste rij)">Hoofdgroep</button>' +
-            '<button type="button" class="button tmp-merge-g2-btn" title="Samenvoegen als subgroep (middelste rij)" style="margin-left:4px;">Subgroep</button>' +
-            '<button type="button" class="button tmp-unmerge-btn" title="Groepering opheffen" style="margin-left:8px;">' +
+            (allHaveG1 ? '<button type="button" class="button tmp-merge-g2-btn" title="Samenvoegen als subgroep (middelste rij)" style="margin-left:4px;">Subgroep</button>' : '') +
+            (anyHasGroup ? '<button type="button" class="button tmp-unmerge-btn" title="Groepering opheffen" style="margin-left:8px;">' +
                 '<span class="dashicons dashicons-dismiss" style="vertical-align:middle;font-size:14px;width:14px;height:14px;margin-right:2px;"></span>Opheffen' +
-            '</button>' +
+            '</button>' : '') +
             '<button type="button" class="button tmp-deselect-btn" title="Deselecteren" style="margin-left:4px;">Deselecteren</button>' +
         '</div>');
 
@@ -459,9 +468,6 @@
                 var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
                 if (col) {
                     col.settings[field] = groupName;
-                    if (field === 'header_group2' && !col.settings.header_group1) {
-                        col.settings.header_group1 = groupName;
-                    }
                 }
             });
             isDirty = true;

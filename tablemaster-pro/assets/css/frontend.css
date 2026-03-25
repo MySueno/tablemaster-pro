@@ -188,8 +188,8 @@
 }
 
 /* Multi-level grouped headers */
-.tmp-header-row-1 + .tmp-header-row-2,
-.tmp-header-row-2 + .tmp-header-row-3 {
+.tmp-header-row-1 + .tmp-header-row-2 > .tmp-th,
+.tmp-header-row-2 + .tmp-header-row-3 > .tmp-th {
     border-top: 2px solid rgba(255,255,255,0.35);
 }
 
