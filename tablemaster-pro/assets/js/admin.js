@@ -434,13 +434,34 @@
             left: barLeft,
         });
 
+        function areKeysContiguous(selectedKeys) {
+            var indices = [];
+            selectedKeys.forEach(function(k) {
+                columns.forEach(function(col, idx) {
+                    if ((col.temp_key || col.id) + '' === k) indices.push(idx);
+                });
+            });
+            indices.sort(function(a,b) { return a - b; });
+            for (var i = 1; i < indices.length; i++) {
+                if (indices[i] !== indices[i-1] + 1) return false;
+            }
+            return true;
+        }
+
         function doMerge(field) {
+            if (!areKeysContiguous(keys)) {
+                alert('Selecteer aaneengesloten kolommen om samen te voegen.');
+                return;
+            }
             var firstCol = columns.find(function(c) { return (c.temp_key || c.id) + '' === keys[0]; });
-            var groupName = firstCol ? firstCol.label : 'Groep';
+            var groupName = (firstCol && firstCol.label) ? firstCol.label : 'Groep';
             keys.forEach(function (k) {
                 var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
                 if (col) {
                     col.settings[field] = groupName;
+                    if (field === 'header_group2' && !col.settings.header_group1) {
+                        col.settings.header_group1 = groupName;
+                    }
                 }
             });
             isDirty = true;

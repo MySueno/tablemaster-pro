@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.18
+Stable tag: 1.3.19
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,15 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.19 =
+* Nieuw: Kolom-headers samenvoegen (Hoofdgroep/Subgroep) — selecteer kolommen en groepeer ze met één klik
+* Groepsnaam wordt automatisch overgenomen van de eerste geselecteerde kolom (geen popup meer)
+* Groepsbadges zijn klikbaar voor inline hernoemen — wijziging geldt voor alle kolommen in dezelfde groep
+* Mac Ctrl+klik selectie werkt nu correct (geen dubbel-toggle meer)
+* Verbeterde visuele scheiding tussen groep- en kolomheaders op de frontend
+* WPML: groepsnamen worden correct vertaald in alle talen
+* Kolomselectie: zodra 1+ kolom geselecteerd is, schakelen gewone klikken ook over naar selectiemodus
 
 = 1.3.18 =
 * Nieuw: Per-cel uitlijning (links, midden, rechts) via toolbar-knoppen in de admin

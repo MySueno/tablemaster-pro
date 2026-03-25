@@ -188,15 +188,22 @@
 }
 
 /* Multi-level grouped headers */
+.tmp-header-row-1 + .tmp-header-row-2,
+.tmp-header-row-2 + .tmp-header-row-3 {
+    border-top: 2px solid rgba(255,255,255,0.35);
+}
+
 .tmp-th-grouped {
-    border-right: none;
-    border-bottom: none;
+    border-right: 1px solid rgba(255,255,255,0.2);
 }
 
 .tmp-th-grouped[colspan] {
     text-align: center;
+    font-size: 0.95em;
+    letter-spacing: 0.02em;
     border-left: 1px solid rgba(255,255,255,0.25);
     border-right: 1px solid rgba(255,255,255,0.25);
+    border-bottom: none;
 }
 
 .tmp-th-grouped[colspan]:first-child,
@@ -211,6 +218,10 @@
 .tmp-header-row-1 .tmp-th-grouped,
 .tmp-header-row-2 .tmp-th-grouped {
     font-weight: 700;
+}
+
+.tmp-header-row-1 .tmp-th-grouped[rowspan] {
+    vertical-align: middle;
 }
 
 .tmp-sort-icon {

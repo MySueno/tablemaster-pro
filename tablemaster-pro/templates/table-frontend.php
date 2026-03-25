@@ -165,8 +165,10 @@ foreach ( $font_css_map as $fk => $selector ) :
             $col_meta   = array();
             foreach ( $columns as $col ) {
                 $cs = json_decode( $col->settings, true );
+                if ( ! is_array( $cs ) ) $cs = array();
                 $g1 = trim( $cs['header_group1'] ?? '' );
                 $g2 = trim( $cs['header_group2'] ?? '' );
+                if ( $g2 !== '' && $g1 === '' ) $g1 = $g2;
                 if ( $g1 !== '' ) $has_groups = true;
                 $col_meta[] = array(
                     'col'   => $col,
