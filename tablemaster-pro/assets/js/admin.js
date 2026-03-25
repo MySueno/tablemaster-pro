@@ -189,21 +189,43 @@
             $wrapper.find('.tmp-rows-empty').text('Nog geen rijen. Voeg rijen toe met de knoppen hierboven.').show();
         }
 
-        var headerCols = columns.map(function (col, ci) {
-            var key = col.temp_key || col.id;
+        var headerCols = '';
+        var ci = 0;
+        while (ci < columns.length) {
+            var col = columns[ci];
+            var key = (col.temp_key || col.id) + '';
             var g1 = col.settings.header_group1 || '';
-            var g2 = col.settings.header_group2 || '';
-            var hasGroup = !!(g1 || g2);
-            var badges = '';
-            if (g1) badges += '<span class="tmp-col-group-badge" data-group-field="header_group1" title="Hoofdgroep: ' + escAttr(g1) + '">N1: ' + escHtml(g1) + '</span>';
-            if (g2) badges += '<span class="tmp-col-group-badge tmp-col-group-badge-2" data-group-field="header_group2" title="Subgroep: ' + escAttr(g2) + '">N2: ' + escHtml(g2) + '</span>';
-            var thClass = 'tmp-col-header-cell' + (hasGroup ? ' tmp-col-has-group' : '');
-            return '<th class="' + thClass + '" data-col-key="' + escAttr(key + '') + '" data-col-idx="' + ci + '" draggable="true">' +
-                '<span class="tmp-col-header-label">' + escHtml(col.label || 'Kolom') + '</span>' +
-                badges +
-                '<span class="tmp-col-delete-btn dashicons dashicons-no-alt" title="Kolom verwijderen"></span>' +
-            '</th>';
-        }).join('');
+            if (g1) {
+                var groupKeys = [key];
+                var groupEndIdx = ci;
+                while (groupEndIdx + 1 < columns.length) {
+                    var nextG1 = columns[groupEndIdx + 1].settings.header_group1 || '';
+                    if (nextG1 === g1) {
+                        groupEndIdx++;
+                        groupKeys.push((columns[groupEndIdx].temp_key || columns[groupEndIdx].id) + '');
+                    } else break;
+                }
+                var colspan = groupKeys.length;
+                headerCols += '<th class="tmp-col-header-cell tmp-col-merged-group" ' +
+                    'data-col-key="' + escAttr(groupKeys[0]) + '" ' +
+                    'data-col-idx="' + ci + '" ' +
+                    'data-group-end-idx="' + groupEndIdx + '" ' +
+                    'data-group-keys="' + escAttr(groupKeys.join(',')) + '" ' +
+                    'data-group-name="' + escAttr(g1) + '" ' +
+                    'draggable="true" ' +
+                    (colspan > 1 ? 'colspan="' + colspan + '" ' : '') + '>' +
+                    '<span class="tmp-col-header-label">' + escHtml(g1) + '</span>' +
+                    '<span class="tmp-col-unmerge-btn dashicons dashicons-editor-unlink" title="Groep opheffen"></span>' +
+                '</th>';
+                ci = groupEndIdx + 1;
+            } else {
+                headerCols += '<th class="tmp-col-header-cell" data-col-key="' + escAttr(key) + '" data-col-idx="' + ci + '" draggable="true">' +
+                    '<span class="tmp-col-header-label">' + escHtml(col.label || 'Kolom') + '</span>' +
+                    '<span class="tmp-col-delete-btn dashicons dashicons-no-alt" title="Kolom verwijderen"></span>' +
+                '</th>';
+                ci++;
+            }
+        }
 
         var $table = $('<table class="tmp-admin-table"></table>');
         var $thead = $('<thead><tr><th style="width:28px;"></th><th style="width:80px;">Type</th>' + headerCols + '<th style="width:36px;"></th></tr></thead>');
@@ -230,10 +252,26 @@
             }
         });
 
+        $thead.find('.tmp-col-unmerge-btn').on('click', function (e) {
+            e.stopPropagation();
+            var $th = $(this).closest('.tmp-col-merged-group');
+            var groupKeys = ($th.data('group-keys') + '').split(',');
+            groupKeys.forEach(function (k) {
+                var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
+                if (col) {
+                    col.settings.header_group1 = '';
+                    col.settings.header_group2 = '';
+                }
+            });
+            isDirty = true;
+            hideMergeToolbar();
+            rebuildRowTable();
+        });
+
         var contextMenuJustFired = false;
         $thead.find('.tmp-col-header-cell').on('contextmenu', function (e) {
             var $th = $(this);
-            if ($(e.target).hasClass('tmp-col-delete-btn')) return;
+            if ($(e.target).hasClass('tmp-col-delete-btn') || $(e.target).hasClass('tmp-col-unmerge-btn')) return;
             e.preventDefault();
             contextMenuJustFired = true;
             setTimeout(function () { contextMenuJustFired = false; }, 50);
@@ -244,13 +282,12 @@
         $thead.find('.tmp-col-header-cell').on('click', function (e) {
             e.stopPropagation();
             if (contextMenuJustFired) return;
-            if ($(e.target).hasClass('tmp-col-delete-btn')) return;
+            if ($(e.target).hasClass('tmp-col-delete-btn') || $(e.target).hasClass('tmp-col-unmerge-btn')) return;
             if (justDraggedKey) {
                 justDraggedKey = null;
                 return;
             }
             var $th = $(this);
-            var colKey = $th.data('col-key') + '';
 
             var hasSelected = $('.tmp-col-header-cell.tmp-col-selected').length > 0;
             if (e.ctrlKey || e.metaKey || e.shiftKey || hasSelected) {
@@ -264,36 +301,73 @@
             hideMergeToolbar();
 
             if ($th.find('.tmp-col-inline-edit').length) return;
-            var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
-            if (!col) return;
-            var origLabel = col.label;
-            var $label = $th.find('.tmp-col-header-label');
-            var $delBtn = $th.find('.tmp-col-delete-btn');
-            var $badge = $th.find('.tmp-col-group-badge');
-            var frozenW = $th.outerWidth();
-            $th.css('min-width', frozenW + 'px');
-            $label.hide();
-            $delBtn.hide();
-            if ($badge.length) $badge.hide();
-            var $input = $('<input type="text" class="tmp-col-inline-edit" value="' + escAttr(col.label) + '">');
-            $th.append($input);
-            $input.focus().select();
-            $input.on('input', function () {
-                col.label = $(this).val().trim();
-                isDirty = true;
-            });
-            function finishEdit() {
-                $label.text(col.label || 'Kolom').show();
-                $delBtn.show();
-                if ($badge.length) $badge.show();
-                $input.remove();
-                $th.css('min-width', '');
+
+            if ($th.hasClass('tmp-col-merged-group')) {
+                var groupKeys = ($th.data('group-keys') + '').split(',');
+                var groupName = $th.data('group-name') + '';
+                var origGroupName = groupName;
+                var $label = $th.find('.tmp-col-header-label');
+                var $unlinkBtn = $th.find('.tmp-col-unmerge-btn');
+                var frozenW = $th.outerWidth();
+                $th.css('min-width', frozenW + 'px');
+                $label.hide();
+                $unlinkBtn.hide();
+                var $input = $('<input type="text" class="tmp-col-inline-edit" value="' + escAttr(groupName) + '">');
+                $th.append($input);
+                $input.focus().select();
+                function finishGroupNameEdit() {
+                    var newVal = $input.val().trim();
+                    if (newVal && newVal !== origGroupName) {
+                        groupKeys.forEach(function (k) {
+                            var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
+                            if (col) col.settings.header_group1 = newVal;
+                        });
+                        isDirty = true;
+                        $input.remove();
+                        $th.css('min-width', '');
+                        rebuildRowTable();
+                    } else {
+                        $label.show();
+                        $unlinkBtn.show();
+                        $input.remove();
+                        $th.css('min-width', '');
+                    }
+                }
+                $input.on('blur', finishGroupNameEdit);
+                $input.on('keydown', function (ev) {
+                    if (ev.key === 'Enter') { ev.preventDefault(); finishGroupNameEdit(); }
+                    if (ev.key === 'Escape') { $label.show(); $unlinkBtn.show(); $input.remove(); $th.css('min-width', ''); }
+                });
+            } else {
+                var colKey = $th.data('col-key') + '';
+                var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
+                if (!col) return;
+                var origLabel = col.label;
+                var $label = $th.find('.tmp-col-header-label');
+                var $delBtn = $th.find('.tmp-col-delete-btn');
+                var frozenW = $th.outerWidth();
+                $th.css('min-width', frozenW + 'px');
+                $label.hide();
+                $delBtn.hide();
+                var $input = $('<input type="text" class="tmp-col-inline-edit" value="' + escAttr(col.label) + '">');
+                $th.append($input);
+                $input.focus().select();
+                $input.on('input', function () {
+                    col.label = $(this).val().trim();
+                    isDirty = true;
+                });
+                function finishEdit() {
+                    $label.text(col.label || 'Kolom').show();
+                    $delBtn.show();
+                    $input.remove();
+                    $th.css('min-width', '');
+                }
+                $input.on('blur', finishEdit);
+                $input.on('keydown', function (ev) {
+                    if (ev.key === 'Enter') { ev.preventDefault(); finishEdit(); }
+                    if (ev.key === 'Escape') { col.label = origLabel; finishEdit(); }
+                });
             }
-            $input.on('blur', finishEdit);
-            $input.on('keydown', function (ev) {
-                if (ev.key === 'Enter') { ev.preventDefault(); finishEdit(); }
-                if (ev.key === 'Escape') { col.label = origLabel; finishEdit(); }
-            });
         });
 
         $(document).off('click.colselect').on('click.colselect', function (e) {
@@ -303,48 +377,13 @@
             }
         });
 
-        $thead.find('.tmp-col-group-badge').on('click', function (e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var $badge = $(this);
-            var field = $badge.data('group-field');
-            var $th = $badge.closest('.tmp-col-header-cell');
-            var colKey = $th.data('col-key') + '';
-            var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
-            if (!col) return;
-            var origValue = col.settings[field] || '';
-            var prefix = field === 'header_group1' ? 'N1: ' : 'N2: ';
-            $badge.empty();
-            var $input = $('<input type="text" class="tmp-group-inline-edit" value="' + escAttr(origValue) + '">');
-            $badge.append($input);
-            $input.focus().select();
-            function finishGroupEdit() {
-                var newVal = $input.val().trim();
-                if (newVal && newVal !== origValue) {
-                    columns.forEach(function(c) {
-                        if (c.settings[field] === origValue) {
-                            c.settings[field] = newVal;
-                        }
-                    });
-                    isDirty = true;
-                    rebuildRowTable();
-                } else {
-                    $input.remove();
-                    $badge.text(prefix + origValue);
-                }
-            }
-            $input.on('blur', finishGroupEdit);
-            $input.on('keydown', function (ev) {
-                if (ev.key === 'Enter') { ev.preventDefault(); finishGroupEdit(); }
-                if (ev.key === 'Escape') { $input.remove(); $badge.text(prefix + origValue); }
-            });
-        });
-
         (function initColDrag() {
             var dragSrcIdx = null;
+            var dragSrcEndIdx = null;
 
             $thead.find('.tmp-col-header-cell').on('dragstart', function (e) {
                 dragSrcIdx = parseInt($(this).data('col-idx'), 10);
+                dragSrcEndIdx = $(this).data('group-end-idx') !== undefined ? parseInt($(this).data('group-end-idx'), 10) : dragSrcIdx;
                 e.originalEvent.dataTransfer.effectAllowed = 'move';
                 e.originalEvent.dataTransfer.setData('text/plain', dragSrcIdx);
                 $(this).addClass('tmp-col-dragging');
@@ -358,7 +397,7 @@
                 var targetIdx = parseInt($th.data('col-idx'), 10);
                 if (targetIdx < dragSrcIdx) {
                     $th.addClass('tmp-col-drag-over-left');
-                } else if (targetIdx > dragSrcIdx) {
+                } else if (targetIdx > dragSrcEndIdx) {
                     $th.addClass('tmp-col-drag-over-right');
                 }
             });
@@ -372,17 +411,29 @@
                 e.stopPropagation();
                 $thead.find('.tmp-col-header-cell').removeClass('tmp-col-drag-over-left tmp-col-drag-over-right tmp-col-dragging');
                 var targetIdx = parseInt($(this).data('col-idx'), 10);
-                if (dragSrcIdx === null || dragSrcIdx === targetIdx) return;
-                var moved = columns.splice(dragSrcIdx, 1)[0];
-                columns.splice(targetIdx, 0, moved);
+                var targetEndIdx = $(this).data('group-end-idx') !== undefined ? parseInt($(this).data('group-end-idx'), 10) : targetIdx;
+                if (dragSrcIdx === null) return;
+                if (targetIdx >= dragSrcIdx && targetIdx <= dragSrcEndIdx) return;
+                var count = dragSrcEndIdx - dragSrcIdx + 1;
+                var moved = columns.splice(dragSrcIdx, count);
+                var insertAt;
+                if (targetIdx < dragSrcIdx) {
+                    insertAt = targetIdx;
+                } else {
+                    insertAt = targetEndIdx - count + 1;
+                }
+                for (var i = 0; i < moved.length; i++) {
+                    columns.splice(insertAt + i, 0, moved[i]);
+                }
                 isDirty = true;
-                justDraggedKey = $(this).data('col-key') + '';
+                justDraggedKey = moved[0] ? (moved[0].temp_key || moved[0].id) + '' : null;
                 rebuildRowTable();
             });
 
             $thead.find('.tmp-col-header-cell').on('dragend', function () {
                 $thead.find('.tmp-col-header-cell').removeClass('tmp-col-dragging tmp-col-drag-over-left tmp-col-drag-over-right');
                 dragSrcIdx = null;
+                dragSrcEndIdx = null;
             });
         })();
 
@@ -401,7 +452,12 @@
     function getSelectedColKeys() {
         var keys = [];
         $('.tmp-col-header-cell.tmp-col-selected').each(function () {
-            keys.push($(this).data('col-key') + '');
+            var groupKeys = $(this).data('group-keys');
+            if (groupKeys) {
+                (groupKeys + '').split(',').forEach(function(k) { keys.push(k); });
+            } else {
+                keys.push($(this).data('col-key') + '');
+            }
         });
         return keys;
     }
