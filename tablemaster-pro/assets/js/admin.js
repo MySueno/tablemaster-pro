@@ -484,7 +484,7 @@
         var barLeft = centerX - barW / 2;
         if (barLeft < 8) barLeft = 8;
         $bar.css({
-            top: topOff.top - $bar.outerHeight() - 8,
+            top: topOff.top + $sel.outerHeight() + 6,
             left: barLeft,
         });
 
