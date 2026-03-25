@@ -226,30 +226,7 @@
             }
             var $th = $(this);
             var colKey = $th.data('col-key') + '';
-            if ($th.find('.tmp-col-inline-edit').length) return;
-            var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
-            if (!col) return;
-            var $label = $th.find('.tmp-col-header-label');
-            var $delBtn = $th.find('.tmp-col-delete-btn');
-            $label.hide();
-            $delBtn.hide();
-            var $input = $('<input type="text" class="tmp-col-inline-edit" value="' + escAttr(col.label) + '" style="width:100%;box-sizing:border-box;font-weight:bold;font-size:inherit;padding:2px 4px;border:1px solid #0073aa;border-radius:3px;">');
-            $th.append($input);
-            $input.focus().select();
-            $input.on('input', function () {
-                col.label = $(this).val().trim();
-                isDirty = true;
-            });
-            function finishEdit() {
-                $label.text(col.label || 'Kolom').show();
-                $delBtn.show();
-                $input.remove();
-            }
-            $input.on('blur', finishEdit);
-            $input.on('keydown', function (ev) {
-                if (ev.key === 'Enter') { ev.preventDefault(); finishEdit(); }
-                if (ev.key === 'Escape') { col.label = $label.text(); finishEdit(); }
-            });
+            openColumnPopover($th, colKey);
         });
 
         (function initColDrag() {
