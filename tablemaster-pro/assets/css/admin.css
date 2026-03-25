@@ -177,9 +177,13 @@
     box-sizing: border-box;
     font-weight: bold;
     font-size: inherit;
-    padding: 2px 4px;
-    border: 1px solid #0073aa;
-    border-radius: 3px;
+    padding: 6px 8px;
+    border: 2px solid #0073aa;
+    border-radius: 4px;
+    background: #fff;
+    color: #1d2327;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.3);
 }
 
 .tmp-btn-separator {
