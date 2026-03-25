@@ -343,10 +343,6 @@
                     '</div>' +
                 '</div>' +
             '</div>' +
-            '<div class="tmp-pop-checks">' +
-                '<label><input type="checkbox" class="tmp-pop-sortable"' + (s.sortable !== false ? ' checked' : '') + '> Sorteerbaar</label>' +
-                '<label><input type="checkbox" class="tmp-pop-filterable"' + (s.filterable !== false ? ' checked' : '') + '> Filterbaar</label>' +
-            '</div>' +
             '<div class="tmp-pop-divider"></div>' +
             '<div class="tmp-pop-section-title">Kolomgroepering <span class="tmp-pop-hint">(optioneel)</span></div>' +
             '<p class="tmp-pop-help">Kolommen met dezelfde groepnaam worden samengevoegd in de header. Bijv. &quot;Ambulant&quot; boven twee kolommen.</p>' +
@@ -395,16 +391,6 @@
 
         $pop.find('.tmp-pop-align').on('change', function () {
             col.settings.align = $(this).val();
-            isDirty = true;
-        });
-
-        $pop.find('.tmp-pop-sortable').on('change', function () {
-            col.settings.sortable = $(this).is(':checked');
-            isDirty = true;
-        });
-
-        $pop.find('.tmp-pop-filterable').on('change', function () {
-            col.settings.filterable = $(this).is(':checked');
             isDirty = true;
         });
 
