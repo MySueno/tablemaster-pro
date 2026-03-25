@@ -497,7 +497,8 @@
                 return;
             }
             var rowId = row.getAttribute('data-row-id');
-            row.style.display = visibleParents[rowId] ? '' : 'none';
+            var isCollapsed = row.getAttribute('data-collapsed') === '1';
+            row.style.display = (visibleParents[rowId] || isCollapsed) ? '' : 'none';
         });
 
         this.updateInfo(showing, total, this.currentPage, totalPages);
