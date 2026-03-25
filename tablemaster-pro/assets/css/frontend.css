@@ -306,7 +306,7 @@
 }
 
 .tmp-type-footer .tmp-td {
-    border-color: rgba(0,0,0,0.08);
+    border-top: none;
     color: inherit;
 }
 
