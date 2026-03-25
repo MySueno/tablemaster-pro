@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.27
+Stable tag: 1.3.28
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,9 +33,11 @@ Functies:
 
 == Changelog ==
 
-= 1.3.27 =
-* Fix: Rijen verdwijnen niet meer op de frontend wanneer paginering is uitgeschakeld — per_page wordt nu -1 (toon alles) als paginering uit staat
-* Fix: Ingeklapte groepsrijen blijven zichtbaar zodat ze weer uitgeklapt kunnen worden — voorheen verdwenen ze door paginering
+= 1.3.28 =
+* Fix: Groepsrijen zonder kinderrijen worden nu altijd getoond op de frontend — waren onzichtbaar door pagineringslogica
+* Fix: Ingeklapte groepsrijen blijven zichtbaar zodat ze weer uitgeklapt kunnen worden
+* Fix: Lege datarijen hebben nu een minimum hoogte (34px) — niet meer onzichtbaar door lege cellen
+* Fix: Paginering wordt niet meer toegepast als paginering is uitgeschakeld — per_page wordt -1 (toon alles)
 
 = 1.3.26 =
 * Fix: Kolommen verdwijnen niet meer op de frontend door onzichtbare HTML in kolomgroep-waarden

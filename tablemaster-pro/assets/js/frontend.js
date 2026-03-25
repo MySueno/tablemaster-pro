@@ -442,6 +442,7 @@
     };
 
     TableMasterInstance.prototype.applyPagination = function () {
+        var self = this;
         var visibleRows = this.allRows.filter(function (row) {
             return !row.classList.contains('tmp-row-filtered') &&
                    !row.classList.contains('tmp-row-hidden');
@@ -467,7 +468,12 @@
         var start = (this.currentPage - 1) * this.perPage;
         var end   = start + this.perPage;
 
-        var self = this;
+        var hasChildren = {};
+        self.allRows.forEach(function (row) {
+            var pid = row.getAttribute('data-parent-id');
+            if (pid) hasChildren[pid] = true;
+        });
+
         var visibleParents = {};
         var dataShown = 0;
         var showing   = 0;
@@ -498,7 +504,8 @@
             }
             var rowId = row.getAttribute('data-row-id');
             var isCollapsed = row.getAttribute('data-collapsed') === '1';
-            row.style.display = (visibleParents[rowId] || isCollapsed) ? '' : 'none';
+            var isChildless = !hasChildren[rowId];
+            row.style.display = (visibleParents[rowId] || isCollapsed || isChildless) ? '' : 'none';
         });
 
         this.updateInfo(showing, total, this.currentPage, totalPages);
