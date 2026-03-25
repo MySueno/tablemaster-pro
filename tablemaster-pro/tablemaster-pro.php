@@ -38,10 +38,9 @@ define( 'TMP_PLUGIN_DIR',  plugin_dir_path( __FILE__ ) );
 define( 'TMP_PLUGIN_URL',  plugin_dir_url( __FILE__ ) );
 define( 'TMP_TEXT_DOMAIN', 'tablemaster-pro' );
 
-$tmp_settings = get_option( 'tablemaster_settings', array() );
-if ( ! empty( $tmp_settings['update_url'] ) ) {
-    define( 'TMP_UPDATE_URL', $tmp_settings['update_url'] );
-}
+$tmp_settings   = get_option( 'tablemaster_settings', array() );
+$tmp_update_url = ! empty( $tmp_settings['update_url'] ) ? $tmp_settings['update_url'] : 'https://table-importer-tool.replit.app/';
+define( 'TMP_UPDATE_URL', $tmp_update_url );
 
 require_once TMP_PLUGIN_DIR . 'includes/class-db.php';
 require_once TMP_PLUGIN_DIR . 'includes/class-shortcode.php';
