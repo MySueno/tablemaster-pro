@@ -749,11 +749,28 @@
                 $td.toggleClass('tmp-cell-selected');
                 updateCellMergeToolbar($tr);
                 return false;
+            } else if (isGroup) {
+                e.preventDefault();
+                e.stopPropagation();
+                var $td = $(this).closest('td');
+                $tr.siblings().find('td.tmp-cell-selected').removeClass('tmp-cell-selected');
+                $td.toggleClass('tmp-cell-selected');
+                updateCellMergeToolbar($tr);
+                return false;
             } else {
                 $('td.tmp-cell-selected').removeClass('tmp-cell-selected');
                 hideCellMergeToolbar();
             }
         });
+
+        if (isGroup) {
+            $tr.find('.tmp-cell-input').on('dblclick', function (e) {
+                e.stopPropagation();
+                $('td.tmp-cell-selected').removeClass('tmp-cell-selected');
+                hideCellMergeToolbar();
+                $(this).focus();
+            });
+        }
 
         $tr.find('.tmp-cell-input').on('focus', function () {
             var $div = $(this);

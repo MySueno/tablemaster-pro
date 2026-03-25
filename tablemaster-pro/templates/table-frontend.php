@@ -523,15 +523,20 @@ foreach ( $font_css_map as $fk => $selector ) :
                                         </button>
                                     </td>
                                 <?php endif;
+                                $grp_skip = 0;
                                 foreach ( $columns as $gcol2 ) :
+                                    if ( $grp_skip > 0 ) { $grp_skip--; continue; }
                                     $gc_content = isset( $filled_cells[ $gcol2->id ] ) ? $filled_cells[ $gcol2->id ] : '';
                                     $cs_g       = json_decode( $gcol2->settings, true );
                                     $col_align_g = in_array( $cs_g['align'] ?? 'left', $valid_aligns, true ) ? $cs_g['align'] : 'left';
                                     $cell_align_g = isset( $row->cell_aligns[ $gcol2->id ] ) && in_array( $row->cell_aligns[ $gcol2->id ], $valid_aligns, true ) ? $row->cell_aligns[ $gcol2->id ] : '';
                                     $align_g = $cell_align_g !== '' ? $cell_align_g : $col_align_g;
+                                    $grp_colspan = isset( $row->cell_merges[ $gcol2->id ] ) ? intval( $row->cell_merges[ $gcol2->id ] ) : 1;
+                                    if ( $grp_colspan > 1 ) $grp_skip = $grp_colspan - 1;
                             ?>
                                 <td class="tmp-td tmp-group-cell"
-                                    style="text-align:<?php echo esc_attr( $align_g ); ?>;">
+                                    style="text-align:<?php echo esc_attr( $align_g ); ?>;"
+                                    <?php if ( $grp_colspan > 1 ) : ?>colspan="<?php echo $grp_colspan; ?>"<?php endif; ?>>
                                     <?php echo wp_kses_post( $gc_content ); ?>
                                 </td>
                             <?php endforeach;
