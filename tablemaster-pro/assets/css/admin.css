@@ -408,6 +408,9 @@
 .tmp-tab-content {
     display: none;
     padding: 16px;
+    overflow: visible;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .tmp-tab-content.active {
@@ -434,9 +437,9 @@
 }
 
 .tmp-color-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
     margin-bottom: 4px;
 }
 
@@ -444,6 +447,8 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .tmp-color-field label {
@@ -454,9 +459,38 @@
     white-space: nowrap;
 }
 
-/* Nested color picker widget */
-.wp-picker-container .wp-color-result {
+/* Nested color picker widget — keep within panel bounds */
+.tmp-panel-right .wp-picker-container {
+    display: inline-flex;
+    align-items: center;
+}
+
+.tmp-panel-right .wp-picker-container .wp-color-result {
     margin: 0;
+    min-width: 26px;
+    min-height: 26px;
+    flex-shrink: 0;
+}
+
+.tmp-panel-right .wp-picker-container .wp-color-result .wp-color-result-text {
+    font-size: 11px;
+    line-height: 24px;
+    padding: 0 8px;
+}
+
+.tmp-panel-right .wp-picker-input-wrap {
+    max-width: 0;
+    overflow: hidden;
+}
+
+.tmp-panel-right .wp-picker-container.wp-picker-active .wp-picker-input-wrap {
+    max-width: 200px;
+    overflow: visible;
+}
+
+.tmp-panel-right .wp-picker-holder {
+    position: absolute;
+    z-index: 100;
 }
 
 
@@ -570,7 +604,7 @@
         position: static;
     }
     .tmp-color-row {
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
 }
 
