@@ -536,6 +536,13 @@ class TableMaster_DB {
         return $new_table_id;
     }
 
+    private static function clean_group_value( $value, $max_len = 500 ) {
+        $sanitized = wp_kses_post( $value );
+        $text_only = trim( html_entity_decode( wp_strip_all_tags( str_replace( array( '&nbsp;', "\xC2\xA0" ), ' ', $sanitized ) ), ENT_QUOTES, 'UTF-8' ) );
+        if ( $text_only === '' ) return '';
+        return mb_substr( $sanitized, 0, $max_len );
+    }
+
     public static function flush_table_cache( $table_id ) {
         $table_id = intval( $table_id );
         $langs = array( 'default', 'en', 'nl', 'fr', 'de', 'es', 'it', 'pt', 'pl', 'ru', 'ja', 'zh', 'ko', 'ar', 'tr', 'sv', 'da', 'no', 'fi' );
@@ -648,8 +655,8 @@ class TableMaster_DB {
                 'align'         => in_array( $raw_align, $allowed_aligns, true ) ? $raw_align : 'left',
                 'sortable'      => ! empty( $col['settings']['sortable'] ),
                 'filterable'    => ! empty( $col['settings']['filterable'] ),
-                'header_group1' => mb_substr( wp_kses_post( $col['settings']['header_group1'] ?? '' ), 0, 500 ),
-                'header_group2' => mb_substr( sanitize_text_field( $col['settings']['header_group2'] ?? '' ), 0, 200 ),
+                'header_group1' => self::clean_group_value( $col['settings']['header_group1'] ?? '', 500 ),
+                'header_group2' => self::clean_group_value( $col['settings']['header_group2'] ?? '', 200 ),
             );
             $temp_key = sanitize_text_field( $col['temp_key'] ?? '' );
 

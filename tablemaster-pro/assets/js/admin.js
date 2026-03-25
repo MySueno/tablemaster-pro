@@ -588,7 +588,9 @@
                 return;
             }
             var firstCol = columns.find(function(c) { return (c.temp_key || c.id) + '' === keys[0]; });
-            var groupName = (firstCol && firstCol.label) ? firstCol.label : 'Groep';
+            var rawLabel = (firstCol && firstCol.label) ? firstCol.label : '';
+            var textOnly = rawLabel.replace(/<[^>]*>/g, '').replace(/&nbsp;/gi, ' ').replace(/\s+/g, ' ').trim();
+            var groupName = textOnly !== '' ? rawLabel : 'Groep';
             pushUndo();
             keys.forEach(function (k) {
                 var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
@@ -1524,12 +1526,22 @@
 
             // Step 2: save structure
             var colsPayload = columns.map(function (col, idx) {
+                var cleanSettings = {};
+                for (var sk in col.settings) {
+                    cleanSettings[sk] = col.settings[sk];
+                }
+                if (cleanSettings.header_group1) {
+                    cleanSettings.header_group1 = cleanCellHtml(cleanSettings.header_group1);
+                }
+                if (cleanSettings.header_group2) {
+                    cleanSettings.header_group2 = cleanCellHtml(cleanSettings.header_group2);
+                }
                 return {
                     id:       col.id || 0,
                     temp_key: col.temp_key,
                     label:    col.label,
                     type:     col.type,
-                    settings: col.settings,
+                    settings: cleanSettings,
                 };
             });
 
@@ -1740,7 +1752,7 @@
     }
 
     function cleanCellHtml(html) {
-        var stripped = html.replace(/<br\s*\/?>/gi, '').replace(/&nbsp;/gi, ' ').replace(/\s+/g, '').trim();
+        var stripped = html.replace(/<[^>]*>/g, '').replace(/&nbsp;/gi, ' ').replace(/&#160;/g, ' ').replace(/\s+/g, '').trim();
         return stripped === '' ? '' : html;
     }
 

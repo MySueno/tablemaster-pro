@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.25
+Stable tag: 1.3.26
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,14 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.26 =
+* Fix: Kolommen verdwijnen niet meer op de frontend door onzichtbare HTML in kolomgroep-waarden
+* Fix: header_group1/header_group2 worden nu altijd geschoond — lege HTML-tags, &amp;nbsp; en witruimte worden herkend als leeg
+* Fix: cleanCellHtml verwijdert nu alle lege HTML-tags (niet alleen &lt;br&gt;) — voorkomt spookgroepen
+* Fix: Cel-colspan beperkt tot resterende kolommen — voorkomt overslaan van kolommen bij corrupte merge-data
+* Fix: Kolomlabels gebruiken nu wp_kses_post in alle header-dieptes — vet/cursief weergave consistent
+* Fix: Kolomgroep-waarden worden geschoond bij opslaan (DB) én bij verzenden (JS) — drievoudige bescherming
 
 = 1.3.25 =
 * Fix: Kolomlabel bewerken zonder wijziging maakt geen undo-punt meer aan

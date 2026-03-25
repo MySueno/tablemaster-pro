@@ -166,8 +166,10 @@ foreach ( $font_css_map as $fk => $selector ) :
             foreach ( $columns as $col ) {
                 $cs = json_decode( $col->settings, true );
                 if ( ! is_array( $cs ) ) $cs = array();
-                $g1 = trim( $cs['header_group1'] ?? '' );
-                $g2 = trim( $cs['header_group2'] ?? '' );
+                $g1_raw = $cs['header_group1'] ?? '';
+                $g2_raw = $cs['header_group2'] ?? '';
+                $g1 = trim( wp_strip_all_tags( html_entity_decode( str_replace( array( '&nbsp;', "\xC2\xA0" ), ' ', $g1_raw ), ENT_QUOTES, 'UTF-8' ) ) ) !== '' ? trim( $g1_raw ) : '';
+                $g2 = trim( wp_strip_all_tags( html_entity_decode( str_replace( array( '&nbsp;', "\xC2\xA0" ), ' ', $g2_raw ), ENT_QUOTES, 'UTF-8' ) ) ) !== '' ? trim( $g2_raw ) : '';
                 if ( $g2 !== '' && $g1 === '' ) $g1 = $g2;
                 if ( $g1 !== '' ) $has_groups = true;
                 $col_meta[] = array(
@@ -216,7 +218,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                             data-col-id="<?php echo esc_attr( $col->id ); ?>"
                             data-col-type="<?php echo esc_attr( $col->type ); ?>"
                             <?php echo $sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
-                            <?php echo esc_html( $col->label ); ?>
+                            <?php echo wp_kses_post( $col->label ); ?>
                             <?php if ( $sort ) : ?>
                                 <span class="tmp-sort-icon" aria-hidden="true"></span>
                             <?php endif; ?>
@@ -524,14 +526,16 @@ foreach ( $font_css_map as $fk => $selector ) :
                                     </td>
                                 <?php endif;
                                 $grp_skip = 0;
-                                foreach ( $columns as $gcol2 ) :
+                                $grp_col_total = count( $columns );
+                                foreach ( $columns as $grp_col_idx => $gcol2 ) :
                                     if ( $grp_skip > 0 ) { $grp_skip--; continue; }
                                     $gc_content = isset( $filled_cells[ $gcol2->id ] ) ? $filled_cells[ $gcol2->id ] : '';
                                     $cs_g       = json_decode( $gcol2->settings, true );
                                     $col_align_g = in_array( $cs_g['align'] ?? 'left', $valid_aligns, true ) ? $cs_g['align'] : 'left';
                                     $cell_align_g = isset( $row->cell_aligns[ $gcol2->id ] ) && in_array( $row->cell_aligns[ $gcol2->id ], $valid_aligns, true ) ? $row->cell_aligns[ $gcol2->id ] : '';
                                     $align_g = $cell_align_g !== '' ? $cell_align_g : $col_align_g;
-                                    $grp_colspan = isset( $row->cell_merges[ $gcol2->id ] ) ? intval( $row->cell_merges[ $gcol2->id ] ) : 1;
+                                    $grp_remaining = $grp_col_total - $grp_col_idx;
+                                    $grp_colspan = isset( $row->cell_merges[ $gcol2->id ] ) ? min( max( 1, intval( $row->cell_merges[ $gcol2->id ] ) ), $grp_remaining ) : 1;
                                     if ( $grp_colspan > 1 ) $grp_skip = $grp_colspan - 1;
                             ?>
                                 <td class="tmp-td tmp-group-cell"
@@ -548,7 +552,8 @@ foreach ( $font_css_map as $fk => $selector ) :
 
                             <?php
                             $data_skip = 0;
-                            foreach ( $columns as $col ) :
+                            $data_col_total = count( $columns );
+                            foreach ( $columns as $data_col_idx => $col ) :
                                 if ( $data_skip > 0 ) { $data_skip--; continue; }
                                 $cs       = json_decode( $col->settings, true );
                                 $col_align = in_array( $cs['align'] ?? 'left', $valid_aligns, true ) ? $cs['align'] : 'left';
@@ -556,7 +561,8 @@ foreach ( $font_css_map as $fk => $selector ) :
                                 $align    = $cell_align_val !== '' ? $cell_align_val : $col_align;
                                 $col_type = sanitize_text_field( $col->type );
                                 $td_class = 'tmp-td';
-                                $cell_colspan = isset( $row->cell_merges[ $col->id ] ) ? intval( $row->cell_merges[ $col->id ] ) : 1;
+                                $remaining = $data_col_total - $data_col_idx;
+                                $cell_colspan = isset( $row->cell_merges[ $col->id ] ) ? min( max( 1, intval( $row->cell_merges[ $col->id ] ) ), $remaining ) : 1;
                                 if ( $cell_colspan > 1 ) $data_skip = $cell_colspan - 1;
 
                                 $raw_content = $row->cells[$col->id] ?? '';
