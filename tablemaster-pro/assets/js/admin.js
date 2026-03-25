@@ -191,12 +191,16 @@
 
         var headerCols = columns.map(function (col, ci) {
             var key = col.temp_key || col.id;
-            var hasGroup = !!col.settings.header_group1;
-            var groupLabel = hasGroup ? '<span class="tmp-col-group-badge" title="Groep: ' + escAttr(col.settings.header_group1) + '">&#9654; ' + escHtml(col.settings.header_group1) + '</span>' : '';
+            var g1 = col.settings.header_group1 || '';
+            var g2 = col.settings.header_group2 || '';
+            var hasGroup = !!(g1 || g2);
+            var badges = '';
+            if (g1) badges += '<span class="tmp-col-group-badge" title="Niveau 1: ' + escAttr(g1) + '">N1: ' + escHtml(g1) + '</span>';
+            if (g2) badges += '<span class="tmp-col-group-badge tmp-col-group-badge-2" title="Niveau 2: ' + escAttr(g2) + '">N2: ' + escHtml(g2) + '</span>';
             var thClass = 'tmp-col-header-cell' + (hasGroup ? ' tmp-col-has-group' : '');
-            return '<th class="' + escAttr(thClass) + '" data-col-key="' + escAttr(key + '') + '" data-col-idx="' + ci + '" draggable="true">' +
+            return '<th class="' + thClass + '" data-col-key="' + escAttr(key + '') + '" data-col-idx="' + ci + '" draggable="true">' +
                 '<span class="tmp-col-header-label">' + escHtml(col.label || 'Kolom') + '</span>' +
-                groupLabel +
+                badges +
                 '<span class="tmp-col-delete-btn dashicons dashicons-no-alt" title="Kolom verwijderen"></span>' +
             '</th>';
         }).join('');
@@ -236,7 +240,9 @@
             var $th = $(this);
             var colKey = $th.data('col-key') + '';
 
-            if (e.ctrlKey || e.metaKey || e.shiftKey) {
+            var hasSelected = $('.tmp-col-header-cell.tmp-col-selected').length > 0;
+            if (e.ctrlKey || e.metaKey || e.shiftKey || hasSelected) {
+                e.preventDefault();
                 $th.toggleClass('tmp-col-selected');
                 updateMergeToolbar();
                 return;
@@ -361,12 +367,14 @@
         var centerX = leftOff + (rightOff - leftOff) / 2;
 
         var $bar = $('<div class="tmp-merge-toolbar">' +
-            '<button type="button" class="button button-primary tmp-merge-btn" title="Kolommen samenvoegen">' +
-                '<span class="dashicons dashicons-columns" style="vertical-align:middle;margin-right:4px;"></span>Samenvoegen (' + keys.length + ')' +
+            '<span class="tmp-merge-label">' + keys.length + ' kolommen geselecteerd</span>' +
+            '<button type="button" class="button button-primary tmp-merge-g1-btn" title="Samenvoegen als Niveau 1">Niveau 1</button>' +
+            '<button type="button" class="button tmp-merge-g2-btn" title="Samenvoegen als Niveau 2" style="margin-left:4px;">Niveau 2</button>' +
+            '<button type="button" class="button tmp-merge-g3-btn" title="Samenvoegen als Niveau 3" style="margin-left:4px;">Niveau 3</button>' +
+            '<button type="button" class="button tmp-unmerge-btn" title="Groepering opheffen" style="margin-left:8px;">' +
+                '<span class="dashicons dashicons-dismiss" style="vertical-align:middle;font-size:14px;width:14px;height:14px;margin-right:2px;"></span>Opheffen' +
             '</button>' +
-            '<button type="button" class="button tmp-unmerge-btn" title="Groepering opheffen" style="margin-left:4px;">' +
-                'Opheffen' +
-            '</button>' +
+            '<button type="button" class="button tmp-deselect-btn" title="Deselecteren" style="margin-left:4px;">Deselecteren</button>' +
         '</div>');
 
         $('body').append($bar);
@@ -378,18 +386,31 @@
             left: barLeft,
         });
 
-        $bar.find('.tmp-merge-btn').on('click', function () {
-            var groupName = prompt('Naam voor de samengevoegde header:', '');
+        function doMerge(level) {
+            var groupName = prompt('Naam voor de samengevoegde header (niveau ' + level + '):', '');
             if (groupName === null) return;
             groupName = groupName.trim();
             if (!groupName) { alert('Voer een groepnaam in.'); return; }
             keys.forEach(function (k) {
                 var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
-                if (col) col.settings.header_group1 = groupName;
+                if (col) {
+                    if (level === 1) col.settings.header_group1 = groupName;
+                    if (level === 2) col.settings.header_group2 = groupName;
+                    if (level === 3) {
+                        if (!col.settings.header_group2) col.settings.header_group2 = col.settings.header_group1 || groupName;
+                        col.settings.header_group1 = groupName;
+                    }
+                }
             });
             isDirty = true;
             hideMergeToolbar();
             rebuildRowTable();
+        }
+
+        $bar.find('.tmp-merge-g1-btn').on('click', function () { doMerge(1); });
+        $bar.find('.tmp-merge-g2-btn').on('click', function () { doMerge(2); });
+        $bar.find('.tmp-merge-g3-btn').on('click', function () {
+            doMerge(3);
         });
 
         $bar.find('.tmp-unmerge-btn').on('click', function () {
@@ -403,6 +424,11 @@
             isDirty = true;
             hideMergeToolbar();
             rebuildRowTable();
+        });
+
+        $bar.find('.tmp-deselect-btn').on('click', function () {
+            $('.tmp-col-header-cell').removeClass('tmp-col-selected');
+            hideMergeToolbar();
         });
     }
 
