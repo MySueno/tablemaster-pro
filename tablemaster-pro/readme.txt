@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.16
+Stable tag: 1.3.17
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.17 =
+* Fix: CSV-export op de frontend exporteert nu alle gefilterde rijen, niet alleen de huidige pagina
+* Fix: In-/uitklappen van groepen werkt nu correct samen met paginering — zebra-striping en paginanummers worden bijgewerkt
 
 = 1.3.16 =
 * Nieuw: Maximale tabelbreedte instelling — stel een max-width in (bijv. 800px, 90%) die altijd wordt toegepast, ook bij vertalingen (WPML)

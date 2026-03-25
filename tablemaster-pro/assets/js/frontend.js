@@ -216,6 +216,10 @@
                 e.stopPropagation();
                 var currentlyCollapsed = row.getAttribute('data-collapsed') === '1';
                 self.setGroupCollapsed(row, !currentlyCollapsed);
+                self.currentPage = 1;
+                self.rebuildZebra();
+                self.renderPagination();
+                self.applyPagination();
             });
         });
     };
@@ -244,11 +248,6 @@
                     }
                 } else {
                     row.classList.remove('tmp-row-hidden');
-                    // Restore based on their own collapsed state
-                    var childCollapsed = row.getAttribute('data-collapsed') === '1';
-                    if (!childCollapsed) {
-                        // Only show their children if not themselves collapsed
-                    }
                 }
             }
         });
@@ -520,7 +519,8 @@
 
         var dataRows = this.allRows.filter(function (row) {
             return row.getAttribute('data-row-type') === 'data' &&
-                   !row.classList.contains('tmp-row-filtered');
+                   !row.classList.contains('tmp-row-filtered') &&
+                   !row.classList.contains('tmp-row-hidden');
         });
 
         var total = dataRows.length;
@@ -624,7 +624,6 @@
 
         table.querySelectorAll('tbody .tmp-row').forEach(function (row) {
             if (row.classList.contains('tmp-row-filtered')) return;
-            if (row.style.display === 'none') return;
             var rowType = row.getAttribute('data-row-type');
             if (rowType !== 'data') return;
             var cols = [];

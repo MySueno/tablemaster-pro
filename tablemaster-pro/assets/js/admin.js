@@ -141,7 +141,7 @@
     }
 
     function syncColumnsFromDOM() {
-        // Columns are synced directly via the popover — no DOM scan needed
+        // Columns are managed inline — no DOM scan needed
     }
 
     /* ===== ROWS ===== */
