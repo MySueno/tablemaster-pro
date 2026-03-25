@@ -191,8 +191,10 @@
 
         var headerCols = columns.map(function (col, ci) {
             var key = col.temp_key || col.id;
-            var groupLabel = col.settings.header_group1 ? ' <span class="tmp-col-group-badge" title="Groep: ' + escAttr(col.settings.header_group1) + '">' + escHtml(col.settings.header_group1) + '</span>' : '';
-            return '<th class="tmp-col-header-cell" data-col-key="' + escAttr(key + '') + '" data-col-idx="' + ci + '" draggable="true">' +
+            var hasGroup = !!col.settings.header_group1;
+            var groupLabel = hasGroup ? '<span class="tmp-col-group-badge" title="Groep: ' + escAttr(col.settings.header_group1) + '">&#9654; ' + escHtml(col.settings.header_group1) + '</span>' : '';
+            var thClass = 'tmp-col-header-cell' + (hasGroup ? ' tmp-col-has-group' : '');
+            return '<th class="' + escAttr(thClass) + '" data-col-key="' + escAttr(key + '') + '" data-col-idx="' + ci + '" draggable="true">' +
                 '<span class="tmp-col-header-label">' + escHtml(col.label || 'Kolom') + '</span>' +
                 groupLabel +
                 '<span class="tmp-col-delete-btn dashicons dashicons-no-alt" title="Kolom verwijderen"></span>' +
