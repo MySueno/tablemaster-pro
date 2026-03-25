@@ -34,6 +34,7 @@ Functies:
 == Changelog ==
 
 = 1.3.24 =
+* Nieuw: Ongedaan maken/opnieuw — Ctrl+Z (undo) en Ctrl+Shift+Z / Ctrl+Y (redo) in de tabeleditor
 * Nieuw: Datacellen samenvoegen — Ctrl/Cmd+klik om meerdere cellen in een rij te selecteren en samen te voegen
 * Nieuw: Toolbar (vet, cursief, link, lijst) werkt nu ook bij het bewerken van kolomtitels en groepsnamen
 * Fix: Samenvoeg-popup verschijnt nu onder de kolomkop in plaats van erboven — toolbar is niet meer geblokkeerd
