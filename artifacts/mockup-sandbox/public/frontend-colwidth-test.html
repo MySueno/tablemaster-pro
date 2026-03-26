@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontend — Eerste Kolom Breedte Test</title>
+<link rel="stylesheet" href="/__mockup/frontend.css">
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; color: #333; }
+.wrap { max-width: 1200px; margin: 0 auto; }
+h2 { margin-top: 0; }
+h3 { margin: 24px 0 8px; }
+.test-card { border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-bottom: 20px; background: #fff; }
+.state-label { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 700; margin-bottom: 8px; }
+.state-ok { background: #e8f5e9; color: #2e7d32; }
+.state-bug { background: #ffebee; color: #c62828; }
+.state-fixed { background: #e3f2fd; color: #1565c0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h2>Eerste Kolom Breedte — Frontend Rendering Test</h2>
+
+  <div class="test-card">
+    <span class="state-label state-bug">BUG: first_col_width werd niet opgeslagen (ontbrak in class-ajax.php $clean)</span>
+    <p>De <code>first_col_width</code> instelling werd correct verstuurd vanuit de admin JS (<code>$('#tmp-first-col-width').val()</code>), maar werd <strong>niet</strong> opgenomen in de <code>$clean</code> array in <code>class-ajax.php</code>. Hierdoor werd de waarde nooit opgeslagen in de database en was het op de frontend altijd leeg.</p>
+  </div>
+
+  <h3>1. ZONDER eerste kolom breedte (standaard: 150px voor alle kolommen)</h3>
+  <div class="test-card">
+    <span class="state-label state-ok">Standaard — alle kolommen 150px</span>
+    <div class="tmp-wrapper tmp-mobile-scroll" style="max-width:800px;">
+      <div class="tmp-table-scroll">
+        <table class="tmp-table tmp-theme-red">
+          <colgroup>
+            <col style="width:150px;">
+            <col style="width:150px;">
+            <col style="width:150px;">
+            <col style="width:150px;">
+          </colgroup>
+          <thead>
+            <tr class="tmp-header-row">
+              <th class="tmp-th">Behandeling</th>
+              <th class="tmp-th">Categorie</th>
+              <th class="tmp-th">Arts</th>
+              <th class="tmp-th">Locatie</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="tmp-row tmp-row-data"><td>Fysiotherapie</td><td>Beweging</td><td>Dr. Jansen</td><td>Amsterdam</td></tr>
+            <tr class="tmp-row tmp-row-data"><td>Ergotherapie</td><td>Revalidatie</td><td>Dr. Pietersen</td><td>Rotterdam</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p style="font-size:12px;color:#666;margin:6px 0 0;">↑ <code>&lt;col style="width:150px;"&gt;</code> voor alle 4 kolommen</p>
+  </div>
+
+  <h3>2. MET eerste kolom breedte = 300px</h3>
+  <div class="test-card">
+    <span class="state-label state-fixed">Fix: eerste kolom krijgt 300px, rest 150px</span>
+    <div class="tmp-wrapper tmp-mobile-scroll" style="max-width:800px;">
+      <div class="tmp-table-scroll">
+        <table class="tmp-table tmp-theme-red">
+          <colgroup>
+            <col style="width:300px;">
+            <col style="width:150px;">
+            <col style="width:150px;">
+            <col style="width:150px;">
+          </colgroup>
+          <thead>
+            <tr class="tmp-header-row">
+              <th class="tmp-th">Behandeling</th>
+              <th class="tmp-th">Categorie</th>
+              <th class="tmp-th">Arts</th>
+              <th class="tmp-th">Locatie</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="tmp-row tmp-row-data"><td>Fysiotherapie</td><td>Beweging</td><td>Dr. Jansen</td><td>Amsterdam</td></tr>
+            <tr class="tmp-row tmp-row-data"><td>Ergotherapie</td><td>Revalidatie</td><td>Dr. Pietersen</td><td>Rotterdam</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p style="font-size:12px;color:#666;margin:6px 0 0;">↑ <code>&lt;col style="width:300px;"&gt;</code> voor eerste kolom, <code>150px</code> voor de rest. Dit is hoe het eruit hoort te zien na de fix.</p>
+  </div>
+
+  <h3>3. Extreme waarde: first_col_width = 2000px (scroll mode)</h3>
+  <div class="test-card">
+    <span class="state-label state-fixed">Validatie: 2000px is 4 cijfers → geaccepteerd door regex</span>
+    <div class="tmp-wrapper tmp-mobile-scroll" style="max-width:800px;">
+      <div class="tmp-table-scroll">
+        <table class="tmp-table tmp-theme-red">
+          <colgroup>
+            <col style="width:2000px;">
+            <col style="width:150px;">
+            <col style="width:150px;">
+            <col style="width:150px;">
+          </colgroup>
+          <thead>
+            <tr class="tmp-header-row">
+              <th class="tmp-th">Behandeling</th>
+              <th class="tmp-th">Categorie</th>
+              <th class="tmp-th">Arts</th>
+              <th class="tmp-th">Locatie</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="tmp-row tmp-row-data"><td>Fysiotherapie</td><td>Beweging</td><td>Dr. Jansen</td><td>Amsterdam</td></tr>
+            <tr class="tmp-row tmp-row-data"><td>Ergotherapie</td><td>Revalidatie</td><td>Dr. Pietersen</td><td>Rotterdam</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p style="font-size:12px;color:#666;margin:6px 0 0;">↑ Extreme waarde. In scroll-modus wordt de tabel breder en scrollbaar. De regex <code>/^\d{1,4}(px|em|rem|%)$/</code> accepteert 1-4 cijfers, dus 2000px is geldig.</p>
+  </div>
+</div>
+</body>
+</html>

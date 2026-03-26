@@ -34,6 +34,7 @@ Functies:
 == Changelog ==
 
 = 1.3.58 =
+* Fix: "Eerste kolom breedte" instelling werd niet opgeslagen — waarde ontbrak in de sanitize/save functie (class-ajax.php)
 * Fix: Ontkoppel-knop voor samengevoegde kolomkoppen is nu duidelijk zichtbaar op alle thema-kleuren (wit icoon op donkere achtergrond)
 * Fix: Ontkoppel-knop blijft zichtbaar tijdens het bewerken van een samengevoegde kolomkop
 * Fix: Samengevoegde cellen in data-rijen tonen direct "Opheffen" popup bij een enkele klik

@@ -88,6 +88,12 @@ class TableMaster_Ajax {
         }
         $clean['default_col_width']  = $dcw;
 
+        $fcw = trim( $settings['first_col_width'] ?? '' );
+        if ( $fcw !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $fcw ) ) {
+            $fcw = '';
+        }
+        $clean['first_col_width'] = $fcw;
+
         $mw = trim( $settings['max_width'] ?? '' );
         if ( $mw !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%|vw)$/', $mw ) ) {
             $mw = '';
