@@ -6,6 +6,7 @@ class TableMaster_Updater {
     private $plugin_slug;
     private $plugin_file;
     private $update_url;
+    private $license_key;
     private $cache_key;
     private $cache_ttl = 43200;
     private $error_cache_key;
@@ -17,12 +18,16 @@ class TableMaster_Updater {
         $this->plugin_slug   = 'tablemaster-pro';
         $this->plugin_file   = 'tablemaster-pro/tablemaster-pro.php';
         $this->update_url    = defined( 'TMP_UPDATE_URL' ) ? TMP_UPDATE_URL : '';
+        $this->license_key   = '';
         $this->cache_key     = 'tmp_update_check';
         $this->error_cache_key = 'tmp_update_error';
     }
 
     public function init() {
-        if ( empty( $this->update_url ) ) {
+        $settings = TableMaster_Settings::get();
+        $this->license_key = $settings['license_key'] ?? '';
+
+        if ( empty( $this->update_url ) || empty( $this->license_key ) ) {
             return;
         }
         add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_update' ) );
@@ -32,7 +37,7 @@ class TableMaster_Updater {
     }
 
     private function get_download_url() {
-        return trailingslashit( $this->update_url ) . 'api/wp-update/download';
+        return trailingslashit( $this->update_url ) . 'api/wp-update/download?license_key=' . urlencode( $this->license_key );
     }
 
     public function check_update( $transient ) {
@@ -177,8 +182,9 @@ class TableMaster_Updater {
                 'timeout'   => 30,
                 'sslverify' => true,
                 'headers'   => array(
-                    'Accept'     => 'application/json',
-                    'Connection' => 'close',
+                    'Accept'        => 'application/json',
+                    'Connection'    => 'close',
+                    'X-License-Key' => $this->license_key,
                 ),
             ) );
 

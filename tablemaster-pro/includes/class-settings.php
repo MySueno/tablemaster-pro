@@ -9,6 +9,7 @@ class TableMaster_Settings {
             'default_per_page'         => 10,
             'enable_export'            => false,
             'border_radius'            => '15',
+            'license_key'              => '',
             'update_url'               => 'https://table-importer-tool.replit.app/',
             'delete_data_on_uninstall' => '0',
         );
@@ -31,6 +32,7 @@ class TableMaster_Settings {
             'default_per_page' => min( 500, max( 1, intval( $data['default_per_page'] ?? 10 ) ) ),
             'enable_export'    => ! empty( $data['enable_export'] ),
             'border_radius'    => min( 50, max( 0, intval( $data['border_radius'] ?? 4 ) ) ),
+            'license_key'              => sanitize_text_field( $data['license_key'] ?? '' ),
             'update_url'               => self::sanitize_update_url( $data['update_url'] ?? '' ),
             'delete_data_on_uninstall' => ! empty( $data['delete_data_on_uninstall'] ) ? '1' : '0',
         );

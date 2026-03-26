@@ -7,6 +7,12 @@ const router: IRouter = Router();
 const PLUGIN_SLUG = "tablemaster-pro";
 const PLUGIN_FILE = "tablemaster-pro/tablemaster-pro.php";
 const WORKSPACE = process.env["REPL_HOME"] || "/home/runner/workspace";
+const VALID_LICENSE_KEYS = ["mysueno"];
+
+function validateLicenseKey(req: Request): boolean {
+  const key = (req.headers["x-license-key"] as string) || (req.query["license_key"] as string) || "";
+  return VALID_LICENSE_KEYS.includes(key.trim().toLowerCase());
+}
 
 function getPublicDomain(): string {
   if (process.env["PLUGIN_BASE_URL"]) {
@@ -76,6 +82,10 @@ function getChangelog(currentVersion: string): string {
 }
 
 router.get("/wp-update/info", (_req: Request, res: Response) => {
+  if (!validateLicenseKey(_req)) {
+    res.status(403).json({ error: "Ongeldige licentiecode" });
+    return;
+  }
   const version = getPluginVersion();
   const baseUrl = getBaseUrl();
   const zipPath = getZipPath();
@@ -119,6 +129,11 @@ router.get("/wp-update/version", (_req: Request, res: Response) => {
 });
 
 router.get("/wp-update/download", (_req: Request, res: Response) => {
+  if (!validateLicenseKey(_req)) {
+    res.status(403).json({ error: "Ongeldige licentiecode" });
+    return;
+  }
+
   const zipPath = getZipPath();
 
   if (!existsSync(zipPath)) {

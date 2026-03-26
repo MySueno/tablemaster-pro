@@ -40,10 +40,17 @@ $s = TableMaster_Settings::get();
                 </td>
             </tr>
             <tr>
+                <th><?php esc_html_e( 'Licentiecode', TMP_TEXT_DOMAIN ); ?></th>
+                <td>
+                    <input type="text" name="license_key" value="<?php echo esc_attr( $s['license_key'] ); ?>" class="regular-text" placeholder="<?php esc_attr_e( 'Voer uw licentiecode in', TMP_TEXT_DOMAIN ); ?>">
+                    <p class="description"><?php esc_html_e( 'Voer uw licentiecode in om automatische updates te activeren.', TMP_TEXT_DOMAIN ); ?></p>
+                </td>
+            </tr>
+            <tr>
                 <th><?php esc_html_e( 'Update-server URL', TMP_TEXT_DOMAIN ); ?></th>
                 <td>
-                    <input type="url" name="update_url" value="<?php echo esc_attr( $s['update_url'] ); ?>" class="regular-text" placeholder="https://uw-replit-domein.replit.app">
-                    <p class="description"><?php esc_html_e( 'URL van de Replit update-server. Als dit is ingevuld, controleert WordPress automatisch op nieuwe versies.', TMP_TEXT_DOMAIN ); ?></p>
+                    <input type="url" name="update_url" value="<?php echo esc_attr( $s['update_url'] ); ?>" class="regular-text" placeholder="https://uw-domein.app">
+                    <p class="description"><?php esc_html_e( 'URL van de update-server. Als dit is ingevuld, controleert WordPress automatisch op nieuwe versies.', TMP_TEXT_DOMAIN ); ?></p>
                 </td>
             </tr>
             <tr>
@@ -67,6 +74,14 @@ $s = TableMaster_Settings::get();
         $raw_settings = get_option( 'tablemaster_settings', array() );
         $saved_url    = isset( $raw_settings['update_url'] ) ? $raw_settings['update_url'] : '';
     ?>
+    <?php
+        $saved_license = isset( $raw_settings['license_key'] ) ? $raw_settings['license_key'] : '';
+    ?>
+    <?php if ( ! empty( $saved_license ) ) : ?>
+        <p><?php esc_html_e( 'Licentie: actief', TMP_TEXT_DOMAIN ); ?> ✅</p>
+    <?php else : ?>
+        <p style="color:#d63638;"><?php esc_html_e( 'Licentie: geen licentiecode ingevuld — automatische updates zijn uitgeschakeld', TMP_TEXT_DOMAIN ); ?></p>
+    <?php endif; ?>
     <?php if ( ! empty( $saved_url ) ) : ?>
         <p><?php printf( esc_html__( 'Update server: %s', TMP_TEXT_DOMAIN ), esc_html( $saved_url ) ); ?> ✅</p>
     <?php elseif ( defined( 'TMP_UPDATE_URL' ) && ! empty( TMP_UPDATE_URL ) ) : ?>
