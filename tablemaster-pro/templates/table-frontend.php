@@ -81,7 +81,9 @@ $font_css_map = array(
 foreach ( $font_css_map as $fk => $selector ) :
     $f = $fonts[ $fk ] ?? array();
     $rules = array();
-    if ( ! empty( $f['size'] ) )   $rules[] = 'font-size:' . esc_attr( $f['size'] );
+    if ( ! empty( $f['size'] ) && preg_match( '/^\d{1,3}px$/', $f['size'] ) ) {
+        $rules[] = 'font-size:' . $f['size'];
+    }
     if ( ! empty( $f['bold'] ) )   $rules[] = 'font-weight:bold';
     if ( ! empty( $f['italic'] ) ) $rules[] = 'font-style:italic';
     if ( ! empty( $rules ) ) :
@@ -601,7 +603,16 @@ foreach ( $font_css_map as $fk => $selector ) :
                                             <img src="<?php echo esc_url( $raw_content ); ?>" alt="" class="tmp-cell-image" loading="lazy">
                                         <?php endif; ?>
                                     <?php elseif ( $col_type === 'html' && $inline_html ) : ?>
-                                        <?php echo wp_kses_post( $raw_content ); ?>
+                                        <?php echo wp_kses( $raw_content, array(
+                                            'strong' => array(), 'b' => array(), 'em' => array(), 'i' => array(),
+                                            'a' => array( 'href' => array(), 'target' => array(), 'rel' => array(), 'title' => array() ),
+                                            'br' => array(), 'span' => array( 'style' => array(), 'class' => array() ),
+                                            'p' => array( 'style' => array(), 'class' => array() ),
+                                            'ul' => array(), 'ol' => array(), 'li' => array(),
+                                            'sub' => array(), 'sup' => array(), 'small' => array(),
+                                            'table' => array(), 'thead' => array(), 'tbody' => array(),
+                                            'tr' => array(), 'th' => array(), 'td' => array( 'colspan' => array(), 'rowspan' => array() ),
+                                        ) ); ?>
                                     <?php else : ?>
                                         <?php echo wp_kses_post( $raw_content ); ?>
                                     <?php endif; ?>

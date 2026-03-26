@@ -1,5 +1,6 @@
 import { Router, type IRouter, type Request, type Response } from "express";
 import { readFileSync, existsSync, statSync, createReadStream } from "fs";
+import { createHash } from "crypto";
 import { join } from "path";
 
 const router: IRouter = Router();
@@ -91,6 +92,17 @@ router.get("/wp-update/info", (_req: Request, res: Response) => {
   const zipPath = getZipPath();
   const zipExists = existsSync(zipPath);
 
+  let sha256 = "";
+  if (zipExists) {
+    try {
+      const mainPluginFile = join(WORKSPACE, "tablemaster-pro", "tablemaster-pro.php");
+      if (existsSync(mainPluginFile)) {
+        const content = readFileSync(mainPluginFile);
+        sha256 = createHash("sha256").update(content).digest("hex");
+      }
+    } catch {}
+  }
+
   const response = {
     name: "TableMaster Pro",
     slug: PLUGIN_SLUG,
@@ -101,6 +113,7 @@ router.get("/wp-update/info", (_req: Request, res: Response) => {
     tested: "6.7",
     requires_php: "7.4",
     download_url: zipExists ? `${baseUrl}/api/wp-update/download` : "",
+    sha256: sha256,
     sections: {
       description:
         "Maak krachtige, interactieve tabellen met groepering, sortering, filtering en paginering.",

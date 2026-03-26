@@ -11,13 +11,11 @@ class TableMaster_Updater {
     private $cache_ttl = 43200;
     private $error_cache_key;
     private $error_cache_ttl = 1800;
-    private $max_retries = 2;
-    private $retry_delay = 3;
 
     public function __construct() {
         $this->plugin_slug   = 'tablemaster-pro';
         $this->plugin_file   = 'tablemaster-pro/tablemaster-pro.php';
-        $this->update_url    = defined( 'TMP_UPDATE_URL' ) ? TMP_UPDATE_URL : '';
+        $this->update_url    = '';
         $this->license_key   = '';
         $this->cache_key     = 'tmp_update_check';
         $this->error_cache_key = 'tmp_update_error';
@@ -25,6 +23,7 @@ class TableMaster_Updater {
 
     public function init() {
         $settings = TableMaster_Settings::get();
+        $this->update_url  = TableMaster_Settings::get_update_url();
         $this->license_key = $settings['license_key'] ?? '';
 
         if ( empty( $this->update_url ) || empty( $this->license_key ) ) {
@@ -125,6 +124,15 @@ class TableMaster_Updater {
             return $response;
         }
 
+        $zip_path = $result['destination'] . '/' . $this->plugin_slug . '.zip';
+        if ( ! $this->verify_package( $result['destination'] ) ) {
+            $wp_filesystem->delete( $result['destination'], true );
+            return new WP_Error(
+                'tmp_signature_failed',
+                __( 'Update-pakket kon niet worden geverifieerd. Installatie geannuleerd.', TMP_TEXT_DOMAIN )
+            );
+        }
+
         $install_dir = plugin_dir_path( TMP_PLUGIN_FILE );
         $wp_filesystem->move( $result['destination'], $install_dir );
         $result['destination'] = $install_dir;
@@ -134,6 +142,27 @@ class TableMaster_Updater {
         }
 
         return $result;
+    }
+
+    private function verify_package( $package_dir ) {
+        $remote = $this->get_remote_info();
+        if ( ! $remote || empty( $remote->sha256 ) ) {
+            return false;
+        }
+
+        $expected_hash = sanitize_text_field( $remote->sha256 );
+        if ( ! preg_match( '/^[a-f0-9]{64}$/', $expected_hash ) ) {
+            return false;
+        }
+
+        $main_file = $package_dir . '/tablemaster-pro.php';
+        if ( ! file_exists( $main_file ) ) {
+            return false;
+        }
+
+        $actual_hash = hash_file( 'sha256', $main_file );
+
+        return hash_equals( $expected_hash, $actual_hash );
     }
 
     public function connection_error_notice() {
@@ -170,61 +199,45 @@ class TableMaster_Updater {
 
         $url = trailingslashit( $this->update_url ) . 'api/wp-update/info';
 
-        $data = null;
-        $last_error = '';
+        $response = wp_remote_get( $url, array(
+            'timeout'   => 15,
+            'sslverify' => true,
+            'headers'   => array(
+                'Accept'        => 'application/json',
+                'Connection'    => 'close',
+                'X-License-Key' => $this->license_key,
+            ),
+        ) );
 
-        for ( $attempt = 0; $attempt <= $this->max_retries; $attempt++ ) {
-            if ( $attempt > 0 ) {
-                sleep( $this->retry_delay );
-            }
-
-            $response = wp_remote_get( $url, array(
-                'timeout'   => 30,
-                'sslverify' => true,
-                'headers'   => array(
-                    'Accept'        => 'application/json',
-                    'Connection'    => 'close',
-                    'X-License-Key' => $this->license_key,
-                ),
-            ) );
-
-            if ( is_wp_error( $response ) ) {
-                $last_error = $response->get_error_message();
-                continue;
-            }
-
-            $status_code = wp_remote_retrieve_response_code( $response );
-            if ( $status_code !== 200 ) {
-                $last_error = sprintf( 'HTTP %d van update server', $status_code );
-                continue;
-            }
-
-            $body = wp_remote_retrieve_body( $response );
-            $decoded = json_decode( $body );
-
-            if ( empty( $decoded ) || ! isset( $decoded->version ) ) {
-                $last_error = 'Ongeldig antwoord van update server';
-                continue;
-            }
-
-            $data = $decoded;
-            break;
+        if ( is_wp_error( $response ) ) {
+            $this->set_error_transient( $response->get_error_message() );
+            return null;
         }
 
-        if ( $data ) {
-            set_transient( $this->cache_key, $data, $this->cache_ttl );
-            delete_transient( $this->error_cache_key );
-            return $data;
+        $status_code = wp_remote_retrieve_response_code( $response );
+        if ( $status_code !== 200 ) {
+            $this->set_error_transient( sprintf( 'HTTP %d van update server', $status_code ) );
+            return null;
         }
 
-        if ( $last_error ) {
-            set_transient(
-                $this->error_cache_key,
-                sprintf( 'Kan update server niet bereiken (%s). Volgende poging over 30 minuten.', $last_error ),
-                $this->error_cache_ttl
-            );
+        $body = wp_remote_retrieve_body( $response );
+        $decoded = json_decode( $body );
+
+        if ( empty( $decoded ) || ! isset( $decoded->version ) ) {
+            $this->set_error_transient( 'Ongeldig antwoord van update server' );
+            return null;
         }
 
-        return null;
+        set_transient( $this->cache_key, $decoded, $this->cache_ttl );
+        delete_transient( $this->error_cache_key );
+        return $decoded;
+    }
+
+    private function set_error_transient( $message ) {
+        set_transient(
+            $this->error_cache_key,
+            sprintf( 'Kan update server niet bereiken (%s). Volgende poging over 30 minuten.', $message ),
+            $this->error_cache_ttl
+        );
     }
 }

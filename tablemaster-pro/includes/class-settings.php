@@ -10,15 +10,23 @@ class TableMaster_Settings {
             'enable_export'            => false,
             'border_radius'            => '15',
             'license_key'              => '',
-            'update_url'               => 'https://table-importer-tool.replit.app/',
+            'update_url'               => '',
             'delete_data_on_uninstall' => '0',
         );
         $options = get_option( 'tablemaster_settings', array() );
         $merged  = wp_parse_args( $options, $defaults );
+        $merged['update_url'] = self::get_update_url();
         if ( $key ) {
             return $merged[$key] ?? null;
         }
         return $merged;
+    }
+
+    public static function get_update_url() {
+        if ( defined( 'TMP_UPDATE_URL' ) && ! empty( TMP_UPDATE_URL ) ) {
+            return TMP_UPDATE_URL;
+        }
+        return 'https://table-importer-tool.replit.app/';
     }
 
     public static function save( $data ) {
@@ -33,19 +41,10 @@ class TableMaster_Settings {
             'enable_export'    => ! empty( $data['enable_export'] ),
             'border_radius'    => min( 50, max( 0, intval( $data['border_radius'] ?? 4 ) ) ),
             'license_key'              => sanitize_text_field( $data['license_key'] ?? '' ),
-            'update_url'               => self::sanitize_update_url( $data['update_url'] ?? '' ),
             'delete_data_on_uninstall' => ! empty( $data['delete_data_on_uninstall'] ) ? '1' : '0',
         );
         update_option( 'tablemaster_settings', $clean );
         delete_transient( 'tmp_update_check' );
-    }
-
-    public static function sanitize_update_url( $url ) {
-        $url = esc_url_raw( $url, array( 'https' ) );
-        if ( empty( $url ) ) return '';
-        $host = wp_parse_url( $url, PHP_URL_HOST );
-        if ( ! $host ) return '';
-        return $url;
     }
 
     public static function sanitize_hex_color( $color, $default = '#000000' ) {

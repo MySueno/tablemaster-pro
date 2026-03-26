@@ -46,7 +46,6 @@ $s = TableMaster_Settings::get();
                     <p class="description"><?php esc_html_e( 'Voer uw licentiecode in om automatische updates te activeren.', TMP_TEXT_DOMAIN ); ?></p>
                 </td>
             </tr>
-            <input type="hidden" name="update_url" value="<?php echo esc_attr( $s['update_url'] ); ?>">
             <tr>
                 <th><?php esc_html_e( 'Data verwijderen bij deïnstallatie', TMP_TEXT_DOMAIN ); ?></th>
                 <td>
@@ -65,18 +64,16 @@ $s = TableMaster_Settings::get();
     <p><?php printf( esc_html__( 'Versie: %s', TMP_TEXT_DOMAIN ), esc_html( TMP_VERSION ) ); ?></p>
     <p><?php printf( esc_html__( 'Database versie: %s', TMP_TEXT_DOMAIN ), esc_html( get_option( 'tablemaster_db_version', 'n/a' ) ) ); ?></p>
     <?php
-        $raw_settings = get_option( 'tablemaster_settings', array() );
-        $saved_url    = isset( $raw_settings['update_url'] ) ? $raw_settings['update_url'] : '';
-    ?>
-    <?php
+        $raw_settings  = get_option( 'tablemaster_settings', array() );
         $saved_license = isset( $raw_settings['license_key'] ) ? $raw_settings['license_key'] : '';
+        $active_url    = TableMaster_Settings::get_update_url();
     ?>
     <?php if ( ! empty( $saved_license ) ) : ?>
         <p><?php esc_html_e( 'Licentie: actief', TMP_TEXT_DOMAIN ); ?> ✅</p>
     <?php else : ?>
         <p style="color:#d63638;"><?php esc_html_e( 'Licentie: geen licentiecode ingevuld — automatische updates zijn uitgeschakeld', TMP_TEXT_DOMAIN ); ?></p>
     <?php endif; ?>
-    <?php if ( ! empty( $saved_url ) || ( defined( 'TMP_UPDATE_URL' ) && ! empty( TMP_UPDATE_URL ) ) ) : ?>
+    <?php if ( ! empty( $active_url ) ) : ?>
         <p><?php esc_html_e( 'Update server: verbonden', TMP_TEXT_DOMAIN ); ?> ✅</p>
     <?php else : ?>
         <p style="color:#d63638;"><?php esc_html_e( 'Update server: niet geconfigureerd', TMP_TEXT_DOMAIN ); ?></p>
