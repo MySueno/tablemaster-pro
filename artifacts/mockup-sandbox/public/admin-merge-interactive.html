@@ -99,6 +99,18 @@ table.demo-table td { padding: 8px 14px; border: 1px solid #ddd; }
         });
     });
 
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#demoTable th') && !e.target.closest('#mergeToolbar')) {
+            if (selectedCols.size > 0) {
+                selectedCols.clear();
+                document.querySelectorAll('#demoTable th').forEach(function(th) {
+                    th.classList.remove('selected');
+                });
+                updateUI();
+            }
+        }
+    });
+
     document.getElementById('mergeBtn').addEventListener('click', function() {
         var cols = Array.from(selectedCols).sort();
         var headers = [];

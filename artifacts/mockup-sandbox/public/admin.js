@@ -631,8 +631,9 @@
 
     function updateMergeToolbar() {
         var keys = getSelectedColKeys();
+        var selectedHeaderCount = $('.tmp-col-header-cell.tmp-col-selected').length;
         hideMergeToolbar();
-        if (keys.length < 2) return;
+        if (selectedHeaderCount < 2 || keys.length < 2) return;
 
         var $sel = $('.tmp-col-header-cell.tmp-col-selected').first();
         var $last = $('.tmp-col-header-cell.tmp-col-selected').last();
@@ -678,6 +679,11 @@
         }
 
         function doMerge(field) {
+            var selCount = $('.tmp-col-header-cell.tmp-col-selected').length;
+            if (selCount < 2) {
+                hideMergeToolbar();
+                return;
+            }
             if (!areKeysContiguous(keys)) {
                 alert('Selecteer aaneengesloten kolommen om samen te voegen.');
                 return;
