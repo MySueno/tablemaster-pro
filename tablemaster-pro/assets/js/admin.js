@@ -147,6 +147,24 @@
         });
 
         $adminTable.find('td').css({ borderColor: c.border_color || '#e0e0e0' });
+
+        var fontMap = {
+            group_1: '.tmp-admin-row-group_1',
+            group_2: '.tmp-admin-row-group_2',
+            group_3: '.tmp-admin-row-group_3',
+            footer:  '.tmp-admin-row-footer',
+            data:    '.tmp-admin-row-data'
+        };
+        $.each(fontMap, function (fk, sel) {
+            var sizeVal   = $('.tmp-font-size[data-font-key="' + fk + '"]').val() || '';
+            var boldVal   = $('.tmp-font-bold[data-font-key="' + fk + '"]').is(':checked');
+            var italicVal = $('.tmp-font-italic[data-font-key="' + fk + '"]').is(':checked');
+            $adminTable.find(sel).find('.tmp-cell-input').css({
+                fontSize:   sizeVal || '',
+                fontWeight: boldVal ? 'bold' : '',
+                fontStyle:  italicVal ? 'italic' : ''
+            });
+        });
     }
 
     /* ===== PRESETS (removed — colors are now fully custom) ===== */
@@ -1667,6 +1685,7 @@
         // Settings change -> dirty
         $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-sortable, #tmp-column-filters, #tmp-enable-export, #tmp-inline-html, #tmp-sticky-first-col, #tmp-sticky-header, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-default-col-width, #tmp-table-name, .tmp-font-size, .tmp-font-bold, .tmp-font-italic').on('change input', function () {
             isDirty = true;
+            updatePreview();
         });
 
         // Search/pagination toggle show/hide

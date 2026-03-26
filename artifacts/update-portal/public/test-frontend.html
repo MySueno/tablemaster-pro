@@ -124,7 +124,7 @@ h2 { font-size: 15px; color: #555; margin-top: 30px; border-bottom: 1px solid #d
 </head>
 <body>
 
-<h1>TableMaster Pro - Visuele Frontend Test (v1.3.32)</h1>
+<h1>TableMaster Pro - Visuele Frontend Test (v1.3.33)</h1>
 
 <!-- ============================================ -->
 <!-- TEST 1: Pagination OFF (per_page=-1) -->
@@ -567,6 +567,47 @@ h2 { font-size: 15px; color: #555; margin-top: 30px; border-bottom: 1px solid #d
     <div class="tmp-controls tmp-controls-bottom"></div>
 </div>
 <div id="test5-results"></div>
+</div>
+
+<!-- ============================================ -->
+<!-- Test 7: Font styling (size, bold, italic) -->
+<!-- ============================================ -->
+<div class="test-section">
+<h2>Test 7: Font-stijlen — G1=22px bold italic, G2=10px, Data=10px, Footer=10px</h2>
+<style>
+#test7-table .tmp-type-group_1 td { font-size:22px;font-weight:bold;font-style:italic; }
+#test7-table .tmp-type-group_2 td { font-size:10px; }
+#test7-table .tmp-type-group_3 td { font-size:10px; }
+#test7-table .tmp-type-data td { font-size:10px; }
+#test7-table .tmp-type-footer td { font-size:10px; }
+</style>
+<div id="test7-table" class="tmp-wrapper" data-table-id="107" data-per-page="-1" data-collapsible="0" data-mobile-mode="scroll" data-default-sort-col="" data-default-sort-dir="asc">
+    <div class="tmp-table-scroll-wrapper">
+        <table class="tmp-table">
+            <thead>
+                <tr class="tmp-header-row">
+                    <th class="tmp-th">Naam</th>
+                    <th class="tmp-th">Waarde</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="tmp-row tmp-type-group_1" data-row-id="t7g1" data-row-type="group_1" data-parent-id="">
+                    <td class="tmp-td tmp-group-cell" colspan="2">Groep 1 Titel</td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="t7g2" data-row-type="group_2" data-parent-id="t7g1">
+                    <td class="tmp-td tmp-group-cell" colspan="2">Groep 2 Sub</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t7d1" data-row-type="data" data-parent-id="t7g2">
+                    <td class="tmp-td" data-col-id="c1">Test Data</td>
+                    <td class="tmp-td" data-col-id="c2">Waarde 1</td>
+                </tr>
+                <tr class="tmp-row tmp-type-footer" data-row-id="t7f1" data-row-type="footer" data-parent-id="">
+                    <td class="tmp-td tmp-footer-cell" colspan="2">Footer tekst</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </div>
 
 <!-- ============================================ -->
@@ -1105,6 +1146,37 @@ function runAutomatedTests() {
                     assert('T6: Header "Verjaardag" en data col3 uitgelijnd (verschil < 2px)', dataAlignDiff < 2);
                 }
             }
+        }
+    }
+
+    // Test 7: Font styling verification
+    var t7 = document.getElementById('test7-table');
+    if (t7) {
+        var g1Row = t7.querySelector('[data-row-id="t7g1"]');
+        var g2Row = t7.querySelector('[data-row-id="t7g2"]');
+        var dataRow = t7.querySelector('[data-row-id="t7d1"]');
+        var footerRow = t7.querySelector('[data-row-id="t7f1"]');
+        if (g1Row) {
+            var g1Td = g1Row.querySelector('td');
+            var g1Style = window.getComputedStyle(g1Td);
+            assert('T7: G1 font-size is 22px', g1Style.fontSize === '22px');
+            assert('T7: G1 font-weight is bold (700)', g1Style.fontWeight === '700' || g1Style.fontWeight === 'bold');
+            assert('T7: G1 font-style is italic', g1Style.fontStyle === 'italic');
+        }
+        if (g2Row) {
+            var g2Td = g2Row.querySelector('td');
+            var g2Style = window.getComputedStyle(g2Td);
+            assert('T7: G2 font-size is 10px', g2Style.fontSize === '10px');
+        }
+        if (dataRow) {
+            var dataTd = dataRow.querySelector('td');
+            var dataStyle = window.getComputedStyle(dataTd);
+            assert('T7: Data font-size is 10px', dataStyle.fontSize === '10px');
+        }
+        if (footerRow) {
+            var footerTd = footerRow.querySelector('td');
+            var footerStyle = window.getComputedStyle(footerTd);
+            assert('T7: Footer font-size is 10px', footerStyle.fontSize === '10px');
         }
     }
 
