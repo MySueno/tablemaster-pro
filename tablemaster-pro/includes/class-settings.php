@@ -43,10 +43,6 @@ class TableMaster_Settings {
         if ( empty( $url ) ) return '';
         $host = wp_parse_url( $url, PHP_URL_HOST );
         if ( ! $host ) return '';
-        $ip = gethostbyname( $host );
-        if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) === false ) {
-            return '';
-        }
         return $url;
     }
 

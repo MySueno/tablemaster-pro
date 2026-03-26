@@ -63,9 +63,15 @@ $s = TableMaster_Settings::get();
     <h2><?php esc_html_e( 'Plugin-informatie', TMP_TEXT_DOMAIN ); ?></h2>
     <p><?php printf( esc_html__( 'Versie: %s', TMP_TEXT_DOMAIN ), esc_html( TMP_VERSION ) ); ?></p>
     <p><?php printf( esc_html__( 'Database versie: %s', TMP_TEXT_DOMAIN ), esc_html( get_option( 'tablemaster_db_version', 'n/a' ) ) ); ?></p>
-    <?php if ( ! empty( $s['update_url'] ) ) : ?>
-        <p><?php printf( esc_html__( 'Update server: %s', TMP_TEXT_DOMAIN ), esc_html( $s['update_url'] ) ); ?> ✅</p>
+    <?php
+        $raw_settings = get_option( 'tablemaster_settings', array() );
+        $saved_url    = isset( $raw_settings['update_url'] ) ? $raw_settings['update_url'] : '';
+    ?>
+    <?php if ( ! empty( $saved_url ) ) : ?>
+        <p><?php printf( esc_html__( 'Update server: %s', TMP_TEXT_DOMAIN ), esc_html( $saved_url ) ); ?> ✅</p>
+    <?php elseif ( defined( 'TMP_UPDATE_URL' ) && ! empty( TMP_UPDATE_URL ) ) : ?>
+        <p><?php printf( esc_html__( 'Update server: %s (standaard)', TMP_TEXT_DOMAIN ), esc_html( TMP_UPDATE_URL ) ); ?> ✅</p>
     <?php else : ?>
-        <p><?php esc_html_e( 'Update server: niet geconfigureerd', TMP_TEXT_DOMAIN ); ?></p>
+        <p style="color:#d63638;"><?php esc_html_e( 'Update server: niet geconfigureerd — sla de instellingen opnieuw op', TMP_TEXT_DOMAIN ); ?></p>
     <?php endif; ?>
 </div>
