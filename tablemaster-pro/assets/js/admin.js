@@ -149,6 +149,7 @@
         $adminTable.find('td').css({ borderColor: c.border_color || '#e0e0e0' });
 
         var fontMap = {
+            header:  '.tmp-admin-header-row',
             group_1: '.tmp-admin-row-group_1',
             group_2: '.tmp-admin-row-group_2',
             group_3: '.tmp-admin-row-group_3',
@@ -159,7 +160,10 @@
             var sizeVal   = $('.tmp-font-size[data-font-key="' + fk + '"]').val() || '';
             var boldVal   = $('.tmp-font-bold[data-font-key="' + fk + '"]').is(':checked');
             var italicVal = $('.tmp-font-italic[data-font-key="' + fk + '"]').is(':checked');
-            $adminTable.find(sel).find('.tmp-cell-input').css({
+            var $targets = fk === 'header'
+                ? $adminTable.find(sel).find('.tmp-col-header-label')
+                : $adminTable.find(sel).find('.tmp-cell-input');
+            $targets.css({
                 fontSize:   sizeVal || '',
                 fontWeight: boldVal ? 'bold' : '',
                 fontStyle:  italicVal ? 'italic' : ''
@@ -287,7 +291,7 @@
         }
 
         var $table = $('<table class="tmp-admin-table"></table>');
-        var $thead = $('<thead><tr><th style="width:28px;"></th><th style="width:80px;">Type</th>' + headerCols + '<th style="width:36px;"></th></tr></thead>');
+        var $thead = $('<thead><tr class="tmp-admin-header-row"><th style="width:28px;"></th><th style="width:80px;">Type</th>' + headerCols + '<th style="width:36px;"></th></tr></thead>');
         var $tbody = $('<tbody class="tmp-rows-sortable"></tbody>');
 
         $table.append($thead).append($tbody);

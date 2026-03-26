@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.41
+Stable tag: 1.3.42
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.42 =
+* Nieuw: Font-instellingen voor koptekst (header) rij — stel lettergrootte, vet en cursief in via de Font-tab
+* De font-instellingen worden zowel in de admin preview als op de live website toegepast
 
 = 1.3.41 =
 * Fix: Admin editor toont nu de kolom-uitlijning (bijv. rechts voor Prijs-kolommen) — voorheen werd de instelling genegeerd en stond alles links

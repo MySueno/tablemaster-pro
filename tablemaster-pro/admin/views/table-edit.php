@@ -291,6 +291,7 @@ $page_title = $is_new
                 <?php
                 $fonts = $settings['fonts'] ?? array();
                 $font_rows = array(
+                    'header'     => __( 'Koptekst', TMP_TEXT_DOMAIN ),
                     'group_1'    => __( 'Groep 1 (G1)', TMP_TEXT_DOMAIN ),
                     'group_2'    => __( 'Groep 2 (G2)', TMP_TEXT_DOMAIN ),
                     'group_3'    => __( 'Groep 3 (G3)', TMP_TEXT_DOMAIN ),

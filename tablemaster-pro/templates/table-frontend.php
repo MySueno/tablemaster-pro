@@ -69,6 +69,7 @@ $rows    = $data['rows'];
 }
 <?php
 $font_css_map = array(
+    'header'  => '.tmp-th',
     'group_1' => '.tmp-type-group_1 td',
     'group_2' => '.tmp-type-group_2 td',
     'group_3' => '.tmp-type-group_3 td',
