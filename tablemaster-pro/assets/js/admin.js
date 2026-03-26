@@ -117,6 +117,24 @@
 
         $('.tmp-panel-right .wp-picker-input-wrap').css('display', 'inline-flex');
 
+        $(document).on('click.tmpColorClose', function (e) {
+            var $target = $(e.target);
+            var $currentContainer = $target.closest('.wp-picker-container');
+            $('.wp-picker-container').each(function () {
+                var $container = $(this);
+                if ($container[0] === $currentContainer[0]) return;
+                var $holder = $container.find('.wp-picker-holder');
+                if ($holder.is(':visible')) {
+                    $holder.hide();
+                    $container.find('button.wp-color-result').removeClass('wp-picker-open');
+                }
+            });
+            if ($currentContainer.length === 0) {
+                $('.wp-picker-holder:visible').hide();
+                $('button.wp-color-result.wp-picker-open').removeClass('wp-picker-open');
+            }
+        });
+
         updatePreview();
     }
 
