@@ -784,6 +784,11 @@
                 e.stopPropagation();
                 var $td = $(this).closest('td');
                 $tr.siblings().find('td.tmp-cell-selected').removeClass('tmp-cell-selected');
+                var $focused = $tr.find('.tmp-cell-input:focus');
+                if ($focused.length && $focused[0] !== this && !$focused.closest('td').hasClass('tmp-cell-selected')) {
+                    $focused.closest('td').addClass('tmp-cell-selected');
+                    $focused.blur();
+                }
                 $td.toggleClass('tmp-cell-selected');
                 updateCellMergeToolbar($tr);
                 return false;
