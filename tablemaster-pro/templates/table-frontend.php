@@ -594,8 +594,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                     </tr>
                 <?php endforeach; ?>
             </tbody>
-        </table>
-    </div>
+        </table></div>
 
     <div class="tmp-controls tmp-controls-bottom">
         <?php if ( $show_pagination ) : ?>
