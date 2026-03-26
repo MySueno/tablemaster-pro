@@ -406,11 +406,13 @@ td.tmp-cell-selected {
 .tmp-cell-input:hover {
     border-color: #ccc;
     background: #fff;
+    color: #1d2327 !important;
 }
 
 .tmp-cell-input:focus {
     border-color: #2271b1;
     background: #fff;
+    color: #1d2327 !important;
     outline: none;
     cursor: text;
 }

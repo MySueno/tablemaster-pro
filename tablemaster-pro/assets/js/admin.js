@@ -466,6 +466,8 @@
                 formatUndoPushed = false;
                 $('#tmp-cell-toolbar').removeClass('tmp-toolbar-disabled');
                 $('#tmp-tb-cell-ref').text(col.label || 'Kolom');
+                var curColAlign = (col.settings && col.settings.align) || 'left';
+                updateAlignButtons(curColAlign);
                 function finishEdit() {
                     var newLabel = cleanCellHtml($editDiv.html()).trim() || origLabel;
                     if (newLabel !== origLabel) {
@@ -1001,6 +1003,24 @@
 
     function toolbarAlign(align) {
         if (!activeCell) return;
+        if (activeCell.tempId === '__header__') {
+            var colKey = activeCell.colKey;
+            if (colKey.indexOf('__group__') === 0) {
+                activeCell.$area.css('text-align', align);
+            } else {
+                var colObj = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
+                if (colObj) {
+                    pushUndo();
+                    if (!colObj.settings) colObj.settings = {};
+                    colObj.settings.align = align;
+                    activeCell.$area.css('text-align', align);
+                    activeCell.$area.closest('th').css('text-align', align);
+                }
+            }
+            updateAlignButtons(align);
+            activeCell.$area.focus();
+            return;
+        }
         var rowObj = rows.find(function (r) { return r.temp_id + '' === activeCell.tempId; });
         if (!rowObj) return;
         pushUndo();
