@@ -703,7 +703,8 @@ td.tmp-cell-selected {
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-bottom: 8px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
     transition: opacity 0.15s;
 }
 
@@ -715,6 +716,7 @@ td.tmp-cell-selected {
 .tmp-toolbar-group {
     display: flex;
     gap: 2px;
+    flex-shrink: 0;
 }
 
 .tmp-toolbar-sep {
