@@ -736,7 +736,7 @@
             var cellAlign = (row.cell_aligns && row.cell_aligns[key]) || '';
             var effectiveAlign = cellAlign || (col.settings && col.settings.align) || 'left';
             var alignStyle = effectiveAlign && effectiveAlign !== 'left' ? 'text-align:' + escAttr(effectiveAlign) + ';' : '';
-            var placeholder = isGroup ? 'Leeg = samenvoegen \u2192' : '';
+            var placeholder = '';
             var cspan = cellMerges[key] ? parseInt(cellMerges[key]) : 1;
             if (cspan > 1) skipCols = cspan - 1;
             cellInputs += '<td' + (cspan > 1 ? ' colspan="' + cspan + '"' : '') + '>' +
