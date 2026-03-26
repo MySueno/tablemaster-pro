@@ -123,7 +123,7 @@ h2 { font-size: 15px; color: #555; margin-top: 30px; border-bottom: 1px solid #d
 </head>
 <body>
 
-<h1>TableMaster Pro - Visuele Frontend Test (v1.3.31)</h1>
+<h1>TableMaster Pro - Visuele Frontend Test (v1.3.32)</h1>
 
 <!-- ============================================ -->
 <!-- TEST 1: Pagination OFF (per_page=-1) -->
@@ -136,6 +136,7 @@ h2 { font-size: 15px; color: #555; margin-top: 30px; border-bottom: 1px solid #d
     <div class="tmp-controls tmp-controls-top"><div class="tmp-controls-right"></div></div>
     <div class="tmp-table-scroll-wrapper">
         <table class="tmp-table" role="grid">
+            <colgroup><col><col><col><col></colgroup>
             <thead>
                 <tr class="tmp-header-row">
                     <th class="tmp-th tmp-sortable" data-col-id="c1" data-col-type="text">Achternaam<span class="tmp-sort-icon"></span></th>
@@ -244,6 +245,7 @@ h2 { font-size: 15px; color: #555; margin-top: 30px; border-bottom: 1px solid #d
     <div class="tmp-controls tmp-controls-top"><div class="tmp-controls-right"></div></div>
     <div class="tmp-table-scroll-wrapper">
         <table class="tmp-table" role="grid">
+            <colgroup><col><col><col><col></colgroup>
             <thead>
                 <tr class="tmp-header-row">
                     <th class="tmp-th tmp-sortable" data-col-id="c1" data-col-type="text">Achternaam<span class="tmp-sort-icon"></span></th>
@@ -346,6 +348,7 @@ h2 { font-size: 15px; color: #555; margin-top: 30px; border-bottom: 1px solid #d
     <div class="tmp-controls tmp-controls-top"><div class="tmp-controls-right"></div></div>
     <div class="tmp-table-scroll-wrapper">
         <table class="tmp-table" role="grid">
+            <colgroup><col><col><col><col></colgroup>
             <thead>
                 <tr class="tmp-header-row">
                     <th class="tmp-th tmp-sortable" data-col-id="c1" data-col-type="text">Achternaam<span class="tmp-sort-icon"></span></th>
@@ -433,6 +436,7 @@ h2 { font-size: 15px; color: #555; margin-top: 30px; border-bottom: 1px solid #d
     <div class="tmp-controls tmp-controls-top"><div class="tmp-controls-right"></div></div>
     <div class="tmp-table-scroll-wrapper">
         <table class="tmp-table" role="grid">
+            <colgroup><col style="width:36px;"><col><col></colgroup>
             <thead>
                 <tr class="tmp-header-row">
                     <th class="tmp-toggle-col" aria-hidden="true"></th>
@@ -484,6 +488,84 @@ h2 { font-size: 15px; color: #555; margin-top: 30px; border-bottom: 1px solid #d
     <div class="tmp-controls tmp-controls-bottom"></div>
 </div>
 <div id="test4-results"></div>
+</div>
+
+<!-- ============================================ -->
+<!-- TEST 5: GROUPED HEADERS (colspan) + G2 rows alignment -->
+<!-- ============================================ -->
+<div class="test-section">
+<h2>Test 5: Gegroepeerde headers (colspan) — kolom-uitlijning</h2>
+<div id="tmp-test5" class="tmp-wrapper" data-table-id="5" data-per-page="-1" data-collapsible="0" data-default-sort-col="" data-default-sort-dir="asc" data-mobile-mode="scroll"
+     style="--tmp-header-bg:#D32637;--tmp-header-text:#fff;--tmp-group1-bg:#D32637;--tmp-group1-text:#fff;--tmp-group2-bg:#F9E6E7;--tmp-group2-text:#1a1a1a;--tmp-odd-bg:#fff;--tmp-even-bg:#f9f9f9;--tmp-hover-bg:#fce4e4;--tmp-border:#e0e0e0;--tmp-footer-bg:#D32637;--tmp-footer-text:#fff;--tmp-radius:4px;">
+    <div class="tmp-controls tmp-controls-top"><div class="tmp-controls-right"></div></div>
+    <div class="tmp-table-scroll-wrapper">
+        <table class="tmp-table" role="grid">
+            <colgroup><col><col><col><col><col><col><col></colgroup>
+            <thead>
+                <tr class="tmp-header-row">
+                    <th class="tmp-th" colspan="2" style="text-align:left;">Achternaam</th>
+                    <th class="tmp-th" data-col-id="c3" data-col-type="date">Verjaardag</th>
+                    <th class="tmp-th" data-col-id="c4" data-col-type="text"></th>
+                    <th class="tmp-th" data-col-id="c5" data-col-type="text">Kolom 8</th>
+                    <th class="tmp-th" data-col-id="c6" data-col-type="text">Kolom 10</th>
+                    <th class="tmp-th" data-col-id="c7" data-col-type="text">Kolom 11</th>
+                </tr>
+            </thead>
+            <tbody class="tmp-tbody">
+                <tr class="tmp-row tmp-type-group_2" data-row-id="r81" data-row-type="group_2" data-parent-id="">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;">Adobe</td>
+                    <td class="tmp-td tmp-group-cell"></td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;">Adobe</td>
+                    <td class="tmp-td tmp-group-cell"></td>
+                    <td class="tmp-td tmp-group-cell"></td>
+                    <td class="tmp-td tmp-group-cell"></td>
+                    <td class="tmp-td tmp-group-cell"></td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="r82" data-row-type="data" data-parent-id="r81">
+                    <td class="tmp-td" data-col-id="c1">Nakamura</td>
+                    <td class="tmp-td" data-col-id="c2">Kenji</td>
+                    <td class="tmp-td" data-col-id="c3">1988-11-22</td>
+                    <td class="tmp-td" data-col-id="c4">Adobe</td>
+                    <td class="tmp-td" data-col-id="c5"></td>
+                    <td class="tmp-td" data-col-id="c6"></td>
+                    <td class="tmp-td" data-col-id="c7"></td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-even" data-row-id="r83" data-row-type="data" data-parent-id="r81">
+                    <td class="tmp-td" data-col-id="c1"></td>
+                    <td class="tmp-td" data-col-id="c2"></td>
+                    <td class="tmp-td" data-col-id="c3"></td>
+                    <td class="tmp-td" data-col-id="c4" style="text-align:center;">sfsdf</td>
+                    <td class="tmp-td" data-col-id="c5"></td>
+                    <td class="tmp-td" data-col-id="c6"></td>
+                    <td class="tmp-td" data-col-id="c7"></td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="r84" data-row-type="group_2" data-parent-id="">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;">Apple</td>
+                    <td class="tmp-td tmp-group-cell"></td>
+                    <td class="tmp-td tmp-group-cell"></td>
+                    <td class="tmp-td tmp-group-cell"></td>
+                    <td class="tmp-td tmp-group-cell"></td>
+                    <td class="tmp-td tmp-group-cell"></td>
+                    <td class="tmp-td tmp-group-cell"></td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="r85" data-row-type="data" data-parent-id="r84">
+                    <td class="tmp-td" data-col-id="c1">Smith</td>
+                    <td class="tmp-td" data-col-id="c2">Emily</td>
+                    <td class="tmp-td" data-col-id="c3">1993-01-30</td>
+                    <td class="tmp-td" data-col-id="c4">Apple</td>
+                    <td class="tmp-td" data-col-id="c5"></td>
+                    <td class="tmp-td" data-col-id="c6"></td>
+                    <td class="tmp-td" data-col-id="c7"></td>
+                </tr>
+                <tr class="tmp-row tmp-type-footer" data-row-id="r86" data-row-type="footer" data-parent-id="">
+                    <td class="tmp-td tmp-footer-cell" colspan="7">Einde tabel</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tmp-controls tmp-controls-bottom"></div>
+</div>
+<div id="test5-results"></div>
 </div>
 
 <!-- ============================================ -->
@@ -983,6 +1065,46 @@ function runAutomatedTests() {
         assert('T5: Na sort - Cisco kinderen direct na Cisco', patelIdx > ciscoIdx);
         assert('T5: Na sort - Footer aan het einde', footerIdx > ciscoIdx);
         inst2.handleSort(header2);
+    }
+
+    // Test 6: Grouped header alignment (Test 5 table)
+    var t5 = document.getElementById('tmp-test5');
+    if (t5) {
+        var t5Table = t5.querySelector('.tmp-table');
+        assert('T6: Tabel 5 bestaat', !!t5Table);
+        var t5Colgroup = t5Table.querySelector('colgroup');
+        assert('T6: Colgroup aanwezig', !!t5Colgroup);
+        var t5Cols = t5Colgroup ? t5Colgroup.querySelectorAll('col') : [];
+        assert('T6: 7 col-elementen in colgroup', t5Cols.length === 7);
+        var headerRow = t5Table.querySelector('.tmp-header-row');
+        var g2Row = t5.querySelector('[data-row-id="r81"]');
+        var dataRow = t5.querySelector('[data-row-id="r82"]');
+        assert('T6: G2 Adobe rij bestaat', !!g2Row);
+        assert('T6: Data Nakamura rij bestaat', !!dataRow);
+        if (g2Row && dataRow) {
+            var g2Cells = g2Row.querySelectorAll('td');
+            var dataCells = dataRow.querySelectorAll('td');
+            assert('T6: G2 rij heeft 7 cellen', g2Cells.length === 7);
+            assert('T6: Data rij heeft 7 cellen', dataCells.length === 7);
+            var g2Col3Left = g2Cells[2].getBoundingClientRect().left;
+            var dataCol3Left = dataCells[2].getBoundingClientRect().left;
+            var alignDiff = Math.abs(g2Col3Left - dataCol3Left);
+            assert('T6: G2 col3 en data col3 uitgelijnd (verschil < 2px)', alignDiff < 2);
+            if (headerRow) {
+                var headerCells = headerRow.querySelectorAll('th');
+                var verjCol = null;
+                for (var hi = 0; hi < headerCells.length; hi++) {
+                    if (headerCells[hi].textContent.trim() === 'Verjaardag') { verjCol = headerCells[hi]; break; }
+                }
+                if (verjCol) {
+                    var verjLeft = verjCol.getBoundingClientRect().left;
+                    var g2AlignDiff = Math.abs(verjLeft - g2Col3Left);
+                    assert('T6: Header "Verjaardag" en G2 col3 uitgelijnd (verschil < 2px)', g2AlignDiff < 2);
+                    var dataAlignDiff = Math.abs(verjLeft - dataCol3Left);
+                    assert('T6: Header "Verjaardag" en data col3 uitgelijnd (verschil < 2px)', dataAlignDiff < 2);
+                }
+            }
+        }
     }
 
     // Render results

@@ -192,6 +192,18 @@ foreach ( $font_css_map as $fk => $selector ) :
             $default_col_w   = $settings['default_col_width'] ?? '';
             if ( $default_col_w !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $default_col_w ) ) $default_col_w = '';
             ?>
+            <colgroup>
+                <?php if ( $collapsible ) : ?>
+                    <col style="width:36px;">
+                <?php endif; ?>
+                <?php foreach ( $col_meta as $cg_cm ) :
+                    $cg_w = $cg_cm['cs']['width'] ?? 'auto';
+                    if ( $cg_w !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $cg_w ) ) $cg_w = 'auto';
+                    if ( $cg_w === 'auto' && $default_col_w !== '' ) $cg_w = $default_col_w;
+                ?>
+                    <col<?php if ( $cg_w !== 'auto' ) : ?> style="width:<?php echo esc_attr( $cg_w ); ?>;"<?php endif; ?>>
+                <?php endforeach; ?>
+            </colgroup>
             <thead>
             <?php if ( $max_depth === 1 ) : ?>
                 <tr class="tmp-header-row">
