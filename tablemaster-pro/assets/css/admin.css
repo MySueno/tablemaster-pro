@@ -550,6 +550,8 @@ td.tmp-cell-selected {
 }
 
 .tmp-panel-right .wp-picker-input-wrap {
+    display: inline-flex !important;
+    align-items: center;
     max-width: 200px;
     overflow: visible;
 }

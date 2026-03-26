@@ -113,6 +113,8 @@
             });
         });
 
+        $('.tmp-panel-right .wp-picker-input-wrap').css('display', 'inline-flex');
+
         updatePreview();
     }
 
