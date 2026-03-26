@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.37
+Stable tag: 1.3.38
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,12 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.38 =
+* Fix: Header-slot gebaseerde G2/G3 groepsrij auto-merge — colspans worden nu berekend op basis van header-groep grenzen, niet individuele lege cellen
+* Fix: Correcte uitlijning tussen gegroepeerde headers en G2/G3 rijen bij 2-kolom, 3-kolom en meerdere samengevoegde groepen
+* Fix: Vertaalde tabellen (WPML) behouden correcte kolom-uitlijning na vertaling
+* Verbetering: Responsieve CSS — tabellen scrollen horizontaal op mobiel in plaats van kolommen samen te persen
 
 = 1.3.37 =
 * Fix: Samengevoegde cellen in G2/G3 groepsrijen worden nu correct auto-samengevoegd op de frontend — lege cellen na een gevulde cel worden automatisch samengevoegd (colspan), consistent met admin preview
