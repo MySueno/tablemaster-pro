@@ -149,6 +149,7 @@
 
 .tmp-table-scroll-wrapper > .tmp-table {
     line-height: normal;
+    margin-bottom: -1px;
 }
 
 /* The table */
