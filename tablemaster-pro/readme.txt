@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.46
+Stable tag: 1.3.47
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.47 =
+* Fix: Afsluitrij toont geen placeholder meer — lege cellen in de afsluitrij blijven echt leeg
+* Afsluitrij wordt nu als apart type behandeld (niet als groepsrij) zodat de samenvoeg-hint niet verschijnt
 
 = 1.3.46 =
 * Nieuw: Eerste kolom breedte — optionele instelling onder Weergave om de eerste kolom breder te maken dan de standaard kolombreedte

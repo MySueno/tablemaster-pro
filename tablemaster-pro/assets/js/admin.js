@@ -723,7 +723,7 @@
         var typeClass = 'tmp-admin-row tmp-admin-row-' + (row.row_type || 'data');
         var badgeClass= 'tmp-row-type-badge tmp-type-badge-' + (row.row_type || 'data');
         var badgeText = rowTypeLabels[row.row_type] || 'Data';
-        var isGroup   = row.row_type && row.row_type !== 'data';
+        var isGroup   = row.row_type && row.row_type !== 'data' && row.row_type !== 'footer';
 
         var cellMerges = row.cell_merges || {};
         var cellInputs = '';
