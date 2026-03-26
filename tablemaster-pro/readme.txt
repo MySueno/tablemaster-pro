@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.53
+Stable tag: 1.3.54
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.54 =
+* Fix: Cel-toolbar knoppen extra versterkt met !important flexbox-regels om WordPress admin CSS-conflicten te voorkomen
+* Alle toolbar-elementen (knoppen, separatoren, groepen) krimpen niet meer in bij smalle schermen
 
 = 1.3.53 =
 * Fix: Hex kleurcode invoerveld is nu altijd zichtbaar naast elke color picker — niet meer verborgen achter klik

@@ -697,7 +697,8 @@ td.tmp-cell-selected {
 
 /* Cell toolbar (Excel-like) */
 .tmp-cell-toolbar {
-    display: flex;
+    display: flex !important;
+    flex-direction: row !important;
     align-items: center;
     gap: 4px;
     padding: 6px 10px;
@@ -705,7 +706,7 @@ td.tmp-cell-selected {
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-bottom: 8px;
-    flex-wrap: nowrap;
+    flex-wrap: nowrap !important;
     overflow-x: auto;
     transition: opacity 0.15s;
 }
@@ -728,6 +729,7 @@ td.tmp-cell-selected {
     background: #ccc;
     margin: 0 6px;
     vertical-align: middle;
+    flex-shrink: 0;
 }
 
 .tmp-toolbar-ref {
@@ -753,6 +755,7 @@ td.tmp-cell-selected {
     color: #1d2327;
     transition: background 0.1s, border-color 0.1s;
     line-height: 1;
+    flex-shrink: 0;
 }
 
 .tmp-tb-btn:hover {
