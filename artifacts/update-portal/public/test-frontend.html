@@ -112,6 +112,14 @@
 .tmp-per-page-wrap { display: flex; align-items: center; gap: 0.4em; font-size: 0.9em; }
 .tmp-per-page-select { padding: 5px 8px; border: 1px solid var(--tmp-border, #ccc); border-radius: 4px; font-family: inherit; }
 
+@media (max-width: 1024px) {
+    .tmp-table-scroll-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
+@media (max-width: 767px) {
+    .tmp-table { min-width: 500px; }
+    .tmp-controls { flex-direction: column; gap: 0.5em; }
+}
+
 /* Test page styling */
 body { font-family: 'Segoe UI', sans-serif; margin: 20px; background: #f5f5f5; }
 h1 { font-size: 18px; color: #333; }
