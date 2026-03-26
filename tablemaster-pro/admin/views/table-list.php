@@ -70,7 +70,7 @@ $tables = TableMaster_DB::get_all_tables();
                                 <?php esc_html_e( 'Bewerken', TMP_TEXT_DOMAIN ); ?>
                             </a>
                             <a href="<?php echo esc_url( admin_url( 'admin.php?page=tablemaster-preview&id=' . $t->id ) ); ?>" class="button button-small" target="_blank">
-                                <?php esc_html_e( 'Preview', TMP_TEXT_DOMAIN ); ?>
+                                <?php esc_html_e( 'Voorbeeld', TMP_TEXT_DOMAIN ); ?>
                             </a>
                             <button class="button button-small tmp-duplicate-btn" data-id="<?php echo esc_attr( $t->id ); ?>">
                                 <?php esc_html_e( 'Dupliceren', TMP_TEXT_DOMAIN ); ?>

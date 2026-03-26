@@ -5,10 +5,10 @@ if ( ! current_user_can( 'manage_options' ) ) wp_die( esc_html__( 'Geen toegang.
 $table_id    = intval( $_GET['id'] ?? 0 );
 $target_lang = sanitize_text_field( $_GET['lang'] ?? '' );
 
-if ( ! $table_id ) wp_die( 'Geen tabel opgegeven.' );
+if ( ! $table_id ) wp_die( esc_html__( 'Geen tabel opgegeven.', TMP_TEXT_DOMAIN ) );
 
 $table = TableMaster_DB::get_table( $table_id );
-if ( ! $table ) wp_die( 'Tabel niet gevonden.' );
+if ( ! $table ) wp_die( esc_html__( 'Tabel niet gevonden.', TMP_TEXT_DOMAIN ) );
 
 $data     = TableMaster_DB::get_table_data( $table_id, '' );
 $columns  = $data['columns'] ?? array();
@@ -52,7 +52,7 @@ if ( empty( $non_default_langs ) ) {
 
 $valid_target_langs = array_keys( $active_langs );
 if ( $target_lang && ! in_array( $target_lang, $valid_target_langs, true ) ) {
-    wp_die( 'Ongeldige doeltaal.' );
+    wp_die( esc_html__( 'Ongeldige doeltaal.', TMP_TEXT_DOMAIN ) );
 }
 
 $source_name = isset( $active_langs[ $default_lang ] ) ? $active_langs[ $default_lang ]['native_name'] : $default_lang;

@@ -124,7 +124,7 @@ h2 { font-size: 15px; color: #555; margin-top: 30px; border-bottom: 1px solid #d
 </head>
 <body>
 
-<h1>TableMaster Pro - Visuele Frontend Test (v1.3.34)</h1>
+<h1>TableMaster Pro - Visuele Frontend Test (v1.3.35)</h1>
 
 <!-- ============================================ -->
 <!-- TEST 1: Pagination OFF (per_page=-1) -->
@@ -1186,7 +1186,7 @@ function runAutomatedTests() {
     results.forEach(function (r) {
         var div = document.createElement('div');
         div.className = 'test-result ' + (r.pass ? 'test-pass' : 'test-fail');
-        div.textContent = (r.pass ? '✓ PASS' : '✗ FAIL') + ': ' + r.name;
+        div.textContent = (r.pass ? '✓ GESLAAGD' : '✗ GEFAALD') + ': ' + r.name;
         container.appendChild(div);
         if (r.pass) passed++; else failed++;
     });
