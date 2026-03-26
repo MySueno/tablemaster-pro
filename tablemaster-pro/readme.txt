@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.31
+Stable tag: 1.3.36
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,15 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.36 =
+* Fix: Samengevoegde cellen in G2/G3 groepsrijen worden nu correct auto-samengevoegd op de frontend — lege cellen na een gevulde cel worden automatisch samengevoegd (colspan), consistent met admin preview
+
+= 1.3.35 =
+* Fix: Test-runner crash opgelost — ontbrekende class="tmp-tbody" op tbody veroorzaakte null-reference in TableMasterInstance constructor
+* Vertaling: Testresultaten tonen nu "GESLAAGD"/"GEFAALD" in het Nederlands
+* Vertaling: Admin strings "Preview border-radius", "Update Server URL", "Plugin Info", "Preview" vertaald naar Nederlands
+* Fix: wp_die() aanroepen in table-translate.php nu gewrapped in esc_html__()
 
 = 1.3.31 =
 * Fix: Sorteer-pijl (↑↓) is nu zichtbaar in de header — kleur was gelijk aan achtergrondkleur op alle thema's

@@ -539,15 +539,28 @@ foreach ( $font_css_map as $fk => $selector ) :
                                 <?php endif;
                                 $grp_skip = 0;
                                 $grp_col_total = count( $columns );
-                                foreach ( $columns as $grp_col_idx => $gcol2 ) :
+                                $grp_columns_arr = array_values( $columns );
+                                foreach ( $grp_columns_arr as $grp_col_idx => $gcol2 ) :
                                     if ( $grp_skip > 0 ) { $grp_skip--; continue; }
                                     $gc_content = isset( $filled_cells[ $gcol2->id ] ) ? $filled_cells[ $gcol2->id ] : '';
+                                    $gc_has_text = trim( strip_tags( str_replace( array( '&nbsp;', "\xC2\xA0" ), ' ', $gc_content ) ) ) !== '';
                                     $cs_g       = json_decode( $gcol2->settings, true );
                                     $col_align_g = in_array( $cs_g['align'] ?? 'left', $valid_aligns, true ) ? $cs_g['align'] : 'left';
                                     $cell_align_g = isset( $row->cell_aligns[ $gcol2->id ] ) && in_array( $row->cell_aligns[ $gcol2->id ], $valid_aligns, true ) ? $row->cell_aligns[ $gcol2->id ] : '';
                                     $align_g = $cell_align_g !== '' ? $cell_align_g : $col_align_g;
                                     $grp_remaining = $grp_col_total - $grp_col_idx;
                                     $grp_colspan = isset( $row->cell_merges[ $gcol2->id ] ) ? min( max( 1, intval( $row->cell_merges[ $gcol2->id ] ) ), $grp_remaining ) : 1;
+                                    if ( $grp_colspan <= 1 && $gc_has_text ) {
+                                        $auto_span = 1;
+                                        for ( $grp_look = $grp_col_idx + 1; $grp_look < $grp_col_total; $grp_look++ ) {
+                                            $look_col = $grp_columns_arr[ $grp_look ];
+                                            $look_raw = $row->cells[ $look_col->id ] ?? '';
+                                            $look_text = trim( strip_tags( str_replace( array( '&nbsp;', "\xC2\xA0" ), ' ', $look_raw ) ) );
+                                            if ( $look_text !== '' ) break;
+                                            $auto_span++;
+                                        }
+                                        $grp_colspan = $auto_span;
+                                    }
                                     if ( $grp_colspan > 1 ) $grp_skip = $grp_colspan - 1;
                             ?>
                                 <td class="tmp-td tmp-group-cell"
