@@ -558,6 +558,7 @@
     position: sticky;
     top: 0;
     z-index: 2;
+    background-color: var(--tmp-header-bg);
 }
 
 .tmp-wrapper.tmp-sticky-header thead {

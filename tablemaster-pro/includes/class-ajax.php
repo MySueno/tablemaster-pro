@@ -94,6 +94,12 @@ class TableMaster_Ajax {
         }
         $clean['max_width'] = $mw;
 
+        $mh = trim( $settings['max_height'] ?? '' );
+        if ( $mh !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%|vh)$/', $mh ) ) {
+            $mh = '';
+        }
+        $clean['max_height'] = $mh;
+
         if ( isset( $settings['colors'] ) && is_array( $settings['colors'] ) ) {
             $clean['colors'] = TableMaster_Settings::sanitize_colors( $settings['colors'] );
         }
