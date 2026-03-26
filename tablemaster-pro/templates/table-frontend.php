@@ -499,7 +499,11 @@ foreach ( $font_css_map as $fk => $selector ) :
                                     }
                                 }
                             }
-                            $use_colspan = ( $row->row_type === 'group_1' || $filled_count <= 1 );
+                            $g1_has_multi_content = false;
+                            if ( $row->row_type === 'group_1' && $filled_count > 1 ) {
+                                $g1_has_multi_content = true;
+                            }
+                            $use_colspan = ( ( $row->row_type === 'group_1' && ! $g1_has_multi_content ) || $filled_count <= 1 );
                             $group_align_style = $group_align !== '' ? ' style="text-align:' . esc_attr( $group_align ) . ';"' : '';
 
                             if ( $use_colspan ) :

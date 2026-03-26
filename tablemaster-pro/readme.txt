@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.39
+Stable tag: 1.3.40
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,9 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.40 =
+* Fix: G1 groepsrijen met meerdere gevulde cellen tonen nu alle inhoud — voorheen werd alleen de eerste cel getoond en de rest (bijv. "Fysiotherapie 2") ging verloren in een full-width colspan
 
 = 1.3.39 =
 * Fix: G2/G3 groepsrijen respecteren nu cell_merges uit de admin — expliciete samenvoegingen worden 1:1 overgenomen op de frontend

@@ -132,7 +132,7 @@ h2 { font-size: 15px; color: #555; margin-top: 30px; border-bottom: 1px solid #d
 </head>
 <body>
 
-<h1>TableMaster Pro - Visuele Frontend Test (v1.3.39)</h1>
+<h1>TableMaster Pro - Visuele Frontend Test (v1.3.40)</h1>
 
 <!-- ============================================ -->
 <!-- TEST 1: Pagination OFF (per_page=-1) -->
@@ -1085,6 +1085,108 @@ h2 { font-size: 15px; color: #555; margin-top: 30px; border-bottom: 1px solid #d
     <div class="tmp-controls tmp-controls-bottom"></div>
 </div>
 <div id="test12-results"></div>
+</div>
+
+<!-- ============================================ -->
+<!-- Test 13: G1 rows with multiple filled cells (v1.3.40) -->
+<!-- ============================================ -->
+<div class="test-section">
+<h2>Test 13: G1-rij met meerdere gevulde cellen — "Massage" + "Fysiotherapie 2" (v1.3.40)</h2>
+<div id="tmp-test13" class="tmp-wrapper" data-table-id="13" data-per-page="-1" data-collapsible="1" data-default-sort-col="" data-default-sort-dir="asc" data-mobile-mode="scroll"
+     style="--tmp-header-bg:#D32637;--tmp-header-text:#fff;--tmp-group1-bg:#D32637;--tmp-group1-text:#fff;--tmp-group2-bg:#F9E6E7;--tmp-group2-text:#1a1a1a;--tmp-group3-bg:#fafafa;--tmp-group3-text:#1a1a1a;--tmp-odd-bg:#fff;--tmp-even-bg:#f9f9f9;--tmp-hover-bg:#fce4e4;--tmp-border:#e0e0e0;--tmp-footer-bg:#D32637;--tmp-footer-text:#fff;--tmp-radius:4px;">
+    <div class="tmp-controls tmp-controls-top"><div class="tmp-controls-right"></div></div>
+    <div class="tmp-table-scroll-wrapper">
+        <table class="tmp-table" role="grid">
+            <colgroup><col><col><col><col></colgroup>
+            <thead>
+                <tr class="tmp-header-row">
+                    <th class="tmp-th" data-col-id="t13c1" data-col-type="text">Behandeling</th>
+                    <th class="tmp-th" data-col-id="t13c2" data-col-type="text">Categorie</th>
+                    <th class="tmp-th" data-col-id="t13c3" data-col-type="text">Soort</th>
+                    <th class="tmp-th" data-col-id="t13c4" data-col-type="text">Prijs (€)</th>
+                </tr>
+            </thead>
+            <tbody class="tmp-tbody">
+                <tr class="tmp-row tmp-type-group_1" data-row-id="t13g1a" data-row-type="group_1" data-parent-id="">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;">Massage</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Fysiotherapie 2</td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="t13g2a" data-row-type="group_2" data-parent-id="t13g1a">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;">Klassieke massage</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Fysiotherapie</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t13d1" data-row-type="data" data-parent-id="t13g2a">
+                    <td class="tmp-td" data-col-id="t13c1">Rugmassage 30 min</td>
+                    <td class="tmp-td" data-col-id="t13c2">Fysiotherapie</td>
+                    <td class="tmp-td" data-col-id="t13c3">Spierspanning</td>
+                    <td class="tmp-td" data-col-id="t13c4">45</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-even" data-row-id="t13d2" data-row-type="data" data-parent-id="t13g2a">
+                    <td class="tmp-td" data-col-id="t13c1">Rugmassage 60 min</td>
+                    <td class="tmp-td" data-col-id="t13c2">Fysiotherapie</td>
+                    <td class="tmp-td" data-col-id="t13c3">Spierspanning</td>
+                    <td class="tmp-td" data-col-id="t13c4">75</td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="t13g2b" data-row-type="group_2" data-parent-id="t13g1a">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;">Sportmassage</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Fysiotherapie</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t13d3" data-row-type="data" data-parent-id="t13g2b">
+                    <td class="tmp-td" data-col-id="t13c1">Sportmassage 45 min</td>
+                    <td class="tmp-td" data-col-id="t13c2">Fysiotherapie</td>
+                    <td class="tmp-td" data-col-id="t13c3">Sportblessure</td>
+                    <td class="tmp-td" data-col-id="t13c4">60</td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_1" data-row-id="t13g1b" data-row-type="group_1" data-parent-id="">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;">Injecties</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Medisch</td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="t13g2c" data-row-type="group_2" data-parent-id="t13g1b">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;">Botox</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Medisch</td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_3" data-row-id="t13g3a" data-row-type="group_3" data-parent-id="t13g2c">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;">Voorhoofd Botox</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;">Medisch</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="2">Rimpels</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-even" data-row-id="t13d4" data-row-type="data" data-parent-id="t13g3a">
+                    <td class="tmp-td" data-col-id="t13c1">Botox 1 zone</td>
+                    <td class="tmp-td" data-col-id="t13c2">Medisch</td>
+                    <td class="tmp-td" data-col-id="t13c3">Rimpels</td>
+                    <td class="tmp-td" data-col-id="t13c4">150</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t13d5" data-row-type="data" data-parent-id="t13g3a">
+                    <td class="tmp-td" data-col-id="t13c1">Botox 3 zones</td>
+                    <td class="tmp-td" data-col-id="t13c2">Medisch</td>
+                    <td class="tmp-td" data-col-id="t13c3">Rimpels</td>
+                    <td class="tmp-td" data-col-id="t13c4">350</td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_1" data-row-id="t13g1c" data-row-type="group_1" data-parent-id="">
+                    <td class="tmp-td tmp-group-cell" colspan="4">
+                        <div class="tmp-group-cell-inner">
+                            <span class="tmp-group-label">Curettage</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-even" data-row-id="t13d6" data-row-type="data" data-parent-id="t13g1c">
+                    <td class="tmp-td" data-col-id="t13c1">Curettage wrat</td>
+                    <td class="tmp-td" data-col-id="t13c2">Dermatologie</td>
+                    <td class="tmp-td" data-col-id="t13c3">Wratten</td>
+                    <td class="tmp-td" data-col-id="t13c4">80</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t13d7" data-row-type="data" data-parent-id="t13g1c">
+                    <td class="tmp-td" data-col-id="t13c1">Curettage fibroom</td>
+                    <td class="tmp-td" data-col-id="t13c2">Dermatologie</td>
+                    <td class="tmp-td" data-col-id="t13c3">Huidafwijking</td>
+                    <td class="tmp-td" data-col-id="t13c4">95</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tmp-controls tmp-controls-bottom"></div>
+</div>
+<div id="test13-results"></div>
 </div>
 
 <!-- ============================================ -->
@@ -2073,6 +2175,94 @@ function runAutomatedTests() {
             var d1Col3Left = d1Cells[2].getBoundingClientRect().left;
             var g2aCol2Left = g2aCells2[1].getBoundingClientRect().left;
             assert('T12: Data kolom 3 lijnt uit met G2a cel 2 (< 2px)', Math.abs(d1Col3Left - g2aCol2Left) < 2);
+        }
+    })();
+
+    // Test 13: G1 rows with multiple filled cells (v1.3.40)
+    (function() {
+        var wrap = document.getElementById('tmp-test13');
+        assert('T13: Tabel bestaat', !!wrap);
+        if (!wrap) return;
+        var table = wrap.querySelector('.tmp-table');
+        var headerRow = table.querySelector('.tmp-header-row');
+        var hCells = headerRow ? headerRow.querySelectorAll('th') : [];
+        assert('T13: Header heeft 4 kolommen', hCells.length === 4);
+        assert('T13: Header 1 "Behandeling"', hCells[0].textContent.trim() === 'Behandeling');
+        assert('T13: Header 2 "Categorie"', hCells[1].textContent.trim() === 'Categorie');
+
+        var catCol = hCells.length > 1 ? hCells[1] : null;
+
+        // G1a: "Massage" + "Fysiotherapie 2" — must show BOTH, not just "Massage"
+        var g1a = wrap.querySelector('[data-row-id="t13g1a"]');
+        assert('T13: G1a (Massage) rij bestaat', !!g1a);
+        if (g1a) {
+            var g1aCells = g1a.querySelectorAll('td');
+            assert('T13: G1a heeft 2 cellen (niet full-width!)', g1aCells.length === 2);
+            assert('T13: G1a cel 1 bevat "Massage"', g1aCells[0].textContent.trim() === 'Massage');
+            assert('T13: G1a cel 2 bevat "Fysiotherapie 2"', g1aCells[1].textContent.trim() === 'Fysiotherapie 2');
+            assert('T13: G1a cel 2 colspan=3', g1aCells[1].getAttribute('colspan') === '3');
+            if (catCol) {
+                var g1aCol2Left = g1aCells[1].getBoundingClientRect().left;
+                var catHeaderLeft = catCol.getBoundingClientRect().left;
+                assert('T13: G1a "Fysiotherapie 2" lijnt uit met header "Categorie" (< 2px)', Math.abs(g1aCol2Left - catHeaderLeft) < 2);
+            }
+        }
+
+        // G1b: "Injecties" + "Medisch"
+        var g1b = wrap.querySelector('[data-row-id="t13g1b"]');
+        assert('T13: G1b (Injecties) rij bestaat', !!g1b);
+        if (g1b) {
+            var g1bCells = g1b.querySelectorAll('td');
+            assert('T13: G1b heeft 2 cellen', g1bCells.length === 2);
+            assert('T13: G1b cel 1 bevat "Injecties"', g1bCells[0].textContent.trim() === 'Injecties');
+            assert('T13: G1b cel 2 bevat "Medisch"', g1bCells[1].textContent.trim() === 'Medisch');
+            assert('T13: G1b cel 2 colspan=3', g1bCells[1].getAttribute('colspan') === '3');
+        }
+
+        // G1c: "Curettage" alleen (full-width, 1 gevulde cel → moet full-width colspan blijven)
+        var g1c = wrap.querySelector('[data-row-id="t13g1c"]');
+        assert('T13: G1c (Curettage) rij bestaat', !!g1c);
+        if (g1c) {
+            var g1cCells = g1c.querySelectorAll('td');
+            assert('T13: G1c heeft 1 cel (full-width)', g1cCells.length === 1);
+            assert('T13: G1c cel colspan=4', g1cCells[0].getAttribute('colspan') === '4');
+            assert('T13: G1c bevat "Curettage"', g1cCells[0].textContent.trim().indexOf('Curettage') !== -1);
+        }
+
+        // G2a alignment check
+        var g2a = wrap.querySelector('[data-row-id="t13g2a"]');
+        assert('T13: G2a (Klassieke massage) rij bestaat', !!g2a);
+        if (g2a && catCol) {
+            var g2aCells = g2a.querySelectorAll('td');
+            assert('T13: G2a heeft 2 cellen', g2aCells.length === 2);
+            assert('T13: G2a cel 2 bevat "Fysiotherapie"', g2aCells[1].textContent.trim() === 'Fysiotherapie');
+            var g2aCol2Left = g2aCells[1].getBoundingClientRect().left;
+            assert('T13: G2a cel 2 lijnt uit met header "Categorie" (< 2px)', Math.abs(g2aCol2Left - catCol.getBoundingClientRect().left) < 2);
+        }
+
+        // G3a: 3-way split
+        var g3a = wrap.querySelector('[data-row-id="t13g3a"]');
+        assert('T13: G3a (Voorhoofd Botox) rij bestaat', !!g3a);
+        if (g3a) {
+            var g3aCells = g3a.querySelectorAll('td');
+            assert('T13: G3a heeft 3 cellen', g3aCells.length === 3);
+            assert('T13: G3a cel 1 bevat "Voorhoofd Botox"', g3aCells[0].textContent.trim() === 'Voorhoofd Botox');
+            assert('T13: G3a cel 2 bevat "Medisch"', g3aCells[1].textContent.trim() === 'Medisch');
+            assert('T13: G3a cel 3 bevat "Rimpels"', g3aCells[2].textContent.trim() === 'Rimpels');
+            assert('T13: G3a cel 3 colspan=2', g3aCells[2].getAttribute('colspan') === '2');
+        }
+
+        // Data row alignment check
+        var d1 = wrap.querySelector('[data-row-id="t13d1"]');
+        if (d1 && g1a) {
+            var d1Cells = d1.querySelectorAll('td');
+            var g1aCells2 = g1a.querySelectorAll('td');
+            assert('T13: Data rij heeft 4 cellen', d1Cells.length === 4);
+            if (g1aCells2.length > 1) {
+                var d1Col2Left = d1Cells[1].getBoundingClientRect().left;
+                var g1aCol2Left2 = g1aCells2[1].getBoundingClientRect().left;
+                assert('T13: Data kolom 2 lijnt uit met G1a cel 2 (< 2px)', Math.abs(d1Col2Left - g1aCol2Left2) < 2);
+            }
         }
     })();
 
