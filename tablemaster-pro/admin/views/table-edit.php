@@ -280,6 +280,11 @@ $page_title = $is_new
                     <p class="description"><?php esc_html_e( 'Bijv. 150px, 10%, 8em. Geldt voor alle kolommen in de tabel.', TMP_TEXT_DOMAIN ); ?></p>
                 </div>
                 <div class="tmp-form-group">
+                    <label for="tmp-first-col-width"><?php esc_html_e( 'Eerste kolom breedte:', TMP_TEXT_DOMAIN ); ?></label>
+                    <input type="text" id="tmp-first-col-width" value="<?php echo esc_attr( $settings['first_col_width'] ?? '' ); ?>" class="small-text" placeholder="standaard" style="width:100px;">
+                    <p class="description"><?php esc_html_e( 'Optioneel. Overschrijft de standaard breedte voor de eerste kolom. Bijv. 250px, 200px.', TMP_TEXT_DOMAIN ); ?></p>
+                </div>
+                <div class="tmp-form-group">
                     <label for="tmp-max-width"><?php esc_html_e( 'Maximale tabelbreedte:', TMP_TEXT_DOMAIN ); ?></label>
                     <input type="text" id="tmp-max-width" value="<?php echo esc_attr( $settings['max_width'] ?? '' ); ?>" class="small-text" placeholder="100%" style="width:100px;">
                     <p class="description"><?php esc_html_e( 'Bijv. 800px, 90%, 60vw. Laat leeg voor volledige containerbreedte. Wordt meegenomen bij vertalingen.', TMP_TEXT_DOMAIN ); ?></p>
