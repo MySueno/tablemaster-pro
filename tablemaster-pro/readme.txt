@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.54
+Stable tag: 1.3.55
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,11 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.55 =
+* Fix: Kolomtitels in de header zijn nu altijd links uitgelijnd, ongeacht de kolom-uitlijning voor data-cellen
+* Structurele fix: inline text-align verwijderd uit alle 7 header-rendering plekken (enkelvoudige headers, gegroepeerde headers depth 2+3)
+* Kolomuitlijning (links/midden/rechts) wordt nu alleen toegepast op data-cellen, precies zoals in het admin dashboard
 
 = 1.3.54 =
 * Fix: Cel-toolbar knoppen extra versterkt met !important flexbox-regels om WordPress admin CSS-conflicten te voorkomen
