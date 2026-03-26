@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.50
+Stable tag: 1.3.51
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.51 =
+* Fix: Admin preview toont nu horizontale scrollbar bij tabellen met veel kolommen — alle kolommen blijven bereikbaar
+* Elke kolom in de admin editor heeft een minimale breedte van 120px voor betere leesbaarheid
 
 = 1.3.50 =
 * Nieuw: Maximale tabelhoogte instelling onder Weergave — bij overschrijding verschijnt automatisch een verticale scrollbar

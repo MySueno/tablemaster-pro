@@ -35,6 +35,7 @@
     flex: 1 1 60% !important;
     min-width: 0;
     max-width: calc(100% - 400px);
+    overflow: hidden;
 }
 
 .tmp-wrap .tmp-panel-right {
@@ -110,6 +111,7 @@
     user-select: none;
     position: relative;
     transition: background 0.15s;
+    min-width: 120px;
 }
 
 .tmp-col-header-cell.tmp-col-dragging {
@@ -280,11 +282,11 @@ td.tmp-cell-selected {
 
 /* Row table */
 .tmp-admin-table {
-    width: 100%;
+    width: max-content;
+    min-width: 100%;
     border-collapse: collapse;
     font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 0.88em;
-    min-width: 400px;
     color: #5C5C5C;
 }
 
