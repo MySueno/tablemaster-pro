@@ -1516,6 +1516,7 @@
             default_col_width:  $('#tmp-default-col-width').val().trim(),
             first_col_width:    $('#tmp-first-col-width').val().trim(),
             max_width:          $('#tmp-max-width').val().trim(),
+            max_height:         $('#tmp-max-height').val().trim(),
             fonts:              (function () {
                 var f = {};
                 $('.tmp-font-size').each(function () {
@@ -1698,7 +1699,7 @@
         });
 
         // Settings change -> dirty
-        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-sortable, #tmp-column-filters, #tmp-enable-export, #tmp-inline-html, #tmp-sticky-first-col, #tmp-sticky-header, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-default-col-width, #tmp-first-col-width, #tmp-table-name, .tmp-font-size, .tmp-font-bold, .tmp-font-italic').on('change input', function () {
+        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-sortable, #tmp-column-filters, #tmp-enable-export, #tmp-inline-html, #tmp-sticky-first-col, #tmp-sticky-header, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-default-col-width, #tmp-first-col-width, #tmp-max-height, #tmp-table-name, .tmp-font-size, .tmp-font-bold, .tmp-font-italic').on('change input', function () {
             isDirty = true;
             updatePreview();
         });

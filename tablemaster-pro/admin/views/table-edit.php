@@ -289,6 +289,11 @@ $page_title = $is_new
                     <input type="text" id="tmp-max-width" value="<?php echo esc_attr( $settings['max_width'] ?? '' ); ?>" class="small-text" placeholder="100%" style="width:100px;">
                     <p class="description"><?php esc_html_e( 'Bijv. 800px, 90%, 60vw. Laat leeg voor volledige containerbreedte. Wordt meegenomen bij vertalingen.', TMP_TEXT_DOMAIN ); ?></p>
                 </div>
+                <div class="tmp-form-group">
+                    <label for="tmp-max-height"><?php esc_html_e( 'Maximale tabelhoogte:', TMP_TEXT_DOMAIN ); ?></label>
+                    <input type="text" id="tmp-max-height" value="<?php echo esc_attr( $settings['max_height'] ?? '' ); ?>" class="small-text" placeholder="geen limiet" style="width:100px;">
+                    <p class="description"><?php esc_html_e( 'Bijv. 400px, 50vh. Bij overschrijding verschijnt automatisch een verticale scrollbar.', TMP_TEXT_DOMAIN ); ?></p>
+                </div>
             </div>
 
             <!-- FONT TAB -->

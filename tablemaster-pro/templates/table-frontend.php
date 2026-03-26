@@ -44,6 +44,8 @@ $table_sortable    = $settings['sortable'] ?? true;
 $fonts             = $settings['fonts'] ?? array();
 $max_width         = sanitize_text_field( $settings['max_width'] ?? '' );
 if ( $max_width !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%|vw)$/', $max_width ) ) $max_width = '';
+$max_height        = sanitize_text_field( $settings['max_height'] ?? '' );
+if ( $max_height !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%|vh)$/', $max_height ) ) $max_height = '';
 
 $columns = $data['columns'];
 $rows    = $data['rows'];
@@ -158,7 +160,7 @@ foreach ( $font_css_map as $fk => $selector ) :
     $table_min_w   = max( 400, $col_count * $min_col_width );
     $table_style   = $mobile_mode === 'scroll' ? 'min-width:' . intval( $table_min_w ) . 'px;' : '';
     ?>
-    <div class="tmp-table-scroll-wrapper">
+    <div class="tmp-table-scroll-wrapper"<?php if ( $max_height !== '' ) : ?> style="max-height:<?php echo esc_attr( $max_height ); ?>;overflow-y:auto;"<?php endif; ?>>
         <table class="tmp-table" role="grid" aria-label="<?php echo esc_attr( $caption ?: $table->name ); ?>"
             <?php if ( $table_style ) : ?> style="<?php echo esc_attr( $table_style ); ?>"<?php endif; ?>>
             <?php
