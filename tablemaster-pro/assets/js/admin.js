@@ -71,6 +71,8 @@
 
         if (tableId) {
             loadStructure();
+        } else {
+            initDefaultTable();
         }
 
         bindEvents();
@@ -1410,6 +1412,51 @@
         };
 
         reader.readAsText(file, 'UTF-8');
+    }
+
+    /* ===== DEFAULT TABLE FOR NEW ===== */
+    function initDefaultTable() {
+        columns = [];
+        rows = [];
+        colTempIdx = 0;
+        rowTempIdx = 0;
+
+        for (var i = 1; i <= 4; i++) {
+            var tempKey = 'new_' + (++colTempIdx);
+            columns.push({
+                id:       0,
+                temp_key: tempKey,
+                label:    (i18n.add_column || 'Kolom') + ' ' + i,
+                type:     'text',
+                settings: { align: 'left', sortable: true, filterable: true, header_group1: '', header_group2: '' }
+            });
+        }
+
+        for (var r = 0; r < 3; r++) {
+            var tempId = 'new_row_' + (++rowTempIdx);
+            var cells = {};
+            columns.forEach(function (col) {
+                cells[col.temp_key] = '';
+            });
+            rows.push({
+                id: 0, temp_id: tempId, row_type: 'data',
+                parent_id: 0, parent_temp_id: '', is_collapsed: false,
+                cells: cells, cell_aligns: {}, cell_merges: {}
+            });
+        }
+
+        var closeTempId = 'new_row_' + (++rowTempIdx);
+        var closeCells = {};
+        columns.forEach(function (col) {
+            closeCells[col.temp_key] = '';
+        });
+        rows.push({
+            id: 0, temp_id: closeTempId, row_type: 'footer',
+            parent_id: 0, parent_temp_id: '', is_collapsed: false,
+            cells: closeCells, cell_aligns: {}, cell_merges: {}
+        });
+
+        rebuildRowTable();
     }
 
     /* ===== LOAD STRUCTURE ===== */
