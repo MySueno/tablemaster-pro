@@ -333,7 +333,6 @@
             rebuildRowTable();
         });
 
-        var clickTimer = null;
         $thead.find('.tmp-col-header-cell').on('click', function (e) {
             e.stopPropagation();
             if ($(e.target).hasClass('tmp-col-delete-btn') || $(e.target).hasClass('tmp-col-unmerge-btn')) return;
@@ -342,19 +341,14 @@
                 return;
             }
             var $th = $(this);
-            if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; return; }
-            clickTimer = setTimeout(function () {
-                clickTimer = null;
+
+            if (e.ctrlKey || e.metaKey) {
                 $th.toggleClass('tmp-col-selected');
                 updateMergeToolbar();
-            }, 250);
-        });
+                return;
+            }
 
-        $thead.find('.tmp-col-header-cell').on('dblclick', function (e) {
-            if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
-            e.stopPropagation();
-            if ($(e.target).hasClass('tmp-col-delete-btn') || $(e.target).hasClass('tmp-col-unmerge-btn')) return;
-            var $th = $(this);
+            $('.tmp-col-header-cell').not($th).removeClass('tmp-col-selected');
             $th.removeClass('tmp-col-selected');
             hideMergeToolbar();
             if ($th.find('.tmp-col-inline-edit').length) return;
