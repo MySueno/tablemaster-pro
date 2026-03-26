@@ -426,24 +426,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                 </tr>
             <?php endif; ?>
             </thead>
-            <?php
-            $header_slots = array();
-            if ( $has_groups ) {
-                $prev_slot_g1 = '__NONE__';
-                foreach ( $col_meta as $hsi => $hs_cm ) {
-                    $hs_g1 = $hs_cm['g1'];
-                    if ( $hs_g1 === '' || $hs_g1 !== $prev_slot_g1 ) {
-                        $header_slots[] = array();
-                    }
-                    $header_slots[ count( $header_slots ) - 1 ][] = $hsi;
-                    $prev_slot_g1 = $hs_g1 === '' ? '__NONE__' : $hs_g1;
-                }
-            } else {
-                foreach ( $col_meta as $hsi => $hs_cm ) {
-                    $header_slots[] = array( $hsi );
-                }
-            }
-            ?>
+            <?php ?>
             <tbody class="tmp-tbody">
                 <?php
                 $data_row_index = 0;
@@ -555,58 +538,66 @@ foreach ( $font_css_map as $fk => $selector ) :
                                         </button>
                                     </td>
                                 <?php endif;
-                                $columns_arr = array_values( $columns );
-                                $slot_entries = array();
-                                foreach ( $header_slots as $slot ) {
-                                    $s_content = '';
-                                    $s_align   = '';
-                                    $s_cols    = count( $slot );
-                                    $s_first   = $columns_arr[ $slot[0] ];
-                                    foreach ( $slot as $si ) {
-                                        $s_col = $columns_arr[ $si ];
-                                        if ( isset( $filled_cells[ $s_col->id ] ) ) {
-                                            $s_content = $filled_cells[ $s_col->id ];
-                                            if ( isset( $row->cell_aligns[ $s_col->id ] ) && in_array( $row->cell_aligns[ $s_col->id ], $valid_aligns, true ) ) {
-                                                $s_align = $row->cell_aligns[ $s_col->id ];
-                                            }
-                                            break;
+                                $has_explicit_merges = false;
+                                if ( ! empty( $row->cell_merges ) ) {
+                                    foreach ( $row->cell_merges as $_cm_v ) {
+                                        if ( intval( $_cm_v ) > 1 ) { $has_explicit_merges = true; break; }
+                                    }
+                                }
+                                if ( $has_explicit_merges ) :
+                                    $grp_skip = 0;
+                                    $grp_col_total = count( $columns );
+                                    foreach ( $columns as $grp_col_idx => $grp_col ) :
+                                        if ( $grp_skip > 0 ) { $grp_skip--; continue; }
+                                        $grp_remaining = $grp_col_total - $grp_col_idx;
+                                        $grp_cspan = isset( $row->cell_merges[ $grp_col->id ] ) ? min( max( 1, intval( $row->cell_merges[ $grp_col->id ] ) ), $grp_remaining ) : 1;
+                                        if ( $grp_cspan > 1 ) $grp_skip = $grp_cspan - 1;
+                                        $grp_content = $row->cells[ $grp_col->id ] ?? '';
+                                        $grp_cell_align = isset( $row->cell_aligns[ $grp_col->id ] ) && in_array( $row->cell_aligns[ $grp_col->id ], $valid_aligns, true ) ? $row->cell_aligns[ $grp_col->id ] : '';
+                                        $grp_cs = json_decode( $grp_col->settings, true );
+                                        if ( ! is_array( $grp_cs ) ) $grp_cs = array();
+                                        $grp_col_align = in_array( $grp_cs['align'] ?? 'left', $valid_aligns, true ) ? $grp_cs['align'] : 'left';
+                                        $grp_align = $grp_cell_align !== '' ? $grp_cell_align : $grp_col_align;
+                                    ?>
+                                        <td class="tmp-td tmp-group-cell"
+                                            style="text-align:<?php echo esc_attr( $grp_align ); ?>;"
+                                            <?php if ( $grp_cspan > 1 ) : ?>colspan="<?php echo $grp_cspan; ?>"<?php endif; ?>>
+                                            <?php echo wp_kses_post( $grp_content ); ?>
+                                        </td>
+                                    <?php endforeach;
+                                else :
+                                    $auto_cells = array();
+                                    foreach ( $columns as $ac_col ) {
+                                        $ac_raw = $row->cells[ $ac_col->id ] ?? '';
+                                        $ac_has_text = trim( strip_tags( str_replace( array( '&nbsp;', "\xC2\xA0" ), ' ', $ac_raw ) ) ) !== '';
+                                        $ac_cell_align = isset( $row->cell_aligns[ $ac_col->id ] ) && in_array( $row->cell_aligns[ $ac_col->id ], $valid_aligns, true ) ? $row->cell_aligns[ $ac_col->id ] : '';
+                                        $ac_cs = json_decode( $ac_col->settings, true );
+                                        if ( ! is_array( $ac_cs ) ) $ac_cs = array();
+                                        $ac_col_align = in_array( $ac_cs['align'] ?? 'left', $valid_aligns, true ) ? $ac_cs['align'] : 'left';
+                                        if ( $ac_has_text ) {
+                                            $auto_cells[] = array(
+                                                'content' => $ac_raw,
+                                                'cols'    => 1,
+                                                'align'   => $ac_cell_align !== '' ? $ac_cell_align : $ac_col_align,
+                                            );
+                                        } elseif ( ! empty( $auto_cells ) ) {
+                                            $auto_cells[ count( $auto_cells ) - 1 ]['cols']++;
+                                        } else {
+                                            $auto_cells[] = array(
+                                                'content' => '',
+                                                'cols'    => 1,
+                                                'align'   => $ac_col_align,
+                                            );
                                         }
                                     }
-                                    $s_has_text = trim( strip_tags( str_replace( array( '&nbsp;', "\xC2\xA0" ), ' ', $s_content ) ) ) !== '';
-                                    $cs_s = json_decode( $s_first->settings, true );
-                                    $col_align_s = in_array( $cs_s['align'] ?? 'left', $valid_aligns, true ) ? $cs_s['align'] : 'left';
-                                    if ( $s_align === '' ) $s_align = $col_align_s;
-                                    $slot_entries[] = array(
-                                        'content'  => $s_content,
-                                        'has_text' => $s_has_text,
-                                        'cols'     => $s_cols,
-                                        'align'    => $s_align,
-                                    );
-                                }
-                                $merged_cells = array();
-                                $slot_total   = count( $slot_entries );
-                                $s_skip       = 0;
-                                for ( $si2 = 0; $si2 < $slot_total; $si2++ ) {
-                                    if ( $s_skip > 0 ) { $s_skip--; continue; }
-                                    $me = $slot_entries[ $si2 ];
-                                    if ( $me['has_text'] ) {
-                                        $merge_cols = $me['cols'];
-                                        for ( $sj = $si2 + 1; $sj < $slot_total; $sj++ ) {
-                                            if ( $slot_entries[ $sj ]['has_text'] ) break;
-                                            $merge_cols += $slot_entries[ $sj ]['cols'];
-                                            $s_skip++;
-                                        }
-                                        $me['cols'] = $merge_cols;
-                                    }
-                                    $merged_cells[] = $me;
-                                }
-                                foreach ( $merged_cells as $mc ) : ?>
-                                <td class="tmp-td tmp-group-cell"
-                                    style="text-align:<?php echo esc_attr( $mc['align'] ); ?>;"
-                                    <?php if ( $mc['cols'] > 1 ) : ?>colspan="<?php echo $mc['cols']; ?>"<?php endif; ?>>
-                                    <?php echo wp_kses_post( $mc['content'] ); ?>
-                                </td>
-                            <?php endforeach;
+                                    foreach ( $auto_cells as $ac ) : ?>
+                                        <td class="tmp-td tmp-group-cell"
+                                            style="text-align:<?php echo esc_attr( $ac['align'] ); ?>;"
+                                            <?php if ( $ac['cols'] > 1 ) : ?>colspan="<?php echo $ac['cols']; ?>"<?php endif; ?>>
+                                            <?php echo wp_kses_post( $ac['content'] ); ?>
+                                        </td>
+                                    <?php endforeach;
+                                endif;
                             endif; ?>
                         <?php else : ?>
                             <?php if ( $collapsible ) : ?>

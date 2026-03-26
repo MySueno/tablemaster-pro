@@ -132,7 +132,7 @@ h2 { font-size: 15px; color: #555; margin-top: 30px; border-bottom: 1px solid #d
 </head>
 <body>
 
-<h1>TableMaster Pro - Visuele Frontend Test (v1.3.38)</h1>
+<h1>TableMaster Pro - Visuele Frontend Test (v1.3.39)</h1>
 
 <!-- ============================================ -->
 <!-- TEST 1: Pagination OFF (per_page=-1) -->
@@ -905,6 +905,186 @@ h2 { font-size: 15px; color: #555; margin-top: 30px; border-bottom: 1px solid #d
     <div class="tmp-controls tmp-controls-bottom"></div>
 </div>
 <div id="test10-results"></div>
+</div>
+
+<!-- ============================================ -->
+<!-- Test 11: G2/G3 with explicit cell_merges (v1.3.39 path 1) -->
+<!-- ============================================ -->
+<div class="test-section">
+<h2>Test 11: Expliciete cell_merges — G2/G3 met admin-style colspans (v1.3.39)</h2>
+<div id="tmp-test11" class="tmp-wrapper" data-table-id="11" data-per-page="-1" data-collapsible="0" data-default-sort-col="" data-default-sort-dir="asc" data-mobile-mode="scroll"
+     style="--tmp-header-bg:#D32637;--tmp-header-text:#fff;--tmp-group1-bg:#D32637;--tmp-group1-text:#fff;--tmp-group2-bg:#F9E6E7;--tmp-group2-text:#1a1a1a;--tmp-group3-bg:#fafafa;--tmp-group3-text:#1a1a1a;--tmp-odd-bg:#fff;--tmp-even-bg:#f9f9f9;--tmp-hover-bg:#fce4e4;--tmp-border:#e0e0e0;--tmp-footer-bg:#D32637;--tmp-footer-text:#fff;--tmp-radius:4px;">
+    <div class="tmp-controls tmp-controls-top"><div class="tmp-controls-right"></div></div>
+    <div class="tmp-table-scroll-wrapper">
+        <table class="tmp-table" role="grid">
+            <colgroup><col><col><col><col><col><col><col></colgroup>
+            <thead>
+                <tr class="tmp-header-row">
+                    <th class="tmp-th" colspan="3" style="text-align:left;">Achternaam</th>
+                    <th class="tmp-th" data-col-id="t11c4" data-col-type="text">Verjaardag</th>
+                    <th class="tmp-th" data-col-id="t11c5" data-col-type="text">Stad</th>
+                    <th class="tmp-th" data-col-id="t11c6" data-col-type="text">Telefoon</th>
+                    <th class="tmp-th" data-col-id="t11c7" data-col-type="text">Notities</th>
+                </tr>
+            </thead>
+            <tbody class="tmp-tbody">
+                <tr class="tmp-row tmp-type-group_1" data-row-id="t11g1" data-row-type="group_1" data-parent-id="">
+                    <td class="tmp-td tmp-group-cell" colspan="7">
+                        <div class="tmp-group-cell-inner">
+                            <span class="tmp-group-label">Bedrijven</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="t11g2a" data-row-type="group_2" data-parent-id="t11g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Adobe Inc.</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="2">Silicon Valley</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="2">Contact</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t11d1" data-row-type="data" data-parent-id="t11g2a">
+                    <td class="tmp-td" data-col-id="t11c1">Jansen</td>
+                    <td class="tmp-td" data-col-id="t11c2">Piet</td>
+                    <td class="tmp-td" data-col-id="t11c3">Jr.</td>
+                    <td class="tmp-td" data-col-id="t11c4">15-03-1990</td>
+                    <td class="tmp-td" data-col-id="t11c5">Amsterdam</td>
+                    <td class="tmp-td" data-col-id="t11c6">020-111</td>
+                    <td class="tmp-td" data-col-id="t11c7">VIP</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-even" data-row-id="t11d2" data-row-type="data" data-parent-id="t11g2a">
+                    <td class="tmp-td" data-col-id="t11c1">Bakker</td>
+                    <td class="tmp-td" data-col-id="t11c2">Jan</td>
+                    <td class="tmp-td" data-col-id="t11c3"></td>
+                    <td class="tmp-td" data-col-id="t11c4">22-07-1985</td>
+                    <td class="tmp-td" data-col-id="t11c5">Rotterdam</td>
+                    <td class="tmp-td" data-col-id="t11c6">010-222</td>
+                    <td class="tmp-td" data-col-id="t11c7"></td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="t11g2b" data-row-type="group_2" data-parent-id="t11g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Microsoft BV</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="4">Redmond HQ</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t11d3" data-row-type="data" data-parent-id="t11g2b">
+                    <td class="tmp-td" data-col-id="t11c1">Visser</td>
+                    <td class="tmp-td" data-col-id="t11c2">Anna</td>
+                    <td class="tmp-td" data-col-id="t11c3">Sr.</td>
+                    <td class="tmp-td" data-col-id="t11c4">01-12-1992</td>
+                    <td class="tmp-td" data-col-id="t11c5">Utrecht</td>
+                    <td class="tmp-td" data-col-id="t11c6">030-333</td>
+                    <td class="tmp-td" data-col-id="t11c7">Manager</td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_3" data-row-id="t11g3a" data-row-type="group_3" data-parent-id="t11g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Afdeling A</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="1">Q1</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Details A</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-even" data-row-id="t11d4" data-row-type="data" data-parent-id="t11g3a">
+                    <td class="tmp-td" data-col-id="t11c1">Smit</td>
+                    <td class="tmp-td" data-col-id="t11c2">Klaas</td>
+                    <td class="tmp-td" data-col-id="t11c3"></td>
+                    <td class="tmp-td" data-col-id="t11c4">05-06-1988</td>
+                    <td class="tmp-td" data-col-id="t11c5">Den Haag</td>
+                    <td class="tmp-td" data-col-id="t11c6">070-444</td>
+                    <td class="tmp-td" data-col-id="t11c7"></td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_3" data-row-id="t11g3b" data-row-type="group_3" data-parent-id="t11g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Afdeling B</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="4">Overig B</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t11d5" data-row-type="data" data-parent-id="t11g3b">
+                    <td class="tmp-td" data-col-id="t11c1">Meijer</td>
+                    <td class="tmp-td" data-col-id="t11c2">Tom</td>
+                    <td class="tmp-td" data-col-id="t11c3">III</td>
+                    <td class="tmp-td" data-col-id="t11c4">30-11-1995</td>
+                    <td class="tmp-td" data-col-id="t11c5">Eindhoven</td>
+                    <td class="tmp-td" data-col-id="t11c6">040-555</td>
+                    <td class="tmp-td" data-col-id="t11c7">Nieuw</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tmp-controls tmp-controls-bottom"></div>
+</div>
+<div id="test11-results"></div>
+</div>
+
+<!-- ============================================ -->
+<!-- Test 12: G2/G3 auto-merge (no cell_merges, column-by-column) (v1.3.39 path 2) -->
+<!-- ============================================ -->
+<div class="test-section">
+<h2>Test 12: Auto-merge kolom-voor-kolom — lege cellen samengevoegd (v1.3.39)</h2>
+<div id="tmp-test12" class="tmp-wrapper" data-table-id="12" data-per-page="-1" data-collapsible="0" data-default-sort-col="" data-default-sort-dir="asc" data-mobile-mode="scroll"
+     style="--tmp-header-bg:#D32637;--tmp-header-text:#fff;--tmp-group1-bg:#D32637;--tmp-group1-text:#fff;--tmp-group2-bg:#F9E6E7;--tmp-group2-text:#1a1a1a;--tmp-group3-bg:#fafafa;--tmp-group3-text:#1a1a1a;--tmp-odd-bg:#fff;--tmp-even-bg:#f9f9f9;--tmp-hover-bg:#fce4e4;--tmp-border:#e0e0e0;--tmp-footer-bg:#D32637;--tmp-footer-text:#fff;--tmp-radius:4px;">
+    <div class="tmp-controls tmp-controls-top"><div class="tmp-controls-right"></div></div>
+    <div class="tmp-table-scroll-wrapper">
+        <table class="tmp-table" role="grid">
+            <colgroup><col><col><col><col><col></colgroup>
+            <thead>
+                <tr class="tmp-header-row">
+                    <th class="tmp-th" colspan="2" style="text-align:left;">Naam</th>
+                    <th class="tmp-th" data-col-id="t12c3" data-col-type="text">Leeftijd</th>
+                    <th class="tmp-th" data-col-id="t12c4" data-col-type="text">Stad</th>
+                    <th class="tmp-th" data-col-id="t12c5" data-col-type="text">Status</th>
+                </tr>
+            </thead>
+            <tbody class="tmp-tbody">
+                <tr class="tmp-row tmp-type-group_1" data-row-id="t12g1" data-row-type="group_1" data-parent-id="">
+                    <td class="tmp-td tmp-group-cell" colspan="5">
+                        <div class="tmp-group-cell-inner">
+                            <span class="tmp-group-label">Alle Medewerkers</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="t12g2a" data-row-type="group_2" data-parent-id="t12g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="2">Team Alfa</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Noord Regio</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t12d1" data-row-type="data" data-parent-id="t12g2a">
+                    <td class="tmp-td" data-col-id="t12c1">Jan</td>
+                    <td class="tmp-td" data-col-id="t12c2">Vries</td>
+                    <td class="tmp-td" data-col-id="t12c3">35</td>
+                    <td class="tmp-td" data-col-id="t12c4">Amsterdam</td>
+                    <td class="tmp-td" data-col-id="t12c5">Actief</td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="t12g2b" data-row-type="group_2" data-parent-id="t12g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="5">Team Beta — Volledig</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-even" data-row-id="t12d2" data-row-type="data" data-parent-id="t12g2b">
+                    <td class="tmp-td" data-col-id="t12c1">Piet</td>
+                    <td class="tmp-td" data-col-id="t12c2">Bakker</td>
+                    <td class="tmp-td" data-col-id="t12c3">42</td>
+                    <td class="tmp-td" data-col-id="t12c4">Rotterdam</td>
+                    <td class="tmp-td" data-col-id="t12c5">Inactief</td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_3" data-row-id="t12g3a" data-row-type="group_3" data-parent-id="t12g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="2">Sub Alpha</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="1">25</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="2">Zuid</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t12d3" data-row-type="data" data-parent-id="t12g3a">
+                    <td class="tmp-td" data-col-id="t12c1">Maria</td>
+                    <td class="tmp-td" data-col-id="t12c2">Jansen</td>
+                    <td class="tmp-td" data-col-id="t12c3">28</td>
+                    <td class="tmp-td" data-col-id="t12c4">Den Haag</td>
+                    <td class="tmp-td" data-col-id="t12c5">Actief</td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="t12g2c" data-row-type="group_2" data-parent-id="t12g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="2">Team Gamma</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="1">Senior</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="1">Utrecht</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="1">VIP</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-even" data-row-id="t12d4" data-row-type="data" data-parent-id="t12g2c">
+                    <td class="tmp-td" data-col-id="t12c1">Klaas</td>
+                    <td class="tmp-td" data-col-id="t12c2">Smit</td>
+                    <td class="tmp-td" data-col-id="t12c3">50</td>
+                    <td class="tmp-td" data-col-id="t12c4">Utrecht</td>
+                    <td class="tmp-td" data-col-id="t12c5">Actief</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tmp-controls tmp-controls-bottom"></div>
+</div>
+<div id="test12-results"></div>
 </div>
 
 <!-- ============================================ -->
@@ -1712,6 +1892,189 @@ function runAutomatedTests() {
         ['Familienname', 'Anschrift', 'Telefon'], ['2','3'],
         't10g2a', 't10g2b', 't10g2c', 't10g3a', 't10g3b',
         't10d1', 't10d3', 't10d5', 't10d6');
+
+    // Test 11: Explicit cell_merges (v1.3.39 path 1) — 7 columns, header=[3-merge, 1, 1, 1, 1]
+    (function() {
+        var wrap = document.getElementById('tmp-test11');
+        assert('T11: Tabel bestaat', !!wrap);
+        if (!wrap) return;
+        var table = wrap.querySelector('.tmp-table');
+        var headerRow = table.querySelector('.tmp-header-row');
+        var hCells = headerRow ? headerRow.querySelectorAll('th') : [];
+        assert('T11: Header heeft 5 cellen (1 grouped colspan=3 + 4 individueel)', hCells.length === 5);
+        assert('T11: Header 1 "Achternaam" colspan=3', hCells.length > 0 && hCells[0].getAttribute('colspan') === '3' && hCells[0].textContent.trim() === 'Achternaam');
+        assert('T11: Header 2 "Verjaardag"', hCells.length > 1 && hCells[1].textContent.trim() === 'Verjaardag');
+
+        var achternaamCol = hCells[0];
+        var verjCol = hCells.length > 1 ? hCells[1] : null;
+        var stadCol = hCells.length > 2 ? hCells[2] : null;
+        var telCol = hCells.length > 3 ? hCells[3] : null;
+
+        // G2a: 3-way split (colspan=3 + colspan=2 + colspan=2)
+        var g2a = wrap.querySelector('[data-row-id="t11g2a"]');
+        assert('T11: G2a (Adobe) rij bestaat', !!g2a);
+        if (g2a) {
+            var g2aCells = g2a.querySelectorAll('td');
+            assert('T11: G2a heeft 3 cellen (3+2+2 split)', g2aCells.length === 3);
+            assert('T11: G2a cel 1 colspan=3', g2aCells[0].getAttribute('colspan') === '3');
+            assert('T11: G2a cel 2 colspan=2', g2aCells[1].getAttribute('colspan') === '2');
+            assert('T11: G2a cel 3 colspan=2', g2aCells[2].getAttribute('colspan') === '2');
+            assert('T11: G2a cel 1 text = "Adobe Inc."', g2aCells[0].textContent.trim() === 'Adobe Inc.');
+            assert('T11: G2a cel 2 text = "Silicon Valley"', g2aCells[1].textContent.trim() === 'Silicon Valley');
+            assert('T11: G2a cel 3 text = "Contact"', g2aCells[2].textContent.trim() === 'Contact');
+            // Alignment: cel 2 must align with "Verjaardag" header
+            if (verjCol) {
+                var g2aVerjLeft = g2aCells[1].getBoundingClientRect().left;
+                var verjHeaderLeft = verjCol.getBoundingClientRect().left;
+                assert('T11: G2a cel 2 "Silicon Valley" lijnt uit met header "Verjaardag" (< 2px)', Math.abs(g2aVerjLeft - verjHeaderLeft) < 2);
+            }
+            if (telCol) {
+                var g2aTelLeft = g2aCells[2].getBoundingClientRect().left;
+                var telHeaderLeft = telCol.getBoundingClientRect().left;
+                assert('T11: G2a cel 3 "Contact" lijnt uit met header "Telefoon" (< 2px)', Math.abs(g2aTelLeft - telHeaderLeft) < 2);
+            }
+            // Alignment: cel 2 must align with data col 4
+            var d1 = wrap.querySelector('[data-row-id="t11d1"]');
+            if (d1) {
+                var d1Cells = d1.querySelectorAll('td');
+                assert('T11: Data rij 1 heeft 7 cellen', d1Cells.length === 7);
+                var g2aCol2Left = g2aCells[1].getBoundingClientRect().left;
+                var d1Col4Left = d1Cells[3].getBoundingClientRect().left;
+                assert('T11: G2a cel 2 lijnt uit met data kolom 4 (< 2px)', Math.abs(g2aCol2Left - d1Col4Left) < 2);
+            }
+        }
+
+        // G2b: 2-way split (colspan=3 + colspan=4)
+        var g2b = wrap.querySelector('[data-row-id="t11g2b"]');
+        assert('T11: G2b (Microsoft) rij bestaat', !!g2b);
+        if (g2b) {
+            var g2bCells = g2b.querySelectorAll('td');
+            assert('T11: G2b heeft 2 cellen (3+4 split)', g2bCells.length === 2);
+            assert('T11: G2b cel 1 colspan=3', g2bCells[0].getAttribute('colspan') === '3');
+            assert('T11: G2b cel 2 colspan=4', g2bCells[1].getAttribute('colspan') === '4');
+            if (verjCol) {
+                var g2bCol2Left = g2bCells[1].getBoundingClientRect().left;
+                assert('T11: G2b cel 2 lijnt uit met header "Verjaardag" (< 2px)', Math.abs(g2bCol2Left - verjCol.getBoundingClientRect().left) < 2);
+            }
+        }
+
+        // G3a: 3-way split with single-col middle (colspan=3 + colspan=1 + colspan=3)
+        var g3a = wrap.querySelector('[data-row-id="t11g3a"]');
+        assert('T11: G3a (Afdeling A) rij bestaat', !!g3a);
+        if (g3a) {
+            var g3aCells = g3a.querySelectorAll('td');
+            assert('T11: G3a heeft 3 cellen (3+1+3 split)', g3aCells.length === 3);
+            assert('T11: G3a cel 1 colspan=3', g3aCells[0].getAttribute('colspan') === '3');
+            assert('T11: G3a cel 2 colspan=1', g3aCells[1].getAttribute('colspan') === '1');
+            assert('T11: G3a cel 3 colspan=3', g3aCells[2].getAttribute('colspan') === '3');
+            if (verjCol) {
+                assert('T11: G3a cel 2 "Q1" lijnt uit met header "Verjaardag" (< 2px)', Math.abs(g3aCells[1].getBoundingClientRect().left - verjCol.getBoundingClientRect().left) < 2);
+            }
+            if (stadCol) {
+                assert('T11: G3a cel 3 "Details A" lijnt uit met header "Stad" (< 2px)', Math.abs(g3aCells[2].getBoundingClientRect().left - stadCol.getBoundingClientRect().left) < 2);
+            }
+        }
+
+        // G3b: 2-way split (colspan=3 + colspan=4)
+        var g3b = wrap.querySelector('[data-row-id="t11g3b"]');
+        assert('T11: G3b (Afdeling B) rij bestaat', !!g3b);
+        if (g3b) {
+            var g3bCells = g3b.querySelectorAll('td');
+            assert('T11: G3b heeft 2 cellen (3+4 split)', g3bCells.length === 2);
+            assert('T11: G3b cel 1 colspan=3', g3bCells[0].getAttribute('colspan') === '3');
+            assert('T11: G3b cel 2 colspan=4', g3bCells[1].getAttribute('colspan') === '4');
+        }
+    })();
+
+    // Test 12: Auto-merge column-by-column (v1.3.39 path 2) — 5 columns, header=[2-merge, 1, 1, 1]
+    (function() {
+        var wrap = document.getElementById('tmp-test12');
+        assert('T12: Tabel bestaat', !!wrap);
+        if (!wrap) return;
+        var table = wrap.querySelector('.tmp-table');
+        var headerRow = table.querySelector('.tmp-header-row');
+        var hCells = headerRow ? headerRow.querySelectorAll('th') : [];
+        assert('T12: Header heeft 4 cellen (1 grouped colspan=2 + 3 individueel)', hCells.length === 4);
+        assert('T12: Header 1 "Naam" colspan=2', hCells.length > 0 && hCells[0].getAttribute('colspan') === '2' && hCells[0].textContent.trim() === 'Naam');
+        assert('T12: Header 2 "Leeftijd"', hCells.length > 1 && hCells[1].textContent.trim() === 'Leeftijd');
+
+        var naamCol = hCells[0];
+        var leeftijdCol = hCells.length > 1 ? hCells[1] : null;
+        var stadCol12 = hCells.length > 2 ? hCells[2] : null;
+        var statusCol = hCells.length > 3 ? hCells[3] : null;
+
+        // G2a: 2-way split (colspan=2 + colspan=3)
+        var g2a = wrap.querySelector('[data-row-id="t12g2a"]');
+        assert('T12: G2a (Team Alfa) rij bestaat', !!g2a);
+        if (g2a) {
+            var g2aCells = g2a.querySelectorAll('td');
+            assert('T12: G2a heeft 2 cellen (auto-merge: filled+empty=2, filled+empty+empty=3)', g2aCells.length === 2);
+            assert('T12: G2a cel 1 colspan=2', g2aCells[0].getAttribute('colspan') === '2');
+            assert('T12: G2a cel 2 colspan=3', g2aCells[1].getAttribute('colspan') === '3');
+            if (leeftijdCol) {
+                var g2aLeeftijdLeft = g2aCells[1].getBoundingClientRect().left;
+                assert('T12: G2a cel 2 lijnt uit met header "Leeftijd" (< 2px)', Math.abs(g2aLeeftijdLeft - leeftijdCol.getBoundingClientRect().left) < 2);
+            }
+        }
+
+        // G2b: full-width (colspan=5)
+        var g2b = wrap.querySelector('[data-row-id="t12g2b"]');
+        assert('T12: G2b (Team Beta) rij bestaat', !!g2b);
+        if (g2b) {
+            var g2bCells = g2b.querySelectorAll('td');
+            assert('T12: G2b heeft 1 cel (full-width auto-merge)', g2bCells.length === 1);
+            assert('T12: G2b cel colspan=5', g2bCells[0].getAttribute('colspan') === '5');
+        }
+
+        // G3a: 3-way split (colspan=2 + colspan=1 + colspan=2)
+        var g3a = wrap.querySelector('[data-row-id="t12g3a"]');
+        assert('T12: G3a (Sub Alpha) rij bestaat', !!g3a);
+        if (g3a) {
+            var g3aCells = g3a.querySelectorAll('td');
+            assert('T12: G3a heeft 3 cellen (3-way split)', g3aCells.length === 3);
+            assert('T12: G3a cel 1 colspan=2', g3aCells[0].getAttribute('colspan') === '2');
+            assert('T12: G3a cel 2 colspan=1', g3aCells[1].getAttribute('colspan') === '1');
+            assert('T12: G3a cel 3 colspan=2', g3aCells[2].getAttribute('colspan') === '2');
+            if (leeftijdCol) {
+                assert('T12: G3a cel 2 "25" lijnt uit met header "Leeftijd" (< 2px)', Math.abs(g3aCells[1].getBoundingClientRect().left - leeftijdCol.getBoundingClientRect().left) < 2);
+            }
+            if (stadCol12) {
+                assert('T12: G3a cel 3 "Zuid" lijnt uit met header "Stad" (< 2px)', Math.abs(g3aCells[2].getBoundingClientRect().left - stadCol12.getBoundingClientRect().left) < 2);
+            }
+        }
+
+        // G2c: 4-way split — each col has content (colspan=2 + colspan=1 + colspan=1 + colspan=1)
+        var g2c = wrap.querySelector('[data-row-id="t12g2c"]');
+        assert('T12: G2c (Team Gamma) rij bestaat', !!g2c);
+        if (g2c) {
+            var g2cCells = g2c.querySelectorAll('td');
+            assert('T12: G2c heeft 4 cellen (elke kolom gevuld)', g2cCells.length === 4);
+            assert('T12: G2c cel 1 colspan=2', g2cCells[0].getAttribute('colspan') === '2');
+            assert('T12: G2c cel 2 colspan=1', g2cCells[1].getAttribute('colspan') === '1');
+            assert('T12: G2c cel 3 colspan=1', g2cCells[2].getAttribute('colspan') === '1');
+            assert('T12: G2c cel 4 colspan=1', g2cCells[3].getAttribute('colspan') === '1');
+            if (leeftijdCol) {
+                assert('T12: G2c cel 2 "Senior" lijnt uit met header "Leeftijd" (< 2px)', Math.abs(g2cCells[1].getBoundingClientRect().left - leeftijdCol.getBoundingClientRect().left) < 2);
+            }
+            if (stadCol12) {
+                assert('T12: G2c cel 3 "Utrecht" lijnt uit met header "Stad" (< 2px)', Math.abs(g2cCells[2].getBoundingClientRect().left - stadCol12.getBoundingClientRect().left) < 2);
+            }
+            if (statusCol) {
+                assert('T12: G2c cel 4 "VIP" lijnt uit met header "Status" (< 2px)', Math.abs(g2cCells[3].getBoundingClientRect().left - statusCol.getBoundingClientRect().left) < 2);
+            }
+        }
+
+        // Verify data row alignment with G2/G3
+        var d1 = wrap.querySelector('[data-row-id="t12d1"]');
+        if (d1 && g2a) {
+            var d1Cells = d1.querySelectorAll('td');
+            var g2aCells2 = g2a.querySelectorAll('td');
+            assert('T12: Data rij heeft 5 cellen', d1Cells.length === 5);
+            var d1Col3Left = d1Cells[2].getBoundingClientRect().left;
+            var g2aCol2Left = g2aCells2[1].getBoundingClientRect().left;
+            assert('T12: Data kolom 3 lijnt uit met G2a cel 2 (< 2px)', Math.abs(d1Col3Left - g2aCol2Left) < 2);
+        }
+    })();
 
     // Render results
     var container = document.getElementById('auto-test-results');
