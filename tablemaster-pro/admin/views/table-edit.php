@@ -87,7 +87,7 @@ $page_title = $is_new
                         <input type="file" id="tmp-csv-file" accept=".csv,.tsv,.txt" style="display:none;">
                     </div>
                 </div>
-                <div class="tmp-rows-hint tmp-hint"><?php esc_html_e( 'Klik op een kolomnaam om de naam te wijzigen. Klik op een cel om te bewerken. Sleep rijen om te herordenen. Ctrl+klik meerdere kolommen om te groeperen.', TMP_TEXT_DOMAIN ); ?></div>
+                <div class="tmp-rows-hint tmp-hint"><?php esc_html_e( 'Klik op kolommen om ze te selecteren en samen te voegen. Dubbelklik op een kolomnaam om te bewerken. Sleep rijen om te herordenen.', TMP_TEXT_DOMAIN ); ?></div>
                 <div id="tmp-cell-toolbar" class="tmp-cell-toolbar tmp-toolbar-disabled">
                     <div class="tmp-toolbar-group">
                         <button type="button" id="tmp-tb-bold" class="tmp-tb-btn" title="<?php esc_attr_e( 'Vet (Ctrl+B)', TMP_TEXT_DOMAIN ); ?>"><strong>B</strong></button>

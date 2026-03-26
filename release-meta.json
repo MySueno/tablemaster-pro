@@ -1,7 +1,7 @@
 {
-  "version": "1.3.59",
-  "content_hash": "63727559828806afb3a135f1fe4307e18ace80d2fa05ec0cfdf8538b95acc7be",
-  "signature": "7a4b7e1836d78b09b59f0d6bdba0809dc0b6d3bbc546c25b94b34d2fba834a1bad38f8abef6eba45ba5d473e66fd079f2ddf767a801e4977db01a5facb831c0f",
-  "signed_at": "2026-03-26T21:42:26.262Z",
+  "version": "1.3.60",
+  "content_hash": "6e908c4f8628c545a72ab5ff7ee56da99266ee1fc9cd0e9dd6c65795bb495a0b",
+  "signature": "976f24debd46e20f6714ff05fda164ac2904366c861e6b930c5431c0b72967773c45ac2dff26504745a450886f5eeabe6c806f8472bd607da5cb4e4ef24bbe0b",
+  "signed_at": "2026-03-26T22:07:38.805Z",
   "files_count": 37
 }

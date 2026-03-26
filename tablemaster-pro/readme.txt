@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.59
+Stable tag: 1.3.60
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,7 +33,9 @@ Functies:
 
 == Changelog ==
 
-= 1.3.59 =
+= 1.3.60 =
+* Nieuw: Kolomkoppen samenvoegen via enkele klik — selecteer meerdere kolommen en klik "Samenvoegen" (werkt ook op mobiel/tablet)
+* Wijziging: Enkele klik op kolomkop = selecteren, dubbelklik = naam bewerken (was: enkele klik = bewerken)
 * Fix: Kolomkop uitlijning (links/midden/rechts) blijft nu behouden na het verlaten van de bewerkingsmodus
 * Fix: Kolomkop uitlijning wordt correct weergegeven op de frontend website (alle header depth niveaus)
 * Fix: Admin tabel rendert kolomkoppen met opgeslagen uitlijning bij het opbouwen van de tabel
