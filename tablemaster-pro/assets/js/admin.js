@@ -730,7 +730,8 @@
             var key = col.temp_key || col.id;
             var content = row.cells[key] !== undefined ? row.cells[key] : '';
             var cellAlign = (row.cell_aligns && row.cell_aligns[key]) || '';
-            var alignStyle = cellAlign ? 'text-align:' + escAttr(cellAlign) + ';' : '';
+            var effectiveAlign = cellAlign || (col.settings && col.settings.align) || 'left';
+            var alignStyle = effectiveAlign && effectiveAlign !== 'left' ? 'text-align:' + escAttr(effectiveAlign) + ';' : '';
             var placeholder = isGroup ? 'Leeg = samenvoegen \u2192' : '';
             var cspan = cellMerges[key] ? parseInt(cellMerges[key]) : 1;
             if (cspan > 1) skipCols = cspan - 1;
@@ -830,7 +831,10 @@
             $('#tmp-tb-cell-ref').text(colLabel + ' · rij ' + rowIdx);
             $('.tmp-cell-input').closest('td').removeClass('tmp-cell-active');
             $div.closest('td').addClass('tmp-cell-active');
-            var curAlign = (rowObj && rowObj.cell_aligns && rowObj.cell_aligns[colKey]) || 'left';
+            var curCellAlign = (rowObj && rowObj.cell_aligns && rowObj.cell_aligns[colKey]) || '';
+            var colObj = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
+            var curColAlign = (colObj && colObj.settings && colObj.settings.align) || 'left';
+            var curAlign = curCellAlign || curColAlign;
             updateAlignButtons(curAlign);
         });
 
@@ -957,11 +961,13 @@
         if (!rowObj) return;
         pushUndo();
         if (!rowObj.cell_aligns) rowObj.cell_aligns = {};
-        rowObj.cell_aligns[activeCell.colKey] = align === 'left' ? '' : align;
+        var colKey = activeCell.colKey;
+        var colObj = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
+        var colDefault = (colObj && colObj.settings && colObj.settings.align) || 'left';
+        rowObj.cell_aligns[colKey] = align === colDefault ? '' : align;
         var $td = activeCell.$area.closest('td');
-        var styleVal = align === 'left' ? '' : align;
-        $td.css('text-align', styleVal || '');
-        activeCell.$area.css('text-align', styleVal || '');
+        $td.css('text-align', align);
+        activeCell.$area.css('text-align', align);
         updateAlignButtons(align);
         activeCell.$area.focus();
     }

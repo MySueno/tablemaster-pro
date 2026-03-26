@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.40
+Stable tag: 1.3.41
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,11 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.41 =
+* Fix: Admin editor toont nu de kolom-uitlijning (bijv. rechts voor Prijs-kolommen) — voorheen werd de instelling genegeerd en stond alles links
+* Fix: Toolbar-uitlijningsknoppen tonen nu de effectieve uitlijning (cel-override OF kolom-standaard) bij selectie
+* Fix: Expliciet "links" instellen op een kolom met standaard "rechts" wordt nu correct opgeslagen als override
 
 = 1.3.40 =
 * Fix: G1 groepsrijen met meerdere gevulde cellen tonen nu alle inhoud — voorheen werd alleen de eerste cel getoond en de rest (bijv. "Fysiotherapie 2") ging verloren in een full-width colspan
