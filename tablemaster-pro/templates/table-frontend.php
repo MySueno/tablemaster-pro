@@ -142,7 +142,7 @@ foreach ( $font_css_map as $fk => $selector ) :
     <div class="tmp-col-filters">
         <?php foreach ( $columns as $col ) : ?>
             <div class="tmp-col-filter-item">
-                <label><?php echo esc_html( $col->label ); ?></label>
+                <label><?php echo esc_html( wp_strip_all_tags( $col->label ) ); ?></label>
                 <select class="tmp-col-filter" data-col-id="<?php echo esc_attr( $col->id ); ?>">
                     <option value=""><?php esc_html_e( '— Alle —', TMP_TEXT_DOMAIN ); ?></option>
                 </select>
@@ -571,7 +571,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                                     style="text-align:<?php echo esc_attr( $align ); ?>;"
                                     data-col-id="<?php echo esc_attr( $col->id ); ?>"
                                     data-col-type="<?php echo esc_attr( $col_type ); ?>"
-                                    data-label="<?php echo esc_attr( $col->label ); ?>"
+                                    data-label="<?php echo esc_attr( wp_strip_all_tags( $col->label ) ); ?>"
                                     <?php if ( $cell_colspan > 1 ) : ?>colspan="<?php echo $cell_colspan; ?>"<?php endif; ?>>
                                     <?php if ( $col_type === 'link' ) : ?>
                                         <?php if ( filter_var( $raw_content, FILTER_VALIDATE_URL ) ) : ?>

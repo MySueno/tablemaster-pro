@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.30
+Stable tag: 1.3.31
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,12 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.31 =
+* Fix: Sorteer-pijl (↑↓) is nu zichtbaar in de header — kleur was gelijk aan achtergrondkleur op alle thema's
+* Fix: Kolomfilter labels tonen nu schone tekst bij rich text labels — HTML-tags worden gestript
+* Fix: data-label attribuut op cellen bevat nu schone tekst — HTML-tags gestript voor mobiele weergave
+* Fix: DB kolom label uitgebreid van varchar(255) naar varchar(500) — voorkomt afgebroken HTML bij rich text labels
 
 = 1.3.30 =
 * Fix: Kolomlabel rich text (vet/cursief) wordt nu correct opgeslagen — sanitize_text_field vervangen door wp_kses_post in save_table_structure

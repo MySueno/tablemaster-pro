@@ -240,13 +240,13 @@
 .tmp-th.tmp-sort-asc .tmp-sort-icon::after {
     content: '↑';
     opacity: 1;
-    color: var(--tmp-accent, #fff);
+    color: var(--tmp-header-text, #fff);
 }
 
 .tmp-th.tmp-sort-desc .tmp-sort-icon::after {
     content: '↓';
     opacity: 1;
-    color: var(--tmp-accent, #fff);
+    color: var(--tmp-header-text, #fff);
 }
 
 .tmp-toggle-col {

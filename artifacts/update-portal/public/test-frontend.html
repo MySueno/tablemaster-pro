@@ -102,8 +102,8 @@
 .tmp-page-btn:disabled { opacity: 0.4; cursor: default; }
 .tmp-sort-icon { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 0.8em; opacity: 0.6; }
 .tmp-sort-icon::after { content: ''; }
-.tmp-th.tmp-sort-asc .tmp-sort-icon::after { content: '↑'; opacity: 1; }
-.tmp-th.tmp-sort-desc .tmp-sort-icon::after { content: '↓'; opacity: 1; }
+.tmp-th.tmp-sort-asc .tmp-sort-icon::after { content: '↑'; opacity: 1; color: var(--tmp-header-text, #fff); }
+.tmp-th.tmp-sort-desc .tmp-sort-icon::after { content: '↓'; opacity: 1; color: var(--tmp-header-text, #fff); }
 .tmp-per-page-wrap { display: flex; align-items: center; gap: 0.4em; font-size: 0.9em; }
 .tmp-per-page-select { padding: 5px 8px; border: 1px solid var(--tmp-border, #ccc); border-radius: 4px; font-family: inherit; }
 
@@ -119,7 +119,7 @@ h2 { font-size: 15px; color: #555; margin-top: 30px; border-bottom: 1px solid #d
 </head>
 <body>
 
-<h1>TableMaster Pro - Visuele Frontend Test (v1.3.30)</h1>
+<h1>TableMaster Pro - Visuele Frontend Test (v1.3.31)</h1>
 
 <!-- ============================================ -->
 <!-- TEST 1: Pagination OFF (per_page=-1) -->

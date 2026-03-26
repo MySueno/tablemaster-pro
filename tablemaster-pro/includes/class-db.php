@@ -24,7 +24,7 @@ class TableMaster_DB {
         dbDelta( "CREATE TABLE {$wpdb->prefix}tablemaster_columns (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             table_id bigint(20) unsigned NOT NULL,
-            label varchar(255) NOT NULL DEFAULT '',
+            label varchar(500) NOT NULL DEFAULT '',
             type varchar(50) NOT NULL DEFAULT 'text',
             order_index int(11) NOT NULL DEFAULT 0,
             settings text NOT NULL,
