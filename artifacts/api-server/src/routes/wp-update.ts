@@ -1,6 +1,5 @@
 import { Router, type IRouter, type Request, type Response } from "express";
 import { readFileSync, existsSync, statSync, createReadStream } from "fs";
-import { createHash } from "crypto";
 import { join } from "path";
 
 const router: IRouter = Router();
@@ -42,6 +41,24 @@ function getPluginVersion(): string {
 
 function getZipPath(): string {
   return join(WORKSPACE, `${PLUGIN_SLUG}.zip`);
+}
+
+interface ReleaseMeta {
+  version: string;
+  content_hash: string;
+  signature: string;
+  signed_at: string;
+  files_count: number;
+}
+
+function getReleaseMeta(): ReleaseMeta | null {
+  const metaPath = join(WORKSPACE, "release-meta.json");
+  if (!existsSync(metaPath)) return null;
+  try {
+    return JSON.parse(readFileSync(metaPath, "utf-8"));
+  } catch {
+    return null;
+  }
 }
 
 function escapeHtml(str: string): string {
@@ -92,16 +109,9 @@ router.get("/wp-update/info", (_req: Request, res: Response) => {
   const zipPath = getZipPath();
   const zipExists = existsSync(zipPath);
 
-  let sha256 = "";
-  if (zipExists) {
-    try {
-      const mainPluginFile = join(WORKSPACE, "tablemaster-pro", "tablemaster-pro.php");
-      if (existsSync(mainPluginFile)) {
-        const content = readFileSync(mainPluginFile);
-        sha256 = createHash("sha256").update(content).digest("hex");
-      }
-    } catch {}
-  }
+  const releaseMeta = getReleaseMeta();
+  const contentHash = releaseMeta?.content_hash || "";
+  const signature = releaseMeta?.signature || "";
 
   const response = {
     name: "TableMaster Pro",
@@ -113,7 +123,8 @@ router.get("/wp-update/info", (_req: Request, res: Response) => {
     tested: "6.7",
     requires_php: "7.4",
     download_url: zipExists ? `${baseUrl}/api/wp-update/download` : "",
-    sha256: sha256,
+    content_hash: contentHash,
+    signature: signature,
     sections: {
       description:
         "Maak krachtige, interactieve tabellen met groepering, sortering, filtering en paginering.",

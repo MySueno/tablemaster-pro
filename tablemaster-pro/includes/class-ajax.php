@@ -104,7 +104,7 @@ class TableMaster_Ajax {
             $clean['colors'] = TableMaster_Settings::sanitize_colors( $settings['colors'] );
         }
 
-        $allowed_font_keys  = array( 'group_1', 'group_2', 'group_3', 'footer', 'data' );
+        $allowed_font_keys  = array( 'header', 'group_1', 'group_2', 'group_3', 'footer', 'data' );
         $allowed_font_sizes = array( '', '10px', '11px', '12px', '13px', '14px', '16px', '18px', '20px', '22px', '24px' );
         $clean['fonts'] = array();
         if ( isset( $settings['fonts'] ) && is_array( $settings['fonts'] ) ) {

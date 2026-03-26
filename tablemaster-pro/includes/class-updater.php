@@ -146,23 +146,89 @@ class TableMaster_Updater {
 
     private function verify_package( $package_dir ) {
         $remote = $this->get_remote_info();
-        if ( ! $remote || empty( $remote->sha256 ) ) {
+        if ( ! $remote || empty( $remote->content_hash ) || empty( $remote->signature ) ) {
             return false;
         }
 
-        $expected_hash = sanitize_text_field( $remote->sha256 );
+        $expected_hash = sanitize_text_field( $remote->content_hash );
         if ( ! preg_match( '/^[a-f0-9]{64}$/', $expected_hash ) ) {
             return false;
         }
 
-        $main_file = $package_dir . '/tablemaster-pro.php';
-        if ( ! file_exists( $main_file ) ) {
+        $signature_hex = sanitize_text_field( $remote->signature );
+        if ( ! preg_match( '/^[a-f0-9]{128}$/', $signature_hex ) ) {
             return false;
         }
 
-        $actual_hash = hash_file( 'sha256', $main_file );
+        if ( ! $this->verify_signature( $expected_hash, $signature_hex ) ) {
+            return false;
+        }
+
+        $actual_hash = $this->compute_content_hash( $package_dir );
+        if ( $actual_hash === false ) {
+            return false;
+        }
 
         return hash_equals( $expected_hash, $actual_hash );
+    }
+
+    private function compute_content_hash( $dir ) {
+        $files = $this->get_all_files( $dir );
+        if ( empty( $files ) ) {
+            return false;
+        }
+        sort( $files );
+        $ctx = hash_init( 'sha256' );
+        foreach ( $files as $rel_path ) {
+            hash_update( $ctx, $rel_path );
+            $content = file_get_contents( $dir . '/' . $rel_path );
+            if ( $content === false ) {
+                return false;
+            }
+            hash_update( $ctx, $content );
+        }
+        return hash_final( $ctx );
+    }
+
+    private function get_all_files( $dir, $base = '' ) {
+        $results = array();
+        $entries = scandir( $dir );
+        if ( $entries === false ) {
+            return $results;
+        }
+        foreach ( $entries as $entry ) {
+            if ( $entry === '.' || $entry === '..' ) continue;
+            $full = $dir . '/' . $entry;
+            $rel  = $base === '' ? $entry : $base . '/' . $entry;
+            if ( is_dir( $full ) ) {
+                $results = array_merge( $results, $this->get_all_files( $full, $rel ) );
+            } else {
+                $results[] = $rel;
+            }
+        }
+        return $results;
+    }
+
+    private function verify_signature( $hash_hex, $signature_hex ) {
+        if ( ! function_exists( 'sodium_crypto_sign_verify_detached' ) ) {
+            return false;
+        }
+
+        $public_key = hex2bin( TMP_SIGNING_PUBLIC_KEY );
+        if ( strlen( $public_key ) !== SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES ) {
+            return false;
+        }
+
+        $signature = hex2bin( $signature_hex );
+        if ( strlen( $signature ) !== SODIUM_CRYPTO_SIGN_BYTES ) {
+            return false;
+        }
+
+        try {
+            return sodium_crypto_sign_verify_detached( $signature, $hash_hex, $public_key );
+        } catch ( \Exception $e ) {
+            return false;
+        }
     }
 
     public function connection_error_notice() {

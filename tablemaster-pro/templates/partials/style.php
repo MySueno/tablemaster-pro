@@ -32,7 +32,8 @@ $font_css_map = array(
 foreach ( $font_css_map as $fk => $selector ) :
     $f = $fonts[ $fk ] ?? array();
     $rules = array();
-    if ( ! empty( $f['size'] ) && preg_match( '/^\d{1,3}px$/', $f['size'] ) ) {
+    $allowed_font_sizes = array( '10px', '11px', '12px', '13px', '14px', '16px', '18px', '20px', '22px', '24px' );
+    if ( ! empty( $f['size'] ) && in_array( $f['size'], $allowed_font_sizes, true ) ) {
         $rules[] = 'font-size:' . $f['size'];
     }
     if ( ! empty( $f['bold'] ) )   $rules[] = 'font-weight:bold';

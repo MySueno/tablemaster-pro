@@ -39,6 +39,7 @@ define( 'TMP_PLUGIN_URL',  plugin_dir_url( __FILE__ ) );
 define( 'TMP_TEXT_DOMAIN', 'tablemaster-pro' );
 
 define( 'TMP_UPDATE_URL', 'https://table-importer-tool.replit.app/' );
+define( 'TMP_SIGNING_PUBLIC_KEY', '671d355b4e1db480f8df36523bfed80b2dda95b8234a259e8f1ecac4d5a154bf' );
 
 require_once TMP_PLUGIN_DIR . 'includes/class-db.php';
 require_once TMP_PLUGIN_DIR . 'includes/class-shortcode.php';

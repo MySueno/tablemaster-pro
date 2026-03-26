@@ -33,3 +33,6 @@ packages = ["zip", "unzip"]
 
 [userenv.production]
 PLUGIN_BASE_URL = "https://table-importer-tool.replit.app"
+
+[userenv.shared]
+TMP_SIGNING_KEY = "9f1667eb6e24e5af53b8af01e39f65140dd2c558eb52219533ae02edf058306b"
