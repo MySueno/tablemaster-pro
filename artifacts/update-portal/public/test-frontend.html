@@ -660,6 +660,254 @@ h2 { font-size: 15px; color: #555; margin-top: 30px; border-bottom: 1px solid #d
 </div>
 
 <!-- ============================================ -->
+<!-- Test 9: Multiple merge configurations (2+3+individual) -->
+<!-- ============================================ -->
+<div class="test-section">
+<h2>Test 9: Meerdere samengevoegde cellen — 2-merge + 3-merge + individueel (8 kolommen)</h2>
+<div id="tmp-test9" class="tmp-wrapper" data-table-id="9" data-per-page="-1" data-collapsible="0" data-default-sort-col="" data-default-sort-dir="asc" data-mobile-mode="scroll"
+     style="--tmp-header-bg:#D32637;--tmp-header-text:#fff;--tmp-group1-bg:#D32637;--tmp-group1-text:#fff;--tmp-group2-bg:#F9E6E7;--tmp-group2-text:#1a1a1a;--tmp-group3-bg:#fafafa;--tmp-group3-text:#1a1a1a;--tmp-odd-bg:#fff;--tmp-even-bg:#f9f9f9;--tmp-hover-bg:#fce4e4;--tmp-border:#e0e0e0;--tmp-footer-bg:#D32637;--tmp-footer-text:#fff;--tmp-radius:4px;">
+    <div class="tmp-controls tmp-controls-top"><div class="tmp-controls-right"></div></div>
+    <div class="tmp-table-scroll-wrapper">
+        <table class="tmp-table" role="grid">
+            <colgroup><col><col><col><col><col><col><col><col></colgroup>
+            <thead>
+                <tr class="tmp-header-row">
+                    <th class="tmp-th" colspan="2" style="text-align:left;">Naam</th>
+                    <th class="tmp-th" colspan="3" style="text-align:left;">Adres</th>
+                    <th class="tmp-th" data-col-id="t9c6" data-col-type="text">Telefoon</th>
+                    <th class="tmp-th" data-col-id="t9c7" data-col-type="text">Email</th>
+                    <th class="tmp-th" data-col-id="t9c8" data-col-type="text">Notities</th>
+                </tr>
+            </thead>
+            <tbody class="tmp-tbody">
+                <tr class="tmp-row tmp-type-group_1" data-row-id="t9g1" data-row-type="group_1" data-parent-id="">
+                    <td class="tmp-td tmp-group-cell" colspan="8">
+                        <div class="tmp-group-cell-inner">
+                            <span class="tmp-group-label">Klanten Nederland</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="t9g2a" data-row-type="group_2" data-parent-id="t9g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="2">Bedrijf Alpha</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Amsterdam</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Contact Info</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t9d1" data-row-type="data" data-parent-id="t9g2a">
+                    <td class="tmp-td" data-col-id="t9c1">Jan</td>
+                    <td class="tmp-td" data-col-id="t9c2">de Vries</td>
+                    <td class="tmp-td" data-col-id="t9c3">Keizersgracht 1</td>
+                    <td class="tmp-td" data-col-id="t9c4">1015 AA</td>
+                    <td class="tmp-td" data-col-id="t9c5">Amsterdam</td>
+                    <td class="tmp-td" data-col-id="t9c6">020-1234567</td>
+                    <td class="tmp-td" data-col-id="t9c7">jan@alpha.nl</td>
+                    <td class="tmp-td" data-col-id="t9c8">VIP klant</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-even" data-row-id="t9d2" data-row-type="data" data-parent-id="t9g2a">
+                    <td class="tmp-td" data-col-id="t9c1">Piet</td>
+                    <td class="tmp-td" data-col-id="t9c2">Bakker</td>
+                    <td class="tmp-td" data-col-id="t9c3">Herengracht 42</td>
+                    <td class="tmp-td" data-col-id="t9c4">1015 BB</td>
+                    <td class="tmp-td" data-col-id="t9c5">Amsterdam</td>
+                    <td class="tmp-td" data-col-id="t9c6">020-7654321</td>
+                    <td class="tmp-td" data-col-id="t9c7">piet@alpha.nl</td>
+                    <td class="tmp-td" data-col-id="t9c8"></td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="t9g2b" data-row-type="group_2" data-parent-id="t9g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="2">Bedrijf Beta</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="6">Rotterdam</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t9d3" data-row-type="data" data-parent-id="t9g2b">
+                    <td class="tmp-td" data-col-id="t9c1">Maria</td>
+                    <td class="tmp-td" data-col-id="t9c2">Jansen</td>
+                    <td class="tmp-td" data-col-id="t9c3">Coolsingel 10</td>
+                    <td class="tmp-td" data-col-id="t9c4">3011 AD</td>
+                    <td class="tmp-td" data-col-id="t9c5">Rotterdam</td>
+                    <td class="tmp-td" data-col-id="t9c6">010-9876543</td>
+                    <td class="tmp-td" data-col-id="t9c7">maria@beta.nl</td>
+                    <td class="tmp-td" data-col-id="t9c8">Nieuw</td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="t9g2c" data-row-type="group_2" data-parent-id="t9g1">
+                    <td class="tmp-td tmp-group-cell" colspan="8">
+                        <div class="tmp-group-cell-inner">
+                            <span class="tmp-group-label">Bedrijf Gamma</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-even" data-row-id="t9d4" data-row-type="data" data-parent-id="t9g2c">
+                    <td class="tmp-td" data-col-id="t9c1">Klaas</td>
+                    <td class="tmp-td" data-col-id="t9c2">Smit</td>
+                    <td class="tmp-td" data-col-id="t9c3">Oudegracht 5</td>
+                    <td class="tmp-td" data-col-id="t9c4">3511 AB</td>
+                    <td class="tmp-td" data-col-id="t9c5">Utrecht</td>
+                    <td class="tmp-td" data-col-id="t9c6">030-1112233</td>
+                    <td class="tmp-td" data-col-id="t9c7">klaas@gamma.nl</td>
+                    <td class="tmp-td" data-col-id="t9c8"></td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_3" data-row-id="t9g3a" data-row-type="group_3" data-parent-id="t9g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="2">Sub-groep X</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Regio Noord</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Details</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t9d5" data-row-type="data" data-parent-id="t9g3a">
+                    <td class="tmp-td" data-col-id="t9c1">Anna</td>
+                    <td class="tmp-td" data-col-id="t9c2">Visser</td>
+                    <td class="tmp-td" data-col-id="t9c3">Grote Markt 1</td>
+                    <td class="tmp-td" data-col-id="t9c4">9711 LV</td>
+                    <td class="tmp-td" data-col-id="t9c5">Groningen</td>
+                    <td class="tmp-td" data-col-id="t9c6">050-4445566</td>
+                    <td class="tmp-td" data-col-id="t9c7">anna@x.nl</td>
+                    <td class="tmp-td" data-col-id="t9c8">Manager</td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_3" data-row-id="t9g3b" data-row-type="group_3" data-parent-id="t9g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="2">Sub-groep Y</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="6">Overig</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-even" data-row-id="t9d6" data-row-type="data" data-parent-id="t9g3b">
+                    <td class="tmp-td" data-col-id="t9c1">Tom</td>
+                    <td class="tmp-td" data-col-id="t9c2">Meijer</td>
+                    <td class="tmp-td" data-col-id="t9c3">Markt 8</td>
+                    <td class="tmp-td" data-col-id="t9c4">5211 JA</td>
+                    <td class="tmp-td" data-col-id="t9c5">'s-Hertogenbosch</td>
+                    <td class="tmp-td" data-col-id="t9c6">073-8889900</td>
+                    <td class="tmp-td" data-col-id="t9c7">tom@y.nl</td>
+                    <td class="tmp-td" data-col-id="t9c8"></td>
+                </tr>
+                <tr class="tmp-row tmp-type-footer" data-row-id="t9f1" data-row-type="footer" data-parent-id="">
+                    <td class="tmp-td tmp-footer-cell" colspan="8">6 medewerkers totaal</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tmp-controls tmp-controls-bottom"></div>
+</div>
+<div id="test9-results"></div>
+</div>
+
+<!-- ============================================ -->
+<!-- Test 10: Translated version of Test 9 (German) -->
+<!-- ============================================ -->
+<div class="test-section">
+<h2>Test 10: Vertaalde tabel met meerdere merges — Duits (WPML-simulatie van Test 9)</h2>
+<div id="tmp-test10" class="tmp-wrapper" data-table-id="10" data-per-page="-1" data-collapsible="0" data-default-sort-col="" data-default-sort-dir="asc" data-mobile-mode="scroll"
+     style="--tmp-header-bg:#D32637;--tmp-header-text:#fff;--tmp-group1-bg:#D32637;--tmp-group1-text:#fff;--tmp-group2-bg:#F9E6E7;--tmp-group2-text:#1a1a1a;--tmp-group3-bg:#fafafa;--tmp-group3-text:#1a1a1a;--tmp-odd-bg:#fff;--tmp-even-bg:#f9f9f9;--tmp-hover-bg:#fce4e4;--tmp-border:#e0e0e0;--tmp-footer-bg:#D32637;--tmp-footer-text:#fff;--tmp-radius:4px;">
+    <div class="tmp-controls tmp-controls-top"><div class="tmp-controls-right"></div></div>
+    <div class="tmp-table-scroll-wrapper">
+        <table class="tmp-table" role="grid">
+            <colgroup><col><col><col><col><col><col><col><col></colgroup>
+            <thead>
+                <tr class="tmp-header-row">
+                    <th class="tmp-th" colspan="2" style="text-align:left;">Familienname</th>
+                    <th class="tmp-th" colspan="3" style="text-align:left;">Anschrift</th>
+                    <th class="tmp-th" data-col-id="t10c6" data-col-type="text">Telefon</th>
+                    <th class="tmp-th" data-col-id="t10c7" data-col-type="text">E-Mail</th>
+                    <th class="tmp-th" data-col-id="t10c8" data-col-type="text">Anmerkungen</th>
+                </tr>
+            </thead>
+            <tbody class="tmp-tbody">
+                <tr class="tmp-row tmp-type-group_1" data-row-id="t10g1" data-row-type="group_1" data-parent-id="">
+                    <td class="tmp-td tmp-group-cell" colspan="8">
+                        <div class="tmp-group-cell-inner">
+                            <span class="tmp-group-label">Kunden Niederlande</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="t10g2a" data-row-type="group_2" data-parent-id="t10g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="2">Firma Alpha</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Amsterdam</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Kontaktdaten</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t10d1" data-row-type="data" data-parent-id="t10g2a">
+                    <td class="tmp-td" data-col-id="t10c1">Jan</td>
+                    <td class="tmp-td" data-col-id="t10c2">de Vries</td>
+                    <td class="tmp-td" data-col-id="t10c3">Keizersgracht 1</td>
+                    <td class="tmp-td" data-col-id="t10c4">1015 AA</td>
+                    <td class="tmp-td" data-col-id="t10c5">Amsterdam</td>
+                    <td class="tmp-td" data-col-id="t10c6">020-1234567</td>
+                    <td class="tmp-td" data-col-id="t10c7">jan@alpha.nl</td>
+                    <td class="tmp-td" data-col-id="t10c8">VIP-Kunde</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-even" data-row-id="t10d2" data-row-type="data" data-parent-id="t10g2a">
+                    <td class="tmp-td" data-col-id="t10c1">Piet</td>
+                    <td class="tmp-td" data-col-id="t10c2">Bakker</td>
+                    <td class="tmp-td" data-col-id="t10c3">Herengracht 42</td>
+                    <td class="tmp-td" data-col-id="t10c4">1015 BB</td>
+                    <td class="tmp-td" data-col-id="t10c5">Amsterdam</td>
+                    <td class="tmp-td" data-col-id="t10c6">020-7654321</td>
+                    <td class="tmp-td" data-col-id="t10c7">piet@alpha.nl</td>
+                    <td class="tmp-td" data-col-id="t10c8"></td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="t10g2b" data-row-type="group_2" data-parent-id="t10g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="2">Firma Beta</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="6">Rotterdam</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t10d3" data-row-type="data" data-parent-id="t10g2b">
+                    <td class="tmp-td" data-col-id="t10c1">Maria</td>
+                    <td class="tmp-td" data-col-id="t10c2">Jansen</td>
+                    <td class="tmp-td" data-col-id="t10c3">Coolsingel 10</td>
+                    <td class="tmp-td" data-col-id="t10c4">3011 AD</td>
+                    <td class="tmp-td" data-col-id="t10c5">Rotterdam</td>
+                    <td class="tmp-td" data-col-id="t10c6">010-9876543</td>
+                    <td class="tmp-td" data-col-id="t10c7">maria@beta.nl</td>
+                    <td class="tmp-td" data-col-id="t10c8">Neu</td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_2" data-row-id="t10g2c" data-row-type="group_2" data-parent-id="t10g1">
+                    <td class="tmp-td tmp-group-cell" colspan="8">
+                        <div class="tmp-group-cell-inner">
+                            <span class="tmp-group-label">Firma Gamma</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-even" data-row-id="t10d4" data-row-type="data" data-parent-id="t10g2c">
+                    <td class="tmp-td" data-col-id="t10c1">Klaas</td>
+                    <td class="tmp-td" data-col-id="t10c2">Smit</td>
+                    <td class="tmp-td" data-col-id="t10c3">Oudegracht 5</td>
+                    <td class="tmp-td" data-col-id="t10c4">3511 AB</td>
+                    <td class="tmp-td" data-col-id="t10c5">Utrecht</td>
+                    <td class="tmp-td" data-col-id="t10c6">030-1112233</td>
+                    <td class="tmp-td" data-col-id="t10c7">klaas@gamma.nl</td>
+                    <td class="tmp-td" data-col-id="t10c8"></td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_3" data-row-id="t10g3a" data-row-type="group_3" data-parent-id="t10g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="2">Untergruppe X</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Region Nord</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="3">Einzelheiten</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-odd" data-row-id="t10d5" data-row-type="data" data-parent-id="t10g3a">
+                    <td class="tmp-td" data-col-id="t10c1">Anna</td>
+                    <td class="tmp-td" data-col-id="t10c2">Visser</td>
+                    <td class="tmp-td" data-col-id="t10c3">Große Markt 1</td>
+                    <td class="tmp-td" data-col-id="t10c4">9711 LV</td>
+                    <td class="tmp-td" data-col-id="t10c5">Groningen</td>
+                    <td class="tmp-td" data-col-id="t10c6">050-4445566</td>
+                    <td class="tmp-td" data-col-id="t10c7">anna@x.nl</td>
+                    <td class="tmp-td" data-col-id="t10c8">Geschäftsführer</td>
+                </tr>
+                <tr class="tmp-row tmp-type-group_3" data-row-id="t10g3b" data-row-type="group_3" data-parent-id="t10g1">
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="2">Untergruppe Y</td>
+                    <td class="tmp-td tmp-group-cell" style="text-align:left;" colspan="6">Sonstige</td>
+                </tr>
+                <tr class="tmp-row tmp-type-data tmp-even" data-row-id="t10d6" data-row-type="data" data-parent-id="t10g3b">
+                    <td class="tmp-td" data-col-id="t10c1">Tom</td>
+                    <td class="tmp-td" data-col-id="t10c2">Meijer</td>
+                    <td class="tmp-td" data-col-id="t10c3">Markt 8</td>
+                    <td class="tmp-td" data-col-id="t10c4">5211 JA</td>
+                    <td class="tmp-td" data-col-id="t10c5">'s-Hertogenbosch</td>
+                    <td class="tmp-td" data-col-id="t10c6">073-8889900</td>
+                    <td class="tmp-td" data-col-id="t10c7">tom@y.nl</td>
+                    <td class="tmp-td" data-col-id="t10c8"></td>
+                </tr>
+                <tr class="tmp-row tmp-type-footer" data-row-id="t10f1" data-row-type="footer" data-parent-id="">
+                    <td class="tmp-td tmp-footer-cell" colspan="8">6 Mitarbeiter insgesamt</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tmp-controls tmp-controls-bottom"></div>
+</div>
+<div id="test10-results"></div>
+</div>
+
+<!-- ============================================ -->
 <!-- Test 7: Font styling (size, bold, italic) -->
 <!-- ============================================ -->
 <div class="test-section">
@@ -1340,6 +1588,130 @@ function runAutomatedTests() {
             assert('T8: Apfel AG cel colspan=7', t8AppleCells[0].getAttribute('colspan') === '7');
         }
     }
+
+    // Test 9: Multiple merge configurations (2+3+individual, 8 columns)
+    function testMergeTable(prefix, tableId, headerNames, headerColspans, g2aId, g2bId, g2cId, g3aId, g3bId, d1Id, d3Id, d5Id, d6Id) {
+        var wrap = document.getElementById(tableId);
+        assert(prefix + ': Tabel bestaat', !!wrap);
+        if (!wrap) return;
+        var table = wrap.querySelector('.tmp-table');
+        var headerRow = table.querySelector('.tmp-header-row');
+        assert(prefix + ': Header rij bestaat', !!headerRow);
+        var hCells = headerRow ? headerRow.querySelectorAll('th') : [];
+        assert(prefix + ': Header heeft 5 cellen (2 grouped + 3 individueel)', hCells.length === 5);
+        assert(prefix + ': Header 1 "' + headerNames[0] + '" colspan=2', hCells.length > 0 && hCells[0].getAttribute('colspan') === '2' && hCells[0].textContent.trim() === headerNames[0]);
+        assert(prefix + ': Header 2 "' + headerNames[1] + '" colspan=3', hCells.length > 1 && hCells[1].getAttribute('colspan') === '3' && hCells[1].textContent.trim() === headerNames[1]);
+        assert(prefix + ': Header 3 "' + headerNames[2] + '"', hCells.length > 2 && hCells[2].textContent.trim() === headerNames[2]);
+
+        var adresCol = hCells.length > 1 ? hCells[1] : null;
+        var telCol = hCells.length > 2 ? hCells[2] : null;
+
+        // G2a: 3-way split (colspan=2 + colspan=3 + colspan=3)
+        var g2a = wrap.querySelector('[data-row-id="' + g2aId + '"]');
+        assert(prefix + ': G2a (3-way split) rij bestaat', !!g2a);
+        if (g2a) {
+            var g2aCells = g2a.querySelectorAll('td');
+            assert(prefix + ': G2a heeft 3 cellen (3-way header-slot split)', g2aCells.length === 3);
+            assert(prefix + ': G2a cel 1 colspan=2', g2aCells[0].getAttribute('colspan') === '2');
+            assert(prefix + ': G2a cel 2 colspan=3', g2aCells[1].getAttribute('colspan') === '3');
+            assert(prefix + ': G2a cel 3 colspan=3', g2aCells[2].getAttribute('colspan') === '3');
+            var d1Row = wrap.querySelector('[data-row-id="' + d1Id + '"]');
+            if (d1Row && adresCol) {
+                var d1Cells = d1Row.querySelectorAll('td');
+                assert(prefix + ': Data rij heeft 8 cellen', d1Cells.length === 8);
+                var g2aAdresLeft = g2aCells[1].getBoundingClientRect().left;
+                var adresHeaderLeft = adresCol.getBoundingClientRect().left;
+                assert(prefix + ': G2a cel 2 lijnt uit met header "' + headerNames[1] + '" (< 2px)', Math.abs(g2aAdresLeft - adresHeaderLeft) < 2);
+                var d1Col3Left = d1Cells[2].getBoundingClientRect().left;
+                assert(prefix + ': G2a cel 2 lijnt uit met data kolom 3 (< 2px)', Math.abs(g2aAdresLeft - d1Col3Left) < 2);
+                var g2aTelLeft = g2aCells[2].getBoundingClientRect().left;
+                var telHeaderLeft = telCol.getBoundingClientRect().left;
+                assert(prefix + ': G2a cel 3 lijnt uit met header "' + headerNames[2] + '" (< 2px)', Math.abs(g2aTelLeft - telHeaderLeft) < 2);
+                var d1Col6Left = d1Cells[5].getBoundingClientRect().left;
+                assert(prefix + ': G2a cel 3 lijnt uit met data kolom 6 (< 2px)', Math.abs(g2aTelLeft - d1Col6Left) < 2);
+            }
+        }
+
+        // G2b: 2-way split (colspan=2 + colspan=6)
+        var g2b = wrap.querySelector('[data-row-id="' + g2bId + '"]');
+        assert(prefix + ': G2b (2-way split) rij bestaat', !!g2b);
+        if (g2b) {
+            var g2bCells = g2b.querySelectorAll('td');
+            assert(prefix + ': G2b heeft 2 cellen (2-way split)', g2bCells.length === 2);
+            assert(prefix + ': G2b cel 1 colspan=2', g2bCells[0].getAttribute('colspan') === '2');
+            assert(prefix + ': G2b cel 2 colspan=6', g2bCells[1].getAttribute('colspan') === '6');
+            if (adresCol) {
+                var g2bCol2Left = g2bCells[1].getBoundingClientRect().left;
+                var adresLeft2 = adresCol.getBoundingClientRect().left;
+                assert(prefix + ': G2b cel 2 lijnt uit met header "' + headerNames[1] + '" (< 2px)', Math.abs(g2bCol2Left - adresLeft2) < 2);
+            }
+            var d3Row = wrap.querySelector('[data-row-id="' + d3Id + '"]');
+            if (d3Row) {
+                var d3Cells = d3Row.querySelectorAll('td');
+                var g2bCol2L = g2bCells[1].getBoundingClientRect().left;
+                var d3Col3Left = d3Cells[2].getBoundingClientRect().left;
+                assert(prefix + ': G2b cel 2 lijnt uit met data kolom 3 (< 2px)', Math.abs(g2bCol2L - d3Col3Left) < 2);
+            }
+        }
+
+        // G2c: full-width (colspan=8)
+        var g2c = wrap.querySelector('[data-row-id="' + g2cId + '"]');
+        assert(prefix + ': G2c (full-width) rij bestaat', !!g2c);
+        if (g2c) {
+            var g2cCells = g2c.querySelectorAll('td');
+            assert(prefix + ': G2c heeft 1 cel (full-width)', g2cCells.length === 1);
+            assert(prefix + ': G2c cel colspan=8', g2cCells[0].getAttribute('colspan') === '8');
+        }
+
+        // G3a: 3-way split (colspan=2 + colspan=3 + colspan=3)
+        var g3a = wrap.querySelector('[data-row-id="' + g3aId + '"]');
+        assert(prefix + ': G3a (3-way split) rij bestaat', !!g3a);
+        if (g3a) {
+            var g3aCells = g3a.querySelectorAll('td');
+            assert(prefix + ': G3a heeft 3 cellen', g3aCells.length === 3);
+            assert(prefix + ': G3a cel 1 colspan=2', g3aCells[0].getAttribute('colspan') === '2');
+            assert(prefix + ': G3a cel 2 colspan=3', g3aCells[1].getAttribute('colspan') === '3');
+            assert(prefix + ': G3a cel 3 colspan=3', g3aCells[2].getAttribute('colspan') === '3');
+            if (adresCol && telCol) {
+                var g3aAdresLeft = g3aCells[1].getBoundingClientRect().left;
+                assert(prefix + ': G3a cel 2 lijnt uit met header "' + headerNames[1] + '" (< 2px)', Math.abs(g3aAdresLeft - adresCol.getBoundingClientRect().left) < 2);
+                var g3aTelLeft = g3aCells[2].getBoundingClientRect().left;
+                assert(prefix + ': G3a cel 3 lijnt uit met header "' + headerNames[2] + '" (< 2px)', Math.abs(g3aTelLeft - telCol.getBoundingClientRect().left) < 2);
+            }
+            var d5Row = wrap.querySelector('[data-row-id="' + d5Id + '"]');
+            if (d5Row) {
+                var d5Cells = d5Row.querySelectorAll('td');
+                var g3aCol2Left = g3aCells[1].getBoundingClientRect().left;
+                assert(prefix + ': G3a cel 2 lijnt uit met data kolom 3 (< 2px)', Math.abs(g3aCol2Left - d5Cells[2].getBoundingClientRect().left) < 2);
+                var g3aCol3Left = g3aCells[2].getBoundingClientRect().left;
+                assert(prefix + ': G3a cel 3 lijnt uit met data kolom 6 (< 2px)', Math.abs(g3aCol3Left - d5Cells[5].getBoundingClientRect().left) < 2);
+            }
+        }
+
+        // G3b: 2-way split (colspan=2 + colspan=6)
+        var g3b = wrap.querySelector('[data-row-id="' + g3bId + '"]');
+        assert(prefix + ': G3b (2-way split) rij bestaat', !!g3b);
+        if (g3b) {
+            var g3bCells = g3b.querySelectorAll('td');
+            assert(prefix + ': G3b heeft 2 cellen', g3bCells.length === 2);
+            assert(prefix + ': G3b cel 1 colspan=2', g3bCells[0].getAttribute('colspan') === '2');
+            assert(prefix + ': G3b cel 2 colspan=6', g3bCells[1].getAttribute('colspan') === '6');
+            if (adresCol) {
+                var g3bCol2Left = g3bCells[1].getBoundingClientRect().left;
+                assert(prefix + ': G3b cel 2 lijnt uit met header "' + headerNames[1] + '" (< 2px)', Math.abs(g3bCol2Left - adresCol.getBoundingClientRect().left) < 2);
+            }
+        }
+    }
+
+    testMergeTable('T9', 'tmp-test9',
+        ['Naam', 'Adres', 'Telefoon'], ['2','3'],
+        't9g2a', 't9g2b', 't9g2c', 't9g3a', 't9g3b',
+        't9d1', 't9d3', 't9d5', 't9d6');
+
+    testMergeTable('T10', 'tmp-test10',
+        ['Familienname', 'Anschrift', 'Telefon'], ['2','3'],
+        't10g2a', 't10g2b', 't10g2c', 't10g3a', 't10g3b',
+        't10d1', 't10d3', 't10d5', 't10d6');
 
     // Render results
     var container = document.getElementById('auto-test-results');
