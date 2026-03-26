@@ -544,19 +544,26 @@ td.tmp-cell-selected {
 }
 
 .tmp-panel-right .wp-picker-container .wp-color-result .wp-color-result-text {
-    font-size: 11px;
-    line-height: 24px;
-    padding: 0 8px;
+    display: none;
 }
 
 .tmp-panel-right .wp-picker-input-wrap {
-    max-width: 0;
-    overflow: hidden;
-}
-
-.tmp-panel-right .wp-picker-container.wp-picker-active .wp-picker-input-wrap {
     max-width: 200px;
     overflow: visible;
+}
+
+.tmp-panel-right .wp-picker-input-wrap input.wp-color-picker {
+    width: 80px !important;
+    font-size: 12px;
+    padding: 2px 4px;
+    height: 26px;
+}
+
+.tmp-panel-right .wp-picker-input-wrap .wp-picker-clear {
+    font-size: 11px;
+    height: 26px;
+    line-height: 24px;
+    padding: 0 6px;
 }
 
 .tmp-panel-right .wp-picker-holder {
