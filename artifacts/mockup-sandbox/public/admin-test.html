@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TableMaster Pro — Admin Editor Test</title>
+<link rel="stylesheet" href="/__mockup/admin.css">
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 20px; background: #f0f0f1; color: #1d2327; }
+h2 { margin-top: 0; }
+.wrap { max-width: 1200px; margin: 0 auto; background: #fff; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+.tmp-cell-toolbar {
+  display: flex; align-items: center; gap: 2px; padding: 6px 10px;
+  background: #fff; border: 1px solid #ddd; border-radius: 6px;
+  margin-bottom: 10px; flex-wrap: wrap;
+}
+.tmp-cell-toolbar button {
+  width: 36px; height: 36px; border: 1px solid #ddd; border-radius: 4px;
+  background: #fff; cursor: pointer; font-size: 16px; display: flex;
+  align-items: center; justify-content: center; color: #555;
+}
+.tmp-cell-toolbar button:hover { background: #f0f0f0; }
+.tmp-cell-toolbar button.active { background: #e0e7ff; border-color: #2271b1; color: #2271b1; }
+.tmp-toolbar-disabled { opacity: 0.4; pointer-events: none; }
+.tmp-tb-cell-ref { font-size: 12px; color: #888; margin-left: 8px; }
+.tmp-tb-separator { width: 1px; height: 24px; background: #ddd; margin: 0 4px; }
+
+.tmp-table-scroll { overflow-x: auto; margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h2>Admin Editor Test — Toolbar & Leesbaarheid</h2>
+
+  <div id="tmp-cell-toolbar" class="tmp-cell-toolbar tmp-toolbar-disabled">
+    <button id="tmp-tb-bold" title="Vet"><b>B</b></button>
+    <button id="tmp-tb-italic" title="Cursief"><i>I</i></button>
+    <button id="tmp-tb-link" title="Link">🔗</button>
+    <button id="tmp-tb-bullet" title="Lijst">☰</button>
+    <div class="tmp-tb-separator"></div>
+    <button class="tmp-tb-align" data-align="left" id="tmp-tb-align-left" title="Links">≡</button>
+    <button class="tmp-tb-align" data-align="center" id="tmp-tb-align-center" title="Midden">≡</button>
+    <button class="tmp-tb-align" data-align="right" id="tmp-tb-align-right" title="Rechts">≡</button>
+    <div class="tmp-tb-separator"></div>
+    <button id="tmp-tb-delete-row" title="Rij verwijderen">🗑️</button>
+    <button id="tmp-tb-delete-col" title="Kolom verwijderen">🗑️</button>
+    <span class="tmp-tb-cell-ref" id="tmp-tb-cell-ref"></span>
+  </div>
+
+  <div class="tmp-table-scroll">
+    <table class="tmp-admin-table" id="test-table">
+      <thead>
+        <tr class="tmp-admin-header-row">
+          <th style="width:28px;"></th>
+          <th style="width:80px;">Type</th>
+          <th class="tmp-col-header-cell" data-col-key="col1">
+            <span class="tmp-col-header-label">Behandeling</span>
+            <span class="tmp-col-delete-btn">✕</span>
+          </th>
+          <th class="tmp-col-header-cell" data-col-key="col2">
+            <span class="tmp-col-header-label">Categorie</span>
+            <span class="tmp-col-delete-btn">✕</span>
+          </th>
+          <th class="tmp-col-header-cell" data-col-key="col3">
+            <span class="tmp-col-header-label">Arts</span>
+            <span class="tmp-col-delete-btn">✕</span>
+          </th>
+          <th class="tmp-col-header-cell" data-col-key="col4">
+            <span class="tmp-col-header-label">Locatie</span>
+            <span class="tmp-col-delete-btn">✕</span>
+          </th>
+          <th class="tmp-col-header-cell" data-col-key="col5">
+            <span class="tmp-col-header-label">Prijs (€)</span>
+            <span class="tmp-col-delete-btn">✕</span>
+          </th>
+          <th style="width:36px;"></th>
+        </tr>
+      </thead>
+      <tbody class="tmp-rows-sortable">
+        <tr class="tmp-admin-row tmp-admin-row-group_1" data-temp-id="r1">
+          <td><span class="tmp-drag-handle">☰</span></td>
+          <td><span class="tmp-row-type-badge tmp-type-badge-group_1">G1</span></td>
+          <td colspan="5"><div class="tmp-cell-input" contenteditable="true" data-col-key="col1">Massage &amp; Fysiotherapie</div></td>
+          <td></td>
+        </tr>
+        <tr class="tmp-admin-row tmp-admin-row-group_2" data-temp-id="r2">
+          <td><span class="tmp-drag-handle">☰</span></td>
+          <td><span class="tmp-row-type-badge tmp-type-badge-group_2">G2</span></td>
+          <td colspan="5"><div class="tmp-cell-input" contenteditable="true" data-col-key="col1">Klassieke Massage</div></td>
+          <td></td>
+        </tr>
+        <tr class="tmp-admin-row tmp-admin-row-data" data-temp-id="r3">
+          <td><span class="tmp-drag-handle">☰</span></td>
+          <td><span class="tmp-row-type-badge tmp-type-badge-data">Data</span></td>
+          <td><div class="tmp-cell-input" contenteditable="true" data-col-key="col1">Rugmassage 30 min</div></td>
+          <td><div class="tmp-cell-input" contenteditable="true" data-col-key="col2">Fysiotherapie</div></td>
+          <td><div class="tmp-cell-input" contenteditable="true" data-col-key="col3">Dr. Jansen</div></td>
+          <td><div class="tmp-cell-input" contenteditable="true" data-col-key="col4">Amsterdam</div></td>
+          <td><div class="tmp-cell-input" contenteditable="true" data-col-key="col5">45</div></td>
+          <td><button class="tmp-row-duplicate" title="Dupliceer">⧉</button></td>
+        </tr>
+        <tr class="tmp-admin-row tmp-admin-row-data" data-temp-id="r4">
+          <td><span class="tmp-drag-handle">☰</span></td>
+          <td><span class="tmp-row-type-badge tmp-type-badge-data">Data</span></td>
+          <td><div class="tmp-cell-input" contenteditable="true" data-col-key="col1">Rugmassage 60 min</div></td>
+          <td><div class="tmp-cell-input" contenteditable="true" data-col-key="col2">Fysiotherapie</div></td>
+          <td><div class="tmp-cell-input" contenteditable="true" data-col-key="col3">Dr. Jansen</div></td>
+          <td><div class="tmp-cell-input" contenteditable="true" data-col-key="col4">Amsterdam</div></td>
+          <td><div class="tmp-cell-input" contenteditable="true" data-col-key="col5">75</div></td>
+          <td><button class="tmp-row-duplicate" title="Dupliceer">⧉</button></td>
+        </tr>
+        <tr class="tmp-admin-row tmp-admin-row-footer" data-temp-id="r5">
+          <td><span class="tmp-drag-handle">☰</span></td>
+          <td><span class="tmp-row-type-badge tmp-type-badge-footer">Footer</span></td>
+          <td colspan="4"><div class="tmp-cell-input" contenteditable="true" data-col-key="col1">Totaal excl. BTW</div></td>
+          <td><div class="tmp-cell-input" contenteditable="true" data-col-key="col5"><b>120</b></div></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top: 20px; padding: 12px; background: #f8f8f8; border-radius: 6px; font-size: 13px;">
+    <strong>Test checklist:</strong>
+    <ul style="margin: 8px 0 0; padding-left: 20px;">
+      <li>Klik op een kolomkop → toolbar wordt actief, tekst bewerkbaar (wit veld)</li>
+      <li>Klik op G1 cel → tekst leesbaar (donker op wit) bij hover/focus</li>
+      <li>Klik op G2 cel → tekst leesbaar bij hover/focus</li>
+      <li>Klik op Footer cel → tekst leesbaar bij hover/focus</li>
+      <li>Alignment knoppen werken voor kolomkoppen</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+(function() {
+  var themeColors = {
+    header_bg: '#b71c1c', header_text: '#ffffff',
+    group1_bg: '#c62828', group1_text: '#ffffff',
+    group2_bg: '#ffcdd2', group2_text: '#b71c1c',
+    group3_bg: '#ffebee', group3_text: '#c62828',
+    footer_bg: '#ffebee', footer_text: '#b71c1c',
+    odd_bg: '#ffffff', even_bg: '#fafafa',
+    border_color: '#e0e0e0'
+  };
+
+  var $table = document.getElementById('test-table');
+
+  // Apply theme colors (simulates updatePreview)
+  $table.querySelectorAll('thead th').forEach(function(th) {
+    th.style.background = themeColors.header_bg;
+    th.style.color = themeColors.header_text;
+    th.style.borderColor = 'rgba(255,255,255,0.15)';
+  });
+  $table.querySelectorAll('.tmp-admin-row-group_1').forEach(function(tr) {
+    tr.querySelectorAll('td').forEach(function(td) {
+      td.style.background = themeColors.group1_bg;
+      td.style.color = themeColors.group1_text;
+    });
+  });
+  $table.querySelectorAll('.tmp-admin-row-group_2').forEach(function(tr) {
+    tr.querySelectorAll('td').forEach(function(td) {
+      td.style.background = themeColors.group2_bg;
+      td.style.color = themeColors.group2_text;
+    });
+  });
+  $table.querySelectorAll('.tmp-admin-row-footer').forEach(function(tr) {
+    tr.querySelectorAll('td').forEach(function(td) {
+      td.style.background = themeColors.footer_bg;
+      td.style.color = themeColors.footer_text;
+    });
+  });
+  var dataIdx = 0;
+  $table.querySelectorAll('.tmp-admin-row-data').forEach(function(tr) {
+    var bg = dataIdx % 2 === 0 ? themeColors.odd_bg : themeColors.even_bg;
+    tr.style.background = bg;
+    dataIdx++;
+  });
+  $table.querySelectorAll('td').forEach(function(td) {
+    td.style.borderColor = themeColors.border_color;
+  });
+
+  // Header cell click → inline edit + toolbar
+  var activeCell = null;
+  $table.querySelectorAll('.tmp-col-header-cell').forEach(function(th) {
+    th.addEventListener('click', function(e) {
+      if (th.querySelector('.tmp-col-inline-edit')) return;
+      var label = th.querySelector('.tmp-col-header-label');
+      var delBtn = th.querySelector('.tmp-col-delete-btn');
+      var origText = label.textContent;
+      label.style.display = 'none';
+      if (delBtn) delBtn.style.display = 'none';
+      var editDiv = document.createElement('div');
+      editDiv.className = 'tmp-col-inline-edit tmp-cell-input';
+      editDiv.contentEditable = 'true';
+      editDiv.textContent = origText;
+      th.appendChild(editDiv);
+      editDiv.focus();
+      var rng = document.createRange();
+      rng.selectNodeContents(editDiv);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(rng);
+      activeCell = { el: editDiv, type: 'header', colKey: th.dataset.colKey };
+      document.getElementById('tmp-cell-toolbar').classList.remove('tmp-toolbar-disabled');
+      document.getElementById('tmp-tb-cell-ref').textContent = origText;
+      editDiv.addEventListener('blur', function() {
+        setTimeout(function() {
+          label.textContent = editDiv.textContent || origText;
+          label.style.display = '';
+          if (delBtn) delBtn.style.display = '';
+          editDiv.remove();
+          activeCell = null;
+          document.getElementById('tmp-cell-toolbar').classList.add('tmp-toolbar-disabled');
+          document.getElementById('tmp-tb-cell-ref').textContent = '';
+        }, 150);
+      });
+    });
+  });
+
+  // Cell focus → toolbar
+  $table.querySelectorAll('.tmp-cell-input').forEach(function(cell) {
+    cell.addEventListener('focus', function() {
+      activeCell = { el: cell, type: 'cell' };
+      document.getElementById('tmp-cell-toolbar').classList.remove('tmp-toolbar-disabled');
+      document.getElementById('tmp-tb-cell-ref').textContent = 'Cel actief';
+    });
+    cell.addEventListener('blur', function() {
+      setTimeout(function() {
+        if (!document.querySelector('.tmp-cell-input:focus, .tmp-col-inline-edit:focus')) {
+          activeCell = null;
+          document.getElementById('tmp-cell-toolbar').classList.add('tmp-toolbar-disabled');
+          document.getElementById('tmp-tb-cell-ref').textContent = '';
+        }
+      }, 100);
+    });
+  });
+
+  // Toolbar buttons
+  document.getElementById('tmp-tb-bold').addEventListener('mousedown', function(e) {
+    e.preventDefault();
+    if (activeCell) { activeCell.el.focus(); document.execCommand('bold'); }
+  });
+  document.getElementById('tmp-tb-italic').addEventListener('mousedown', function(e) {
+    e.preventDefault();
+    if (activeCell) { activeCell.el.focus(); document.execCommand('italic'); }
+  });
+  document.querySelectorAll('.tmp-tb-align').forEach(function(btn) {
+    btn.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      if (!activeCell) return;
+      var align = btn.dataset.align;
+      activeCell.el.style.textAlign = align;
+      if (activeCell.type === 'header') {
+        activeCell.el.closest('th').style.textAlign = align;
+      }
+      document.querySelectorAll('.tmp-tb-align').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+    });
+  });
+})();
+</script>
+</body>
+</html>

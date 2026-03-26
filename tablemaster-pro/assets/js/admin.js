@@ -1270,9 +1270,14 @@
         function doInsert() {
             var url  = $modal.find('.tmp-link-url').val().trim();
             if (!url) return;
+            if (!/^(https?:|mailto:|tel:|#|\/)/i.test(url)) url = 'https://' + url;
             var text    = $modal.find('.tmp-link-text').val().trim() || url;
             var newTab  = $modal.find('.tmp-link-newtab').is(':checked');
-            var tag     = '<a href="' + url + '"' + (newTab ? ' target="_blank" rel="noopener"' : '') + '>' + escHtml(text) + '</a>';
+            var a = document.createElement('a');
+            a.href = url;
+            a.textContent = text;
+            if (newTab) { a.target = '_blank'; a.rel = 'noopener'; }
+            var tag = a.outerHTML;
             $area.focus();
             restoreSelection();
             document.execCommand('insertHTML', false, tag);
