@@ -213,16 +213,11 @@ foreach ( $font_css_map as $fk => $selector ) :
                     foreach ( $col_meta as $cm ) :
                         $cs     = $cm['cs'];
                         $col    = $cm['col'];
-                        $width  = $cs['width'] ?? 'auto';
-                        if ( $width !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $width ) ) $width = 'auto';
-                        if ( $width === 'auto' && $default_col_w !== '' ) $width = $default_col_w;
                         $align  = in_array( $cs['align'] ?? 'left', $valid_aligns, true ) ? $cs['align'] : 'left';
                         $sort   = ! empty( $table_sortable );
                         $th_class = 'tmp-th';
                         if ( $sort )   $th_class .= ' tmp-sortable';
-                        $style  = '';
-                        if ( $width !== 'auto' ) $style = 'width:' . esc_attr( $width ) . ';';
-                        $style .= 'text-align:' . esc_attr( $align ) . ';';
+                        $style  = 'text-align:' . esc_attr( $align ) . ';';
                     ?>
                         <th class="<?php echo esc_attr( $th_class ); ?>"
                             style="<?php echo esc_attr( $style ); ?>"
@@ -246,13 +241,8 @@ foreach ( $font_css_map as $fk => $selector ) :
                     $col_count_total = count( $col_meta );
                     foreach ( $col_meta as $idx => $cm ) :
                         if ( $cm['g1'] === '' ) :
-                            $uw  = $cm['cs']['width'] ?? 'auto';
-                            if ( $uw !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $uw ) ) $uw = 'auto';
-                            if ( $uw === 'auto' && $default_col_w !== '' ) $uw = $default_col_w;
                             $ug_align = in_array( $cm['cs']['align'] ?? 'left', $valid_aligns, true ) ? $cm['cs']['align'] : 'left';
-                            $us  = '';
-                            if ( $uw !== 'auto' ) $us .= 'width:' . esc_attr( $uw ) . ';';
-                            $us .= 'text-align:' . esc_attr( $ug_align ) . ';';
+                            $us  = 'text-align:' . esc_attr( $ug_align ) . ';';
                             $ug_sort = ! empty( $table_sortable );
                             $ug_class = 'tmp-th';
                             if ( $ug_sort ) $ug_class .= ' tmp-sortable';
@@ -308,13 +298,8 @@ foreach ( $font_css_map as $fk => $selector ) :
                     $col_count_total = count( $col_meta );
                     foreach ( $col_meta as $idx => $cm ) :
                         if ( $cm['g1'] === '' ) :
-                            $uw  = $cm['cs']['width'] ?? 'auto';
-                            if ( $uw !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $uw ) ) $uw = 'auto';
-                            if ( $uw === 'auto' && $default_col_w !== '' ) $uw = $default_col_w;
                             $ug_align = in_array( $cm['cs']['align'] ?? 'left', $valid_aligns, true ) ? $cm['cs']['align'] : 'left';
-                            $us  = '';
-                            if ( $uw !== 'auto' ) $us .= 'width:' . esc_attr( $uw ) . ';';
-                            $us .= 'text-align:' . esc_attr( $ug_align ) . ';';
+                            $us  = 'text-align:' . esc_attr( $ug_align ) . ';';
                             $ug_sort = ! empty( $table_sortable );
                             $ug_class = 'tmp-th tmp-th-grouped';
                             if ( $ug_sort ) $ug_class .= ' tmp-sortable';
@@ -360,13 +345,9 @@ foreach ( $font_css_map as $fk => $selector ) :
                     foreach ( $col_meta as $idx => $cm ) :
                         if ( $cm['g1'] === '' ) continue;
                         if ( ! isset( $g1_has_g2[ $cm['g1'] ] ) ) continue;
-                        $lw  = $cm['cs']['width'] ?? 'auto';
-                        if ( $lw !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $lw ) ) $lw = 'auto';
-                        if ( $lw === 'auto' && $default_col_w !== '' ) $lw = $default_col_w;
-                        $ls  = $lw !== 'auto' ? 'width:' . esc_attr( $lw ) . ';' : '';
                         $sort_r2 = ! empty( $table_sortable );
                         $align_r2 = in_array( $cm['cs']['align'] ?? 'left', $valid_aligns, true ) ? $cm['cs']['align'] : 'left';
-                        $ls_full  = $ls . 'text-align:' . esc_attr( $align_r2 ) . ';';
+                        $ls_full  = 'text-align:' . esc_attr( $align_r2 ) . ';';
                         if ( $cm['g2'] === '' ) :
                             $th2_class = 'tmp-th tmp-th-grouped';
                             if ( $sort_r2 ) $th2_class .= ' tmp-sortable';
@@ -402,12 +383,8 @@ foreach ( $font_css_map as $fk => $selector ) :
                         if ( $cm['g2'] === '' ) continue;
                         $cs     = $cm['cs'];
                         $sort   = ! empty( $table_sortable );
-                        $lw3  = $cs['width'] ?? 'auto';
-                        if ( $lw3 !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $lw3 ) ) $lw3 = 'auto';
-                        if ( $lw3 === 'auto' && $default_col_w !== '' ) $lw3 = $default_col_w;
-                        $ls3  = $lw3 !== 'auto' ? 'width:' . esc_attr( $lw3 ) . ';' : '';
                         $align_r3 = in_array( $cs['align'] ?? 'left', $valid_aligns, true ) ? $cs['align'] : 'left';
-                        $ls3_full = $ls3 . 'text-align:' . esc_attr( $align_r3 ) . ';';
+                        $ls3_full = 'text-align:' . esc_attr( $align_r3 ) . ';';
                         $th_class = 'tmp-th tmp-th-grouped';
                         if ( $sort )   $th_class .= ' tmp-sortable';
                     ?>

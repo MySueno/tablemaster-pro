@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.43
+Stable tag: 1.3.44
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.44 =
+* Fix: Samengevoegde kolomtitels (colspan) maken de onderliggende kolommen niet meer smaller — alle kolommen behouden dezelfde breedte via colgroup
+* Alle per-kolom width styles verwijderd uit header-cellen — breedte wordt nu uitsluitend via colgroup afgedwongen
 
 = 1.3.43 =
 * Kolombreedte is nu altijd een tabel-niveau instelling — niet meer per kolom te overschrijven
