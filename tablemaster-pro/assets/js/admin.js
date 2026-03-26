@@ -117,6 +117,24 @@
 
         $('.tmp-panel-right .wp-picker-input-wrap').css('display', 'inline-flex');
 
+        $('.wp-picker-container').each(function () {
+            var $container = $(this);
+            var $hexInput = $container.find('input.wp-color-picker');
+            var $holder = $container.find('.wp-picker-holder');
+            $hexInput.off('focus.wpColorPicker focus.iris');
+            $hexInput.on('focus.tmpHex', function (e) {
+                e.stopImmediatePropagation();
+            });
+            $hexInput.on('input.tmpHex change.tmpHex', function () {
+                var val = $(this).val();
+                if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+                    $(this).iris('color', val);
+                    updatePreview();
+                    isDirty = true;
+                }
+            });
+        });
+
         $(document).on('click.tmpColorClose', function (e) {
             var $target = $(e.target);
             var $currentContainer = $target.closest('.wp-picker-container');
