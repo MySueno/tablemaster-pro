@@ -378,9 +378,11 @@
                 $('#tmp-tb-cell-ref').text(groupName);
                 function finishGroupNameEdit() {
                     var newVal = cleanCellHtml($editDiv.html()).trim();
-                    activeCell = null;
-                    $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
-                    $('#tmp-tb-cell-ref').text('');
+                    if (activeCell && activeCell.el === $editDiv[0]) {
+                        activeCell = null;
+                        $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
+                        $('#tmp-tb-cell-ref').text('');
+                    }
                     if (newVal && newVal !== origGroupName) {
                         pushUndo();
                         groupKeys.forEach(function (k) {
@@ -400,7 +402,7 @@
                 $editDiv.on('blur', function () { setTimeout(finishGroupNameEdit, 150); });
                 $editDiv.on('keydown', function (ev) {
                     if (ev.key === 'Enter') { ev.preventDefault(); finishGroupNameEdit(); }
-                    if (ev.key === 'Escape') { activeCell = null; $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled'); $label.show(); $unlinkBtn.show(); $editDiv.remove(); $th.css('min-width', ''); }
+                    if (ev.key === 'Escape') { if (activeCell && activeCell.el === $editDiv[0]) { activeCell = null; $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled'); } $label.show(); $unlinkBtn.show(); $editDiv.remove(); $th.css('min-width', ''); }
                 });
             } else {
                 var colKey = $th.data('col-key') + '';
@@ -432,9 +434,11 @@
                         pushUndo();
                         col.label = newLabel;
                     }
-                    activeCell = null;
-                    $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
-                    $('#tmp-tb-cell-ref').text('');
+                    if (activeCell && activeCell.el === $editDiv[0]) {
+                        activeCell = null;
+                        $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
+                        $('#tmp-tb-cell-ref').text('');
+                    }
                     $label.html(col.label || 'Kolom').show();
                     $delBtn.show();
                     $editDiv.remove();
@@ -444,9 +448,11 @@
                 function cancelEdit() {
                     editCancelled = true;
                     col.label = origLabel;
-                    activeCell = null;
-                    $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
-                    $('#tmp-tb-cell-ref').text('');
+                    if (activeCell && activeCell.el === $editDiv[0]) {
+                        activeCell = null;
+                        $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
+                        $('#tmp-tb-cell-ref').text('');
+                    }
                     $label.html(origLabel || 'Kolom').show();
                     $delBtn.show();
                     $editDiv.remove();
@@ -1048,6 +1054,7 @@
     function toolbarDeleteRow() {
         if (!activeCell) return;
         var tempId = activeCell.tempId;
+        if (tempId === '__header__') return;
         var rowObj = rows.find(function (r) { return r.temp_id + '' === tempId; });
         if (!rowObj) { activeCell = null; return; }
         pushUndo();
@@ -1058,6 +1065,7 @@
     function toolbarDeleteCol() {
         if (!activeCell) return;
         var colKey = activeCell.colKey;
+        if (colKey.indexOf('__group__') === 0) return;
         var col = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
         if (!col) { activeCell = null; return; }
         if (!confirm('Kolom "' + (col.label || 'Kolom') + '" verwijderen?')) return;
@@ -1695,7 +1703,7 @@
         });
 
         // Settings change -> dirty
-        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-sortable, #tmp-column-filters, #tmp-enable-export, #tmp-inline-html, #tmp-sticky-first-col, #tmp-sticky-header, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-default-col-width, #tmp-first-col-width, #tmp-max-height, #tmp-table-name, .tmp-font-size, .tmp-font-bold, .tmp-font-italic').on('change input', function () {
+        $('#tmp-caption, #tmp-search, #tmp-search-position, #tmp-pagination, #tmp-per-page, #tmp-per-page-selector, #tmp-collapsible, #tmp-sortable, #tmp-column-filters, #tmp-enable-export, #tmp-inline-html, #tmp-sticky-first-col, #tmp-sticky-header, #tmp-default-sort-col, #tmp-default-sort-dir, #tmp-default-col-width, #tmp-first-col-width, #tmp-max-width, #tmp-max-height, #tmp-table-name, .tmp-font-size, .tmp-font-bold, .tmp-font-italic').on('change input', function () {
             isDirty = true;
             updatePreview();
         });
