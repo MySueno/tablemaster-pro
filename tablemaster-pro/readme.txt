@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.58
+Stable tag: 1.3.59
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,11 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.59 =
+* Fix: Kolomkop uitlijning (links/midden/rechts) blijft nu behouden na het verlaten van de bewerkingsmodus
+* Fix: Kolomkop uitlijning wordt correct weergegeven op de frontend website (alle header depth niveaus)
+* Fix: Admin tabel rendert kolomkoppen met opgeslagen uitlijning bij het opbouwen van de tabel
 
 = 1.3.58 =
 * Fix: "Eerste kolom breedte" instelling werd niet opgeslagen — waarde ontbrak in de sanitize/save functie (class-ajax.php)

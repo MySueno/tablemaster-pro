@@ -322,7 +322,9 @@
                 '</th>';
                 ci = groupEndIdx + 1;
             } else {
-                headerCols += '<th class="tmp-col-header-cell" data-col-key="' + escAttr(key) + '" data-col-idx="' + ci + '" draggable="true">' +
+                var colAlign = (col.settings && col.settings.align) || '';
+                var colAlignStyle = colAlign && colAlign !== 'left' ? ' style="text-align:' + escAttr(colAlign) + ';"' : '';
+                headerCols += '<th class="tmp-col-header-cell" data-col-key="' + escAttr(key) + '" data-col-idx="' + ci + '" draggable="true"' + colAlignStyle + '>' +
                     '<span class="tmp-col-header-label">' + (col.label || 'Kolom') + '</span>' +
                     '<span class="tmp-col-delete-btn dashicons dashicons-no-alt" title="Kolom verwijderen"></span>' +
                 '</th>';
@@ -479,6 +481,8 @@
                         $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
                         $('#tmp-tb-cell-ref').text('');
                     }
+                    var savedAlign = (col.settings && col.settings.align) || '';
+                    $th.css('text-align', savedAlign && savedAlign !== 'left' ? savedAlign : '');
                     $label.html(col.label || 'Kolom').show();
                     $delBtn.show();
                     $editDiv.remove();
@@ -493,6 +497,8 @@
                         $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
                         $('#tmp-tb-cell-ref').text('');
                     }
+                    var savedAlign = (col.settings && col.settings.align) || '';
+                    $th.css('text-align', savedAlign && savedAlign !== 'left' ? savedAlign : '');
                     $label.html(origLabel || 'Kolom').show();
                     $delBtn.show();
                     $editDiv.remove();

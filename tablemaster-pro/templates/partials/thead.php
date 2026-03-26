@@ -56,11 +56,14 @@ if ( $first_col_w !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $first_col
             $sort   = ! empty( $table_sortable );
             $th_class = 'tmp-th';
             if ( $sort )   $th_class .= ' tmp-sortable';
+            $col_align = isset( $cs['align'] ) && in_array( $cs['align'], $valid_aligns, true ) ? $cs['align'] : '';
+            $col_align_style = $col_align !== '' && $col_align !== 'left' ? ' style="text-align:' . esc_attr( $col_align ) . ';"' : '';
         ?>
             <th class="<?php echo esc_attr( $th_class ); ?>"
                 data-col-id="<?php echo esc_attr( $col->id ); ?>"
                 data-col-type="<?php echo esc_attr( $col->type ); ?>"
-                <?php echo $sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
+                <?php echo $sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>
+                <?php echo $col_align_style; ?>>
                 <?php echo wp_kses_post( $col->label ); ?>
                 <?php if ( $sort ) : ?>
                     <span class="tmp-sort-icon" aria-hidden="true"></span>
@@ -81,11 +84,14 @@ if ( $first_col_w !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $first_col
                 $ug_sort = ! empty( $table_sortable );
                 $ug_class = 'tmp-th';
                 if ( $ug_sort ) $ug_class .= ' tmp-sortable';
+                $ug_align = isset( $cm['cs']['align'] ) && in_array( $cm['cs']['align'], $valid_aligns, true ) ? $cm['cs']['align'] : '';
+                $ug_align_style = $ug_align !== '' && $ug_align !== 'left' ? ' style="text-align:' . esc_attr( $ug_align ) . ';"' : '';
             ?>
                 <th class="<?php echo esc_attr( $ug_class ); ?>"
                     data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
                     data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
-                    <?php echo $ug_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
+                    <?php echo $ug_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>
+                    <?php echo $ug_align_style; ?>>
                     <?php echo wp_kses_post( $cm['col']->label ); ?>
                     <?php if ( $ug_sort ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
                 </th>
@@ -132,11 +138,14 @@ if ( $first_col_w !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $first_col
                 $ug_sort = ! empty( $table_sortable );
                 $ug_class = 'tmp-th tmp-th-grouped';
                 if ( $ug_sort ) $ug_class .= ' tmp-sortable';
+                $ug_align = isset( $cm['cs']['align'] ) && in_array( $cm['cs']['align'], $valid_aligns, true ) ? $cm['cs']['align'] : '';
+                $ug_align_style = $ug_align !== '' && $ug_align !== 'left' ? ' style="text-align:' . esc_attr( $ug_align ) . ';"' : '';
             ?>
                 <th class="<?php echo esc_attr( $ug_class ); ?>" rowspan="<?php echo $max_depth; ?>"
                     data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
                     data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
-                    <?php echo $ug_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
+                    <?php echo $ug_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>
+                    <?php echo $ug_align_style; ?>>
                     <?php echo wp_kses_post( $cm['col']->label ); ?>
                     <?php if ( $ug_sort ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
                 </th>
@@ -174,11 +183,14 @@ if ( $first_col_w !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $first_col
             if ( $cm['g2'] === '' ) :
                 $th2_class = 'tmp-th tmp-th-grouped';
                 if ( $sort_r2 ) $th2_class .= ' tmp-sortable';
+                $r2_align = isset( $cm['cs']['align'] ) && in_array( $cm['cs']['align'], $valid_aligns, true ) ? $cm['cs']['align'] : '';
+                $r2_align_style = $r2_align !== '' && $r2_align !== 'left' ? ' style="text-align:' . esc_attr( $r2_align ) . ';"' : '';
             ?>
                 <th class="<?php echo esc_attr( $th2_class ); ?>" rowspan="2"
                     data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
                     data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
-                    <?php echo $sort_r2 ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
+                    <?php echo $sort_r2 ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>
+                    <?php echo $r2_align_style; ?>>
                     <?php echo wp_kses_post( $cm['col']->label ); ?>
                     <?php if ( $sort_r2 ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
                 </th>
@@ -206,11 +218,14 @@ if ( $first_col_w !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $first_col
             $sort   = ! empty( $table_sortable );
             $th_class = 'tmp-th tmp-th-grouped';
             if ( $sort )   $th_class .= ' tmp-sortable';
+            $leaf_align = isset( $cm['cs']['align'] ) && in_array( $cm['cs']['align'], $valid_aligns, true ) ? $cm['cs']['align'] : '';
+            $leaf_align_style = $leaf_align !== '' && $leaf_align !== 'left' ? ' style="text-align:' . esc_attr( $leaf_align ) . ';"' : '';
         ?>
             <th class="<?php echo esc_attr( $th_class ); ?>"
                 data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
                 data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
-                <?php echo $sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
+                <?php echo $sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>
+                <?php echo $leaf_align_style; ?>>
                 <?php echo wp_kses_post( $cm['col']->label ); ?>
                 <?php if ( $sort ) : ?>
                     <span class="tmp-sort-icon" aria-hidden="true"></span>
