@@ -510,29 +510,50 @@ class TableMaster_DB {
                     'is_collapsed'=> $row->is_collapsed,
                 )
             );
-            $new_row_id          = $wpdb->insert_id;
-            $row_map[$row->id]   = $new_row_id;
+            $row_map[$row->id] = $wpdb->insert_id;
+        }
 
-            $cells = $wpdb->get_results( $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}tablemaster_cells WHERE row_id = %d", $row->id
+        $old_row_ids = array_keys( $row_map );
+        if ( ! empty( $old_row_ids ) && ! empty( $col_map ) ) {
+            $placeholders = implode( ',', array_fill( 0, count( $old_row_ids ), '%d' ) );
+            $all_cells = $wpdb->get_results( $wpdb->prepare(
+                "SELECT * FROM {$wpdb->prefix}tablemaster_cells WHERE row_id IN ($placeholders)",
+                $old_row_ids
             ) );
-            foreach ( $cells as $cell ) {
-                $new_col_id = $col_map[$cell->column_id] ?? null;
-                if ( $new_col_id ) {
-                    $wpdb->insert(
-                        "{$wpdb->prefix}tablemaster_cells",
-                        array(
-                            'row_id'    => $new_row_id,
-                            'column_id' => $new_col_id,
-                            'content'   => $cell->content,
-                            'lang'      => $cell->lang,
-                            'align'     => isset( $cell->align ) ? $cell->align : '',
-                            'colspan'   => isset( $cell->colspan ) ? intval( $cell->colspan ) : 1,
-                        )
+
+            $batch = array();
+            $batch_count = 0;
+            foreach ( $all_cells as $cell ) {
+                $new_row_id = $row_map[ $cell->row_id ] ?? null;
+                $new_col_id = $col_map[ $cell->column_id ] ?? null;
+                if ( ! $new_row_id || ! $new_col_id ) continue;
+
+                $batch[] = $wpdb->prepare(
+                    '(%d,%d,%s,%s,%s,%d)',
+                    $new_row_id,
+                    $new_col_id,
+                    $cell->content,
+                    $cell->lang,
+                    isset( $cell->align ) ? $cell->align : '',
+                    isset( $cell->colspan ) ? intval( $cell->colspan ) : 1
+                );
+                $batch_count++;
+
+                if ( $batch_count >= 500 ) {
+                    $wpdb->query(
+                        "INSERT INTO {$wpdb->prefix}tablemaster_cells (row_id, column_id, content, lang, align, colspan) VALUES " . implode( ',', $batch )
                     );
+                    $batch = array();
+                    $batch_count = 0;
                 }
             }
+            if ( ! empty( $batch ) ) {
+                $wpdb->query(
+                    "INSERT INTO {$wpdb->prefix}tablemaster_cells (row_id, column_id, content, lang, align, colspan) VALUES " . implode( ',', $batch )
+                );
+            }
         }
+
         return $new_table_id;
     }
 
@@ -708,6 +729,7 @@ class TableMaster_DB {
         }
 
         $row_id_map = array();
+        $pending_cells = array();
         $allowed_types = array( 'data', 'group_1', 'group_2', 'group_3', 'footer' );
 
         foreach ( $rows_data as $order_index => $row ) {
@@ -752,45 +774,74 @@ class TableMaster_DB {
             $row_cell_merges = isset( $row['cell_merges'] ) && is_array( $row['cell_merges'] ) ? $row['cell_merges'] : array();
 
             if ( ! empty( $row['cells'] ) ) {
-                foreach ( $row['cells'] as $temp_col_key => $content ) {
-                    $col_db_id = $col_id_map[$temp_col_key] ?? null;
-                    if ( ! $col_db_id ) continue;
+                $pending_cells[] = array(
+                    'row_db_id'    => $row_db_id,
+                    'cells'        => $row['cells'],
+                    'cell_aligns'  => $row_cell_aligns,
+                    'cell_merges'  => $row_cell_merges,
+                );
+            }
+        }
 
-                    $existing_cell = $wpdb->get_row( $wpdb->prepare(
-                        "SELECT id FROM {$wpdb->prefix}tablemaster_cells WHERE row_id = %d AND column_id = %d AND lang = %s",
-                        $row_db_id, $col_db_id, $lang
-                    ) );
+        if ( ! empty( $pending_cells ) ) {
+            $all_row_db_ids = array_unique( array_column( $pending_cells, 'row_db_id' ) );
+            $ph = implode( ',', array_fill( 0, count( $all_row_db_ids ), '%d' ) );
+            $existing_cells_raw = $wpdb->get_results( $wpdb->prepare(
+                "SELECT id, row_id, column_id FROM {$wpdb->prefix}tablemaster_cells WHERE row_id IN ($ph) AND lang = %s",
+                array_merge( $all_row_db_ids, array( $lang ) )
+            ) );
+            $existing_map = array();
+            foreach ( $existing_cells_raw as $ec ) {
+                $existing_map[ $ec->row_id . '_' . $ec->column_id ] = $ec->id;
+            }
+
+            $insert_batch = array();
+            $insert_count = 0;
+            foreach ( $pending_cells as $pc ) {
+                $row_db_id    = $pc['row_db_id'];
+                $cell_aligns  = $pc['cell_aligns'];
+                $cell_merges  = $pc['cell_merges'];
+                foreach ( $pc['cells'] as $temp_col_key => $content ) {
+                    $col_db_id = $col_id_map[ $temp_col_key ] ?? null;
+                    if ( ! $col_db_id ) continue;
 
                     $sanitized_content = wp_kses_post( $content );
                     $cell_align = '';
-                    if ( isset( $row_cell_aligns[ $temp_col_key ] ) ) {
-                        $cell_align = in_array( $row_cell_aligns[ $temp_col_key ], array( 'left', 'center', 'right' ), true ) ? $row_cell_aligns[ $temp_col_key ] : '';
+                    if ( isset( $cell_aligns[ $temp_col_key ] ) ) {
+                        $cell_align = in_array( $cell_aligns[ $temp_col_key ], array( 'left', 'center', 'right' ), true ) ? $cell_aligns[ $temp_col_key ] : '';
                     }
                     $cell_colspan = 1;
-                    if ( isset( $row_cell_merges[ $temp_col_key ] ) ) {
-                        $cell_colspan = max( 1, intval( $row_cell_merges[ $temp_col_key ] ) );
+                    if ( isset( $cell_merges[ $temp_col_key ] ) ) {
+                        $cell_colspan = max( 1, intval( $cell_merges[ $temp_col_key ] ) );
                     }
 
-                    if ( $existing_cell ) {
+                    $lookup_key = $row_db_id . '_' . $col_db_id;
+                    if ( isset( $existing_map[ $lookup_key ] ) ) {
                         $wpdb->update(
                             "{$wpdb->prefix}tablemaster_cells",
                             array( 'content' => $sanitized_content, 'align' => $cell_align, 'colspan' => $cell_colspan ),
-                            array( 'id' => $existing_cell->id )
+                            array( 'id' => $existing_map[ $lookup_key ] )
                         );
                     } else {
-                        $wpdb->insert(
-                            "{$wpdb->prefix}tablemaster_cells",
-                            array(
-                                'row_id'    => $row_db_id,
-                                'column_id' => $col_db_id,
-                                'content'   => $sanitized_content,
-                                'lang'      => $lang,
-                                'align'     => $cell_align,
-                                'colspan'   => $cell_colspan,
-                            )
+                        $insert_batch[] = $wpdb->prepare(
+                            '(%d,%d,%s,%s,%s,%d)',
+                            $row_db_id, $col_db_id, $sanitized_content, $lang, $cell_align, $cell_colspan
                         );
+                        $insert_count++;
+                        if ( $insert_count >= 500 ) {
+                            $wpdb->query(
+                                "INSERT INTO {$wpdb->prefix}tablemaster_cells (row_id, column_id, content, lang, align, colspan) VALUES " . implode( ',', $insert_batch )
+                            );
+                            $insert_batch = array();
+                            $insert_count = 0;
+                        }
                     }
                 }
+            }
+            if ( ! empty( $insert_batch ) ) {
+                $wpdb->query(
+                    "INSERT INTO {$wpdb->prefix}tablemaster_cells (row_id, column_id, content, lang, align, colspan) VALUES " . implode( ',', $insert_batch )
+                );
             }
         }
 
