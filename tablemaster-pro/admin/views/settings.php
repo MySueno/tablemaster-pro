@@ -46,13 +46,7 @@ $s = TableMaster_Settings::get();
                     <p class="description"><?php esc_html_e( 'Voer uw licentiecode in om automatische updates te activeren.', TMP_TEXT_DOMAIN ); ?></p>
                 </td>
             </tr>
-            <tr>
-                <th><?php esc_html_e( 'Update-server URL', TMP_TEXT_DOMAIN ); ?></th>
-                <td>
-                    <input type="url" name="update_url" value="<?php echo esc_attr( $s['update_url'] ); ?>" class="regular-text" placeholder="https://uw-domein.app">
-                    <p class="description"><?php esc_html_e( 'URL van de update-server. Als dit is ingevuld, controleert WordPress automatisch op nieuwe versies.', TMP_TEXT_DOMAIN ); ?></p>
-                </td>
-            </tr>
+            <input type="hidden" name="update_url" value="<?php echo esc_attr( $s['update_url'] ); ?>">
             <tr>
                 <th><?php esc_html_e( 'Data verwijderen bij deïnstallatie', TMP_TEXT_DOMAIN ); ?></th>
                 <td>
@@ -82,11 +76,9 @@ $s = TableMaster_Settings::get();
     <?php else : ?>
         <p style="color:#d63638;"><?php esc_html_e( 'Licentie: geen licentiecode ingevuld — automatische updates zijn uitgeschakeld', TMP_TEXT_DOMAIN ); ?></p>
     <?php endif; ?>
-    <?php if ( ! empty( $saved_url ) ) : ?>
-        <p><?php printf( esc_html__( 'Update server: %s', TMP_TEXT_DOMAIN ), esc_html( $saved_url ) ); ?> ✅</p>
-    <?php elseif ( defined( 'TMP_UPDATE_URL' ) && ! empty( TMP_UPDATE_URL ) ) : ?>
-        <p><?php printf( esc_html__( 'Update server: %s (standaard)', TMP_TEXT_DOMAIN ), esc_html( TMP_UPDATE_URL ) ); ?> ✅</p>
+    <?php if ( ! empty( $saved_url ) || ( defined( 'TMP_UPDATE_URL' ) && ! empty( TMP_UPDATE_URL ) ) ) : ?>
+        <p><?php esc_html_e( 'Update server: verbonden', TMP_TEXT_DOMAIN ); ?> ✅</p>
     <?php else : ?>
-        <p style="color:#d63638;"><?php esc_html_e( 'Update server: niet geconfigureerd — sla de instellingen opnieuw op', TMP_TEXT_DOMAIN ); ?></p>
+        <p style="color:#d63638;"><?php esc_html_e( 'Update server: niet geconfigureerd', TMP_TEXT_DOMAIN ); ?></p>
     <?php endif; ?>
 </div>
