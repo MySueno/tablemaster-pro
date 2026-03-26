@@ -323,6 +323,7 @@
 .tmp-type-footer {
     background: var(--tmp-footer-bg, #D32637);
     color: var(--tmp-footer-text, #fff);
+    height: 34px;
 }
 
 .tmp-type-footer:hover {
@@ -338,7 +339,7 @@
     font-weight: 600;
     font-size: 0.95em;
     text-align: left;
-    padding: 10px 16px;
+    padding: 8px 12px;
 }
 
 .tmp-group-cell {

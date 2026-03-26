@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.48
+Stable tag: 1.3.49
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.49 =
+* Fix: Afsluitrij heeft nu dezelfde minimale hoogte (34px) als data- en groepsrijen — ook wanneer de rij leeg is
+* Padding van de afsluitrij aangepast naar 8px 12px (was 10px 16px) voor consistentie met overige rijen
 
 = 1.3.48 =
 * Placeholder "Leeg = samenvoegen →" volledig verwijderd uit alle rijtypen — lege cellen zijn nu echt leeg
