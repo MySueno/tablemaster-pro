@@ -15,7 +15,7 @@
     var lang       = cfg.lang      || '';
     var i18n       = cfg.i18n      || {};
 
-    var columns    = [];   // [{id, label, type, settings:{width,align,sortable,filterable}}, ...]
+    var columns    = [];   // [{id, label, type, settings:{align,sortable,filterable}}, ...]
     var rows       = [];   // [{id, temp_id, row_type, parent_id, parent_temp_id, cells:{col_key: content}, is_collapsed}, ...]
     var colTempIdx    = 0;
     var rowTempIdx    = 0;
@@ -187,7 +187,7 @@
             temp_key: tempKey,
             label:    (i18n.add_column || 'Kolom') + ' ' + (columns.length + 1),
             type:     'text',
-            settings: { width: 'auto', align: 'left', sortable: true, filterable: true, header_group1: '', header_group2: '' }
+            settings: { align: 'left', sortable: true, filterable: true, header_group1: '', header_group2: '' }
         }, colData || {});
         if (!col.settings.header_group1) col.settings.header_group1 = '';
         if (!col.settings.header_group2) col.settings.header_group2 = '';
@@ -1375,7 +1375,7 @@
                     temp_key: tempKey,
                     label:    label.trim() || ('Kolom ' + (idx + 1)),
                     type:     'text',
-                    settings: { width: 'auto', align: 'left', sortable: true, filterable: true, header_group1: '', header_group2: '' }
+                    settings: { align: 'left', sortable: true, filterable: true, header_group1: '', header_group2: '' }
                 });
             });
 
@@ -1433,7 +1433,6 @@
                     label:    col.label,
                     type:     col.type,
                     settings: {
-                        width:         colSettings.width         || 'auto',
                         align:         colSettings.align         || 'left',
                         sortable:      colSettings.sortable      !== false,
                         filterable:    colSettings.filterable     !== false,
