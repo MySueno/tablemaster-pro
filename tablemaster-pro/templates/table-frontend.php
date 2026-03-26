@@ -264,7 +264,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                             $g1_class = 'tmp-th';
                             if ( $g1_sort ) $g1_class .= ' tmp-sortable';
                         ?>
-                            <th class="<?php echo esc_attr( $g1_class ); ?>" colspan="<?php echo $g1_colspan; ?>"
+                            <th class="<?php echo esc_attr( $g1_class ); ?>" colspan="<?php echo intval( $g1_colspan ); ?>"
                                 data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
                                 data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
                                 <?php echo $g1_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
@@ -317,8 +317,8 @@ foreach ( $font_css_map as $fk => $selector ) :
                             if ( $g1_sort ) $g1_class .= ' tmp-sortable';
                         ?>
                             <th class="<?php echo esc_attr( $g1_class ); ?>"
-                                colspan="<?php echo $g1_colspan; ?>"
-                                <?php if ( $g1_no_sub ) : ?>rowspan="<?php echo $rows_below + 1; ?>"<?php endif; ?>
+                                colspan="<?php echo intval( $g1_colspan ); ?>"
+                                <?php if ( $g1_no_sub ) : ?>rowspan="<?php echo intval( $rows_below + 1 ); ?>"<?php endif; ?>
                                 <?php if ( $g1_no_sub ) : ?>data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"<?php endif; ?>
                                 <?php if ( $g1_no_sub ) : ?>data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"<?php endif; ?>
                                 <?php echo $g1_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
@@ -357,7 +357,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                                     else break;
                                 }
                         ?>
-                            <th class="tmp-th tmp-th-grouped" colspan="<?php echo $g2_colspan; ?>"><?php echo wp_kses_post( $cm['g2'] ); ?></th>
+                            <th class="tmp-th tmp-th-grouped" colspan="<?php echo intval( $g2_colspan ); ?>"><?php echo wp_kses_post( $cm['g2'] ); ?></th>
                         <?php endif;
                             $prev_g2_key = $g2_key;
                         endif;
@@ -524,7 +524,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                                     ?>
                                         <td class="tmp-td tmp-group-cell"
                                             style="text-align:<?php echo esc_attr( $grp_align ); ?>;"
-                                            <?php if ( $grp_cspan > 1 ) : ?>colspan="<?php echo $grp_cspan; ?>"<?php endif; ?>>
+                                            <?php if ( $grp_cspan > 1 ) : ?>colspan="<?php echo intval( $grp_cspan ); ?>"<?php endif; ?>>
                                             <?php echo wp_kses_post( $grp_content ); ?>
                                         </td>
                                     <?php endforeach;
@@ -556,7 +556,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                                     foreach ( $auto_cells as $ac ) : ?>
                                         <td class="tmp-td tmp-group-cell"
                                             style="text-align:<?php echo esc_attr( $ac['align'] ); ?>;"
-                                            <?php if ( $ac['cols'] > 1 ) : ?>colspan="<?php echo $ac['cols']; ?>"<?php endif; ?>>
+                                            <?php if ( $ac['cols'] > 1 ) : ?>colspan="<?php echo intval( $ac['cols'] ); ?>"<?php endif; ?>>
                                             <?php echo wp_kses_post( $ac['content'] ); ?>
                                         </td>
                                     <?php endforeach;
@@ -589,7 +589,7 @@ foreach ( $font_css_map as $fk => $selector ) :
                                     data-col-id="<?php echo esc_attr( $col->id ); ?>"
                                     data-col-type="<?php echo esc_attr( $col_type ); ?>"
                                     data-label="<?php echo esc_attr( wp_strip_all_tags( $col->label ) ); ?>"
-                                    <?php if ( $cell_colspan > 1 ) : ?>colspan="<?php echo $cell_colspan; ?>"<?php endif; ?>>
+                                    <?php if ( $cell_colspan > 1 ) : ?>colspan="<?php echo intval( $cell_colspan ); ?>"<?php endif; ?>>
                                     <?php if ( $col_type === 'link' ) : ?>
                                         <?php if ( filter_var( $raw_content, FILTER_VALIDATE_URL ) ) : ?>
                                             <a href="<?php echo esc_url( $raw_content ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $raw_content ); ?></a>
