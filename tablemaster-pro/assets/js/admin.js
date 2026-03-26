@@ -400,10 +400,10 @@
                 var frozenW = $th.outerWidth();
                 $th.css('min-width', frozenW + 'px');
                 $label.hide();
-                $unlinkBtn.hide();
+                $unlinkBtn.css('opacity', '0.85');
                 var $editDiv = $('<div class="tmp-col-inline-edit tmp-cell-input" contenteditable="true"></div>');
                 $editDiv.html(groupName);
-                $th.append($editDiv);
+                $unlinkBtn.before($editDiv);
                 $editDiv.focus();
                 var rng = document.createRange();
                 rng.selectNodeContents($editDiv[0]);
@@ -432,7 +432,7 @@
                         rebuildRowTable();
                     } else {
                         $label.show();
-                        $unlinkBtn.show();
+                        $unlinkBtn.css('opacity', '');
                         $editDiv.remove();
                         $th.css('min-width', '');
                     }
@@ -440,7 +440,7 @@
                 $editDiv.on('blur', function () { setTimeout(finishGroupNameEdit, 150); });
                 $editDiv.on('keydown', function (ev) {
                     if (ev.key === 'Enter') { ev.preventDefault(); finishGroupNameEdit(); }
-                    if (ev.key === 'Escape') { if (activeCell && activeCell.el === $editDiv[0]) { activeCell = null; $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled'); } $label.show(); $unlinkBtn.show(); $editDiv.remove(); $th.css('min-width', ''); }
+                    if (ev.key === 'Escape') { if (activeCell && activeCell.el === $editDiv[0]) { activeCell = null; $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled'); } $label.show(); $unlinkBtn.css('opacity', ''); $editDiv.remove(); $th.css('min-width', ''); }
                 });
             } else {
                 var colKey = $th.data('col-key') + '';
@@ -826,10 +826,11 @@
         });
 
         $tr.find('.tmp-cell-input').on('mousedown', function (e) {
+            var $td = $(this).closest('td');
+            var isMergedCell = $td.attr('colspan') && parseInt($td.attr('colspan')) > 1;
             if (e.ctrlKey || e.metaKey) {
                 e.preventDefault();
                 e.stopPropagation();
-                var $td = $(this).closest('td');
                 $tr.siblings().find('td.tmp-cell-selected').removeClass('tmp-cell-selected');
                 var $focused = $tr.find('.tmp-cell-input:focus');
                 if ($focused.length && $focused[0] !== this && !$focused.closest('td').hasClass('tmp-cell-selected')) {
@@ -842,11 +843,15 @@
             } else if (isGroup) {
                 e.preventDefault();
                 e.stopPropagation();
-                var $td = $(this).closest('td');
                 $tr.siblings().find('td.tmp-cell-selected').removeClass('tmp-cell-selected');
                 $td.toggleClass('tmp-cell-selected');
                 updateCellMergeToolbar($tr);
                 return false;
+            } else if (isMergedCell) {
+                $('td.tmp-cell-selected').removeClass('tmp-cell-selected');
+                hideCellMergeToolbar();
+                $td.addClass('tmp-cell-selected');
+                updateCellMergeToolbar($tr);
             } else {
                 $('td.tmp-cell-selected').removeClass('tmp-cell-selected');
                 hideCellMergeToolbar();

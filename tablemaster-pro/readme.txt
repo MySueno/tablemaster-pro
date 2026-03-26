@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.57
+Stable tag: 1.3.58
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,7 +33,10 @@ Functies:
 
 == Changelog ==
 
-= 1.3.57 =
+= 1.3.58 =
+* Fix: Ontkoppel-knop voor samengevoegde kolomkoppen is nu duidelijk zichtbaar op alle thema-kleuren (wit icoon op donkere achtergrond)
+* Fix: Ontkoppel-knop blijft zichtbaar tijdens het bewerken van een samengevoegde kolomkop
+* Fix: Samengevoegde cellen in data-rijen tonen direct "Opheffen" popup bij een enkele klik
 * Fix: Toolbar werkt nu volledig voor kolomkoppen (bold, italic, alignment)
 * Fix: Tekst in gekleurde rijen (groepen, footer) is nu leesbaar bij hover en focus in de admin editor
 * Security: Link-invoer gebruikt nu veilige DOM API met protocol-validatie (XSS-preventie)
