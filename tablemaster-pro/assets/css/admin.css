@@ -1143,26 +1143,31 @@ td.tmp-cell-selected {
     background: transparent;
 }
 
-.tmp-translate-row.tmp-translate-done td.tmp-translate-context::before {
+.tmp-translate-row td.tmp-translate-context::before {
     content: '';
     display: inline-block;
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background: #00a32a;
+    background: #d63638;
     margin-right: 6px;
     vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.tmp-translate-row:not(.tmp-translate-done):not(.tmp-translate-prefilled) .tmp-translate-input {
+    border-color: #d63638;
+    background: #fef2f2;
+}
+
+.tmp-translate-row.tmp-translate-done td.tmp-translate-context::before {
+    background: #00a32a;
+    width: 6px;
+    height: 6px;
 }
 
 .tmp-translate-row.tmp-translate-prefilled td.tmp-translate-context::before {
-    content: '';
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
     background: #dba617;
-    margin-right: 6px;
-    vertical-align: middle;
 }
 
 .tmp-translate-row.tmp-translate-prefilled .tmp-translate-input {
