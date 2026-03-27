@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const REPO_OWNER = 'MySueno';
-const REPO_NAME = 'test-websites';
+const REPO_NAME = 'tablemaster-pro';
 const PLUGIN_DIR = path.join(__dirname, '..', 'tablemaster-pro');
 const GITHUB_API = 'https://api.github.com';
 const BRANCH = 'main';
