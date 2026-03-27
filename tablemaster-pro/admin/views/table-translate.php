@@ -335,12 +335,12 @@ if ( $has_cell_rows ) {
 
     <div id="tmp-translate-incomplete-notice" class="notice notice-warning inline" style="margin:10px 0;<?php echo $translated_fields >= $total_fields ? 'display:none;' : ''; ?>">
         <p><strong><?php esc_html_e( 'Let op:', TMP_TEXT_DOMAIN ); ?></strong>
-        <?php esc_html_e( 'De vertaling is nog niet compleet. Zolang niet alle velden zijn vertaald, zal de tabel op de frontend in de standaardtaal worden getoond. Pas als 100% is vertaald, wordt de vertaalde versie getoond aan bezoekers.', TMP_TEXT_DOMAIN ); ?></p>
+        <?php esc_html_e( 'Er zijn nog onvertaalde velden. De tabel wordt op de frontend altijd getoond met dezelfde layout als de standaardtabel. Vertaalde velden worden in de doeltaal getoond, onvertaalde velden vallen terug op de originele tekst.', TMP_TEXT_DOMAIN ); ?></p>
     </div>
 
     <div id="tmp-translate-complete-notice" class="notice notice-success inline" style="margin:10px 0;<?php echo $translated_fields >= $total_fields ? '' : 'display:none;'; ?>">
         <p><strong>&#10003; <?php esc_html_e( 'Vertaling compleet!', TMP_TEXT_DOMAIN ); ?></strong>
-        <?php esc_html_e( 'Alle velden zijn vertaald. De vertaalde tabel wordt getoond aan bezoekers die de site in deze taal bekijken.', TMP_TEXT_DOMAIN ); ?></p>
+        <?php esc_html_e( 'Alle velden zijn vertaald. De vertaalde tabel wordt volledig in de doeltaal getoond aan bezoekers.', TMP_TEXT_DOMAIN ); ?></p>
     </div>
 
     <div class="tmp-translate-table-wrap">
