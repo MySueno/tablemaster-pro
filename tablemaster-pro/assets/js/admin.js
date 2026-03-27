@@ -346,7 +346,15 @@
             }
         }
 
+        var colGroupHtml = '<colgroup><col style="width:28px;"><col style="width:80px;">';
+        var dataColWidth = columns.length > 0 ? 'calc((100% - 144px) / ' + columns.length + ')' : 'auto';
+        for (var cgi = 0; cgi < columns.length; cgi++) {
+            colGroupHtml += '<col style="width:' + dataColWidth + ';">';
+        }
+        colGroupHtml += '<col style="width:36px;"></colgroup>';
+
         var $table = $('<table class="tmp-admin-table"></table>');
+        $table.append(colGroupHtml);
         var $thead = $('<thead><tr class="tmp-admin-header-row"><th style="width:28px;"></th><th style="width:80px;">Type</th>' + headerCols + '<th style="width:36px;"></th></tr></thead>');
         var $tbody = $('<tbody class="tmp-rows-sortable"></tbody>');
 
