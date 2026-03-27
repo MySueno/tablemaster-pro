@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eerste Kolom — Responsive & WPML Test</title>
+<link rel="stylesheet" href="/__mockup/frontend.css">
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 20px; background: #f0f0f1; color: #1d2327; }
+h2 { margin-top: 0; }
+.section { margin: 20px 0; padding: 16px; background: #fff; border: 1px solid #ddd; border-radius: 8px; }
+.section h3 { margin-top: 0; color: #1d2327; }
+.section p.note { margin: 4px 0 12px; font-size: 13px; color: #666; }
+.viewport-label { display: inline-block; padding: 2px 8px; background: #0073aa; color: #fff; font-size: 11px; border-radius: 3px; margin-bottom: 8px; }
+.mobile-frame { width: 375px; border: 2px solid #333; border-radius: 12px; overflow: hidden; margin: 0 auto; }
+.tablet-frame { width: 768px; border: 2px solid #555; border-radius: 8px; overflow: hidden; margin: 0 auto; }
+</style>
+</head>
+<body>
+
+<h2>Eerste Kolom Kleur — Responsive & Vertalingen (v1.3.62)</h2>
+
+<div class="section">
+    <h3>1. Mobiel (375px breed) — Scroll modus met eerste kolom kleur</h3>
+    <p class="note">De tabel scrollt horizontaal. De eerste kolom moet gekleurd blijven bij scrollen.</p>
+    <div class="mobile-frame">
+        <div id="tmp-mob-1"
+             class="tmp-wrapper tmp-mobile-scroll tmp-first-col-colored"
+             style="max-width: 375px;">
+            <style>
+                #tmp-mob-1 {
+                    --tmp-header-bg: #D32637;
+                    --tmp-header-text: #ffffff;
+                    --tmp-group1-bg: #D32637;
+                    --tmp-group1-text: #ffffff;
+                    --tmp-odd-bg: #F8F8F8;
+                    --tmp-even-bg: #ffffff;
+                    --tmp-hover-bg: #fce4e4;
+                    --tmp-border: #e8e8e8;
+                    --tmp-first-col-bg: #FDE8E8;
+                    --tmp-first-col-text: #B71C1C;
+                    --tmp-radius: 8px;
+                }
+            </style>
+            <div class="tmp-table-scroll">
+                <table class="tmp-table" style="table-layout: fixed; width: 100%; min-width: 600px;">
+                    <thead>
+                        <tr class="tmp-header-row">
+                            <th class="tmp-th">Behandeling</th>
+                            <th class="tmp-th">Categorie</th>
+                            <th class="tmp-th">Arts</th>
+                            <th class="tmp-th">Prijs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tmp-type-data tmp-odd">
+                            <td class="tmp-td">Rugmassage 30 min</td>
+                            <td class="tmp-td">Klassiek</td>
+                            <td class="tmp-td">Dr. Jansen</td>
+                            <td class="tmp-td">€ 45,00</td>
+                        </tr>
+                        <tr class="tmp-type-data tmp-even">
+                            <td class="tmp-td">Rugmassage 60 min</td>
+                            <td class="tmp-td">Klassiek</td>
+                            <td class="tmp-td">Dr. Jansen</td>
+                            <td class="tmp-td">€ 75,00</td>
+                        </tr>
+                        <tr class="tmp-type-data tmp-odd">
+                            <td class="tmp-td">Sportmassage 45 min</td>
+                            <td class="tmp-td">Sport</td>
+                            <td class="tmp-td">Dr. De Vries</td>
+                            <td class="tmp-td">€ 55,00</td>
+                        </tr>
+                        <tr class="tmp-type-data tmp-even">
+                            <td class="tmp-td">Diepweefselmassage</td>
+                            <td class="tmp-td">Therapeutisch</td>
+                            <td class="tmp-td">Dr. Bakker</td>
+                            <td class="tmp-td">€ 85,00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h3>2. Mobiel (375px) — Sticky eerste kolom + eerste kolom kleur</h3>
+    <p class="note">De eerste kolom is vastgezet (sticky) EN gekleurd. Bij scrollen blijft de eerste kolom zichtbaar met kleur.</p>
+    <div class="mobile-frame">
+        <div id="tmp-mob-2"
+             class="tmp-wrapper tmp-mobile-scroll tmp-sticky-first tmp-first-col-colored"
+             style="max-width: 375px;">
+            <style>
+                #tmp-mob-2 {
+                    --tmp-header-bg: #1565c0;
+                    --tmp-header-text: #ffffff;
+                    --tmp-odd-bg: #ffffff;
+                    --tmp-even-bg: #e8f4fd;
+                    --tmp-hover-bg: #bbdefb;
+                    --tmp-border: #90caf9;
+                    --tmp-first-col-bg: #E3F2FD;
+                    --tmp-first-col-text: #0D47A1;
+                    --tmp-radius: 8px;
+                }
+            </style>
+            <div class="tmp-table-scroll">
+                <table class="tmp-table" style="table-layout: fixed; width: 100%; min-width: 650px;">
+                    <thead>
+                        <tr class="tmp-header-row">
+                            <th class="tmp-th">Product</th>
+                            <th class="tmp-th">Q1 2025</th>
+                            <th class="tmp-th">Q2 2025</th>
+                            <th class="tmp-th">Q3 2025</th>
+                            <th class="tmp-th">Q4 2025</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tmp-type-data tmp-odd">
+                            <td class="tmp-td">Premium pakket</td>
+                            <td class="tmp-td">€ 12.500</td>
+                            <td class="tmp-td">€ 14.200</td>
+                            <td class="tmp-td">€ 15.800</td>
+                            <td class="tmp-td">€ 18.100</td>
+                        </tr>
+                        <tr class="tmp-type-data tmp-even">
+                            <td class="tmp-td">Basis abonnement</td>
+                            <td class="tmp-td">€ 8.300</td>
+                            <td class="tmp-td">€ 9.100</td>
+                            <td class="tmp-td">€ 9.700</td>
+                            <td class="tmp-td">€ 10.400</td>
+                        </tr>
+                        <tr class="tmp-type-data tmp-odd">
+                            <td class="tmp-td">Enterprise licentie</td>
+                            <td class="tmp-td">€ 45.000</td>
+                            <td class="tmp-td">€ 47.500</td>
+                            <td class="tmp-td">€ 52.000</td>
+                            <td class="tmp-td">€ 55.000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h3>3. Tablet (768px) — Scroll modus met eerste kolom kleur + groepen</h3>
+    <p class="note">Tablet-breedte met groepering en eerste kolom kleur.</p>
+    <div class="tablet-frame">
+        <div id="tmp-tab-1"
+             class="tmp-wrapper tmp-mobile-scroll tmp-first-col-colored"
+             style="max-width: 768px;">
+            <style>
+                #tmp-tab-1 {
+                    --tmp-header-bg: #2e7d32;
+                    --tmp-header-text: #ffffff;
+                    --tmp-group1-bg: #2e7d32;
+                    --tmp-group1-text: #ffffff;
+                    --tmp-group2-bg: #e8f5e9;
+                    --tmp-group2-text: #1b5e20;
+                    --tmp-odd-bg: #fafafa;
+                    --tmp-even-bg: #ffffff;
+                    --tmp-hover-bg: #c8e6c9;
+                    --tmp-border: #c8e6c9;
+                    --tmp-first-col-bg: #E8F5E9;
+                    --tmp-first-col-text: #1B5E20;
+                    --tmp-radius: 6px;
+                }
+            </style>
+            <div class="tmp-table-scroll">
+                <table class="tmp-table" style="table-layout: fixed; width: 100%; min-width: 900px;">
+                    <thead>
+                        <tr class="tmp-header-row">
+                            <th class="tmp-th">Locatie</th>
+                            <th class="tmp-th">Omzet jan</th>
+                            <th class="tmp-th">Omzet feb</th>
+                            <th class="tmp-th">Omzet mrt</th>
+                            <th class="tmp-th">Verschil</th>
+                            <th class="tmp-th">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tmp-type-group_1"><td class="tmp-td" colspan="6"><strong>Regio Noord</strong></td></tr>
+                        <tr class="tmp-type-data tmp-odd">
+                            <td class="tmp-td">Amsterdam Centrum</td>
+                            <td class="tmp-td">€ 125.000</td>
+                            <td class="tmp-td">€ 132.000</td>
+                            <td class="tmp-td">€ 128.500</td>
+                            <td class="tmp-td">+2,8%</td>
+                            <td class="tmp-td">Actief</td>
+                        </tr>
+                        <tr class="tmp-type-data tmp-even">
+                            <td class="tmp-td">Utrecht Nieuwegein</td>
+                            <td class="tmp-td">€ 87.000</td>
+                            <td class="tmp-td">€ 91.200</td>
+                            <td class="tmp-td">€ 89.500</td>
+                            <td class="tmp-td">+2,9%</td>
+                            <td class="tmp-td">Actief</td>
+                        </tr>
+                        <tr class="tmp-type-group_1"><td class="tmp-td" colspan="6"><strong>Regio Zuid</strong></td></tr>
+                        <tr class="tmp-type-data tmp-odd">
+                            <td class="tmp-td">Eindhoven Centrum</td>
+                            <td class="tmp-td">€ 68.000</td>
+                            <td class="tmp-td">€ 72.100</td>
+                            <td class="tmp-td">€ 70.800</td>
+                            <td class="tmp-td">+4,1%</td>
+                            <td class="tmp-td">Actief</td>
+                        </tr>
+                        <tr class="tmp-type-data tmp-even">
+                            <td class="tmp-td">Maastricht Wyck</td>
+                            <td class="tmp-td">€ 45.200</td>
+                            <td class="tmp-td">€ 48.300</td>
+                            <td class="tmp-td">€ 46.900</td>
+                            <td class="tmp-td">+3,8%</td>
+                            <td class="tmp-td">Actief</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h3>4. WPML Vertaling — NL → EN (zelfde kleuren, vertaalde content)</h3>
+    <p class="note">Kleuren zijn taalonafhankelijk (opgeslagen in settings, niet vertaalbaar). Alleen de tekst verandert.</p>
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 300px;">
+            <span class="viewport-label">🇳🇱 Nederlands</span>
+            <div id="tmp-wpml-nl"
+                 class="tmp-wrapper tmp-mobile-scroll tmp-first-col-colored">
+                <style>
+                    #tmp-wpml-nl {
+                        --tmp-header-bg: #D32637;
+                        --tmp-header-text: #ffffff;
+                        --tmp-odd-bg: #F8F8F8;
+                        --tmp-even-bg: #ffffff;
+                        --tmp-hover-bg: #fce4e4;
+                        --tmp-border: #e8e8e8;
+                        --tmp-first-col-bg: #FDE8E8;
+                        --tmp-first-col-text: #B71C1C;
+                        --tmp-radius: 8px;
+                    }
+                </style>
+                <div class="tmp-table-scroll">
+                    <table class="tmp-table" style="table-layout: fixed; width: 100%;">
+                        <thead>
+                            <tr class="tmp-header-row">
+                                <th class="tmp-th">Behandeling</th>
+                                <th class="tmp-th">Duur</th>
+                                <th class="tmp-th">Prijs</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="tmp-type-data tmp-odd">
+                                <td class="tmp-td">Rugmassage</td>
+                                <td class="tmp-td">30 min</td>
+                                <td class="tmp-td">€ 45,00</td>
+                            </tr>
+                            <tr class="tmp-type-data tmp-even">
+                                <td class="tmp-td">Sportmassage</td>
+                                <td class="tmp-td">45 min</td>
+                                <td class="tmp-td">€ 55,00</td>
+                            </tr>
+                            <tr class="tmp-type-data tmp-odd">
+                                <td class="tmp-td">Ontspanningsmassage</td>
+                                <td class="tmp-td">60 min</td>
+                                <td class="tmp-td">€ 75,00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div style="flex: 1; min-width: 300px;">
+            <span class="viewport-label">🇬🇧 English</span>
+            <div id="tmp-wpml-en"
+                 class="tmp-wrapper tmp-mobile-scroll tmp-first-col-colored">
+                <style>
+                    #tmp-wpml-en {
+                        --tmp-header-bg: #D32637;
+                        --tmp-header-text: #ffffff;
+                        --tmp-odd-bg: #F8F8F8;
+                        --tmp-even-bg: #ffffff;
+                        --tmp-hover-bg: #fce4e4;
+                        --tmp-border: #e8e8e8;
+                        --tmp-first-col-bg: #FDE8E8;
+                        --tmp-first-col-text: #B71C1C;
+                        --tmp-radius: 8px;
+                    }
+                </style>
+                <div class="tmp-table-scroll">
+                    <table class="tmp-table" style="table-layout: fixed; width: 100%;">
+                        <thead>
+                            <tr class="tmp-header-row">
+                                <th class="tmp-th">Treatment</th>
+                                <th class="tmp-th">Duration</th>
+                                <th class="tmp-th">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="tmp-type-data tmp-odd">
+                                <td class="tmp-td">Back massage</td>
+                                <td class="tmp-td">30 min</td>
+                                <td class="tmp-td">€ 45.00</td>
+                            </tr>
+                            <tr class="tmp-type-data tmp-even">
+                                <td class="tmp-td">Sports massage</td>
+                                <td class="tmp-td">45 min</td>
+                                <td class="tmp-td">€ 55.00</td>
+                            </tr>
+                            <tr class="tmp-type-data tmp-odd">
+                                <td class="tmp-td">Relaxation massage</td>
+                                <td class="tmp-td">60 min</td>
+                                <td class="tmp-td">€ 75.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h3>5. WPML — Arabisch (RTL) met eerste kolom kleur</h3>
+    <p class="note">Bij RTL-talen: de "eerste kolom" is visueel rechts. CSS :first-child werkt op DOM-volgorde, niet visueel.</p>
+    <div dir="rtl" lang="ar">
+        <div id="tmp-wpml-ar"
+             class="tmp-wrapper tmp-mobile-scroll tmp-first-col-colored">
+            <style>
+                #tmp-wpml-ar {
+                    --tmp-header-bg: #D32637;
+                    --tmp-header-text: #ffffff;
+                    --tmp-odd-bg: #F8F8F8;
+                    --tmp-even-bg: #ffffff;
+                    --tmp-hover-bg: #fce4e4;
+                    --tmp-border: #e8e8e8;
+                    --tmp-first-col-bg: #FDE8E8;
+                    --tmp-first-col-text: #B71C1C;
+                    --tmp-radius: 8px;
+                }
+            </style>
+            <div class="tmp-table-scroll">
+                <table class="tmp-table" style="table-layout: fixed; width: 100%;">
+                    <thead>
+                        <tr class="tmp-header-row">
+                            <th class="tmp-th">العلاج</th>
+                            <th class="tmp-th">المدة</th>
+                            <th class="tmp-th">السعر</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="tmp-type-data tmp-odd">
+                            <td class="tmp-td">تدليك الظهر</td>
+                            <td class="tmp-td">30 دقيقة</td>
+                            <td class="tmp-td">€ 45,00</td>
+                        </tr>
+                        <tr class="tmp-type-data tmp-even">
+                            <td class="tmp-td">تدليك رياضي</td>
+                            <td class="tmp-td">45 دقيقة</td>
+                            <td class="tmp-td">€ 55,00</td>
+                        </tr>
+                        <tr class="tmp-type-data tmp-odd">
+                            <td class="tmp-td">تدليك الاسترخاء</td>
+                            <td class="tmp-td">60 دقيقة</td>
+                            <td class="tmp-td">€ 75,00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h3>6. Collapsible groepen + eerste kolom kleur</h3>
+    <p class="note">Bij inklapbare groepen is er een extra toggle-cel vóór de eerste data-cel. De kleur moet op de data-cel vallen, niet op de toggle.</p>
+    <div id="tmp-collap-1"
+         class="tmp-wrapper tmp-mobile-scroll tmp-first-col-colored"
+         style="max-width: 700px;">
+        <style>
+            #tmp-collap-1 {
+                --tmp-header-bg: #6A1B9A;
+                --tmp-header-text: #ffffff;
+                --tmp-group1-bg: #6A1B9A;
+                --tmp-group1-text: #ffffff;
+                --tmp-odd-bg: #faf5ff;
+                --tmp-even-bg: #ffffff;
+                --tmp-hover-bg: #e1bee7;
+                --tmp-border: #ce93d8;
+                --tmp-first-col-bg: #F3E5F5;
+                --tmp-first-col-text: #4A148C;
+                --tmp-radius: 8px;
+            }
+        </style>
+        <div class="tmp-table-scroll">
+            <table class="tmp-table" style="table-layout: fixed; width: 100%;">
+                <thead>
+                    <tr class="tmp-header-row">
+                        <th class="tmp-th" style="width: 30px;"></th>
+                        <th class="tmp-th">Service</th>
+                        <th class="tmp-th">Categorie</th>
+                        <th class="tmp-th">Prijs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tmp-type-group_1"><td class="tmp-td" colspan="4"><strong>▼ Wellness</strong></td></tr>
+                    <tr class="tmp-type-data tmp-odd">
+                        <td class="tmp-toggle-cell">&nbsp;</td>
+                        <td class="tmp-td">Sauna sessie</td>
+                        <td class="tmp-td">Ontspanning</td>
+                        <td class="tmp-td">€ 35,00</td>
+                    </tr>
+                    <tr class="tmp-type-data tmp-even">
+                        <td class="tmp-toggle-cell">&nbsp;</td>
+                        <td class="tmp-td">Hamam behandeling</td>
+                        <td class="tmp-td">Traditioneel</td>
+                        <td class="tmp-td">€ 65,00</td>
+                    </tr>
+                    <tr class="tmp-type-data tmp-odd">
+                        <td class="tmp-toggle-cell">&nbsp;</td>
+                        <td class="tmp-td">Aromatherapie</td>
+                        <td class="tmp-td">Alternatief</td>
+                        <td class="tmp-td">€ 55,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
