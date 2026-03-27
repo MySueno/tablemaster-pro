@@ -9,7 +9,7 @@ class TableMaster_Settings {
             'default_per_page'         => 10,
             'enable_export'            => false,
             'border_radius'            => '15',
-            'license_key'              => 'mysueno',
+            'license_key'              => 'MySueno',
             'update_url'               => '',
             'delete_data_on_uninstall' => '0',
         );
@@ -17,7 +17,7 @@ class TableMaster_Settings {
         $merged  = wp_parse_args( $options, $defaults );
         $merged['update_url'] = self::get_update_url();
         if ( empty( $merged['license_key'] ) ) {
-            $merged['license_key'] = 'mysueno';
+            $merged['license_key'] = 'MySueno';
         }
         if ( $key ) {
             return $merged[$key] ?? null;
