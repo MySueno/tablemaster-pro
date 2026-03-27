@@ -28,7 +28,6 @@ $tables = TableMaster_DB::get_all_tables();
                 <tr>
                     <th><?php esc_html_e( 'Naam', TMP_TEXT_DOMAIN ); ?></th>
                     <th><?php esc_html_e( 'Shortcode', TMP_TEXT_DOMAIN ); ?></th>
-                    <th><?php esc_html_e( 'Thema', TMP_TEXT_DOMAIN ); ?></th>
                     <th><?php esc_html_e( 'Aangemaakt op', TMP_TEXT_DOMAIN ); ?></th>
                     <th><?php esc_html_e( 'Acties', TMP_TEXT_DOMAIN ); ?></th>
                 </tr>
@@ -36,15 +35,6 @@ $tables = TableMaster_DB::get_all_tables();
             <tbody>
                 <?php foreach ( $tables as $t ) :
                     $settings = json_decode( $t->settings, true );
-                    $theme    = $settings['theme'] ?? 'custom';
-                    $dot_color = '';
-                    switch ( $theme ) {
-                        case 'green': $dot_color = '#2e7d32'; break;
-                        case 'red':   $dot_color = '#D32637'; break;
-                        case 'blue':  $dot_color = '#1565c0'; break;
-                        case 'grey':  $dot_color = '#424242'; break;
-                        default:      $dot_color = $settings['colors']['header_bg'] ?? '#888888';
-                    }
                 ?>
                     <tr>
                         <td>
@@ -59,10 +49,6 @@ $tables = TableMaster_DB::get_all_tables();
                             <button class="button button-small tmp-copy-btn" data-shortcode='[tablemaster id="<?php echo esc_attr( $t->id ); ?>"]'>
                                 <?php esc_html_e( 'Kopiëren', TMP_TEXT_DOMAIN ); ?>
                             </button>
-                        </td>
-                        <td>
-                            <span class="tmp-theme-dot" style="background:<?php echo esc_attr( $dot_color ); ?>"></span>
-                            <?php echo esc_html( ucfirst( $theme ) ); ?>
                         </td>
                         <td><?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $t->created_at ) ) ); ?></td>
                         <td class="tmp-actions">
