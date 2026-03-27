@@ -9,13 +9,16 @@ class TableMaster_Settings {
             'default_per_page'         => 10,
             'enable_export'            => false,
             'border_radius'            => '15',
-            'license_key'              => '',
+            'license_key'              => 'mysueno',
             'update_url'               => '',
             'delete_data_on_uninstall' => '0',
         );
         $options = get_option( 'tablemaster_settings', array() );
         $merged  = wp_parse_args( $options, $defaults );
         $merged['update_url'] = self::get_update_url();
+        if ( empty( $merged['license_key'] ) ) {
+            $merged['license_key'] = 'mysueno';
+        }
         if ( $key ) {
             return $merged[$key] ?? null;
         }
