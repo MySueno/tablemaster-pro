@@ -183,6 +183,12 @@
         $adminTable.find('.tmp-admin-row-data').each(function () {
             var bg = dataIdx % 2 === 0 ? c.odd_bg : c.even_bg;
             $(this).css({ background: bg });
+            var $firstCell = $(this).find('td').eq(1);
+            if (c.first_col_bg && $firstCell.length) {
+                $firstCell.css({ background: c.first_col_bg, color: c.first_col_text || '', fontWeight: '600' });
+            } else if ($firstCell.length) {
+                $firstCell.css({ background: '', color: '', fontWeight: '' });
+            }
             dataIdx++;
         });
 

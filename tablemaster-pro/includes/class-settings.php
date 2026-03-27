@@ -64,10 +64,16 @@ class TableMaster_Settings {
             'odd_bg'       => '#F8F8F8', 'even_bg'      => '#ffffff',
             'hover_bg'     => '#fce4e4', 'border_color' => '#e8e8e8',
             'accent_color' => '#D32637',
+            'first_col_bg' => '',        'first_col_text' => '',
         );
         $safe = array();
         foreach ( $defaults as $key => $fallback ) {
-            $safe[ $key ] = self::sanitize_hex_color( $colors[ $key ] ?? '', $fallback );
+            $val = $colors[ $key ] ?? '';
+            if ( $fallback === '' && ( $val === '' || $val === '#' ) ) {
+                $safe[ $key ] = '';
+            } else {
+                $safe[ $key ] = self::sanitize_hex_color( $val, $fallback );
+            }
         }
         return $safe;
     }

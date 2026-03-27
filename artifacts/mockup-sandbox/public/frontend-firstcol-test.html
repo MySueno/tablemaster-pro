@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontend — Eerste Kolom Kleur Test</title>
+<link rel="stylesheet" href="/__mockup/frontend.css">
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 20px; background: #f0f0f1; color: #1d2327; }
+h2 { margin-top: 0; }
+.section { margin: 20px 0; padding: 16px; background: #fff; border: 1px solid #ddd; border-radius: 8px; }
+.section h3 { margin-top: 0; color: #1d2327; }
+</style>
+</head>
+<body>
+
+<h2>Eerste Kolom Kleur — Frontend Test (v1.3.62)</h2>
+
+<div class="section">
+    <h3>1. Met eerste kolom kleur (rood thema, lichtroze eerste kolom)</h3>
+    <div id="tmp-1-1234"
+         class="tmp-wrapper tmp-mobile-scroll tmp-first-col-colored"
+         style="max-width: 800px;">
+        <style>
+            #tmp-1-1234 {
+                --tmp-header-bg: #D32637;
+                --tmp-header-text: #ffffff;
+                --tmp-group1-bg: #D32637;
+                --tmp-group1-text: #ffffff;
+                --tmp-group2-bg: #F9E6E7;
+                --tmp-group2-text: #D32637;
+                --tmp-odd-bg: #F8F8F8;
+                --tmp-even-bg: #ffffff;
+                --tmp-hover-bg: #fce4e4;
+                --tmp-border: #e8e8e8;
+                --tmp-footer-bg: #D32637;
+                --tmp-footer-text: #ffffff;
+                --tmp-first-col-bg: #FDE8E8;
+                --tmp-first-col-text: #B71C1C;
+                --tmp-radius: 8px;
+            }
+        </style>
+        <div class="tmp-table-scroll">
+            <table class="tmp-table" style="table-layout: fixed; width: 100%;">
+                <thead>
+                    <tr class="tmp-header-row">
+                        <th class="tmp-th">Behandeling</th>
+                        <th class="tmp-th">Categorie</th>
+                        <th class="tmp-th">Arts</th>
+                        <th class="tmp-th">Prijs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tmp-type-group_1"><td class="tmp-td" colspan="4"><strong>Massage</strong></td></tr>
+                    <tr class="tmp-type-group_2"><td class="tmp-td" colspan="4"><strong>Klassieke massage</strong></td></tr>
+                    <tr class="tmp-type-data tmp-odd">
+                        <td class="tmp-td">Rugmassage 30 min</td>
+                        <td class="tmp-td">Klassiek</td>
+                        <td class="tmp-td">Dr. Jansen</td>
+                        <td class="tmp-td">€ 45,00</td>
+                    </tr>
+                    <tr class="tmp-type-data tmp-even">
+                        <td class="tmp-td">Rugmassage 60 min</td>
+                        <td class="tmp-td">Klassiek</td>
+                        <td class="tmp-td">Dr. Jansen</td>
+                        <td class="tmp-td">€ 75,00</td>
+                    </tr>
+                    <tr class="tmp-type-data tmp-odd">
+                        <td class="tmp-td">Sportmassage 45 min</td>
+                        <td class="tmp-td">Sport</td>
+                        <td class="tmp-td">Dr. De Vries</td>
+                        <td class="tmp-td">€ 55,00</td>
+                    </tr>
+                    <tr class="tmp-type-footer"><td class="tmp-td" colspan="4"><strong>Totaal excl. BTW</strong></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h3>2. Zonder eerste kolom kleur (standaard)</h3>
+    <div id="tmp-2-5678"
+         class="tmp-wrapper tmp-mobile-scroll"
+         style="max-width: 800px;">
+        <style>
+            #tmp-2-5678 {
+                --tmp-header-bg: #D32637;
+                --tmp-header-text: #ffffff;
+                --tmp-odd-bg: #F8F8F8;
+                --tmp-even-bg: #ffffff;
+                --tmp-hover-bg: #fce4e4;
+                --tmp-border: #e8e8e8;
+                --tmp-radius: 8px;
+            }
+        </style>
+        <div class="tmp-table-scroll">
+            <table class="tmp-table" style="table-layout: fixed; width: 100%;">
+                <thead>
+                    <tr class="tmp-header-row">
+                        <th class="tmp-th">Behandeling</th>
+                        <th class="tmp-th">Categorie</th>
+                        <th class="tmp-th">Arts</th>
+                        <th class="tmp-th">Prijs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tmp-type-data tmp-odd">
+                        <td class="tmp-td">Rugmassage 30 min</td>
+                        <td class="tmp-td">Klassiek</td>
+                        <td class="tmp-td">Dr. Jansen</td>
+                        <td class="tmp-td">€ 45,00</td>
+                    </tr>
+                    <tr class="tmp-type-data tmp-even">
+                        <td class="tmp-td">Rugmassage 60 min</td>
+                        <td class="tmp-td">Klassiek</td>
+                        <td class="tmp-td">Dr. Jansen</td>
+                        <td class="tmp-td">€ 75,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h3>3. Blauw thema met blauwe eerste kolom</h3>
+    <div id="tmp-3-9012"
+         class="tmp-wrapper tmp-mobile-scroll tmp-first-col-colored"
+         style="max-width: 800px;">
+        <style>
+            #tmp-3-9012 {
+                --tmp-header-bg: #1565c0;
+                --tmp-header-text: #ffffff;
+                --tmp-odd-bg: #ffffff;
+                --tmp-even-bg: #e8f4fd;
+                --tmp-hover-bg: #bbdefb;
+                --tmp-border: #90caf9;
+                --tmp-first-col-bg: #E3F2FD;
+                --tmp-first-col-text: #0D47A1;
+                --tmp-radius: 8px;
+            }
+        </style>
+        <div class="tmp-table-scroll">
+            <table class="tmp-table" style="table-layout: fixed; width: 100%;">
+                <thead>
+                    <tr class="tmp-header-row">
+                        <th class="tmp-th">Behandeling</th>
+                        <th class="tmp-th">Percentage 2024</th>
+                        <th class="tmp-th">Percentage 2025</th>
+                        <th class="tmp-th">Totaal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tmp-type-data tmp-odd">
+                        <td class="tmp-td">Fysiotherapie</td>
+                        <td class="tmp-td">63,8%</td>
+                        <td class="tmp-td">71,7%</td>
+                        <td class="tmp-td">135,5%</td>
+                    </tr>
+                    <tr class="tmp-type-data tmp-even">
+                        <td class="tmp-td">Ergotherapie</td>
+                        <td class="tmp-td">45,2%</td>
+                        <td class="tmp-td">52,1%</td>
+                        <td class="tmp-td">97,3%</td>
+                    </tr>
+                    <tr class="tmp-type-data tmp-odd">
+                        <td class="tmp-td">Logopedie</td>
+                        <td class="tmp-td">28,9%</td>
+                        <td class="tmp-td">33,4%</td>
+                        <td class="tmp-td">62,3%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

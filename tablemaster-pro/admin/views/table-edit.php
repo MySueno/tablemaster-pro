@@ -164,12 +164,26 @@ $page_title = $is_new
                         'text'  => array( 'key' => 'footer_text', 'label' => __( 'Tekst', TMP_TEXT_DOMAIN ) ),
                     ),
                     array(
+                        'title' => __( 'Eerste kolom', TMP_TEXT_DOMAIN ),
+                        'bg'    => array( 'key' => 'first_col_bg',   'label' => __( 'Achtergrond', TMP_TEXT_DOMAIN ) ),
+                        'text'  => array( 'key' => 'first_col_text', 'label' => __( 'Tekst', TMP_TEXT_DOMAIN ) ),
+                    ),
+                    array(
                         'title' => __( 'Rijen', TMP_TEXT_DOMAIN ),
                         'bg'    => array( 'key' => 'odd_bg',  'label' => __( 'Oneven', TMP_TEXT_DOMAIN ) ),
                         'text'  => array( 'key' => 'even_bg', 'label' => __( 'Even', TMP_TEXT_DOMAIN ) ),
                     ),
                 );
-                foreach ( $color_sections as $section ) : ?>
+                <?php
+                $optional_color_keys = array( 'first_col_bg', 'first_col_text' );
+                foreach ( $color_sections as $section ) :
+                    $bg_val   = $c[ $section['bg']['key'] ] ?? '';
+                    $text_val = $c[ $section['text']['key'] ] ?? '';
+                    $bg_is_optional   = in_array( $section['bg']['key'], $optional_color_keys, true );
+                    $text_is_optional = in_array( $section['text']['key'], $optional_color_keys, true );
+                    $bg_default   = $bg_is_optional ? '' : ( $bg_val ?: '#ffffff' );
+                    $text_default = $text_is_optional ? '' : ( $text_val ?: '#ffffff' );
+                ?>
                     <div class="tmp-color-section">
                         <div class="tmp-color-section-title"><?php echo esc_html( $section['title'] ); ?></div>
                         <div class="tmp-color-row">
@@ -177,15 +191,15 @@ $page_title = $is_new
                                 <label><?php echo esc_html( $section['bg']['label'] ); ?></label>
                                 <input type="text" class="tmp-color-picker"
                                        data-color-key="<?php echo esc_attr( $section['bg']['key'] ); ?>"
-                                       value="<?php echo esc_attr( $c[ $section['bg']['key'] ] ?? '#ffffff' ); ?>"
-                                       data-default-color="<?php echo esc_attr( $c[ $section['bg']['key'] ] ?? '#ffffff' ); ?>">
+                                       value="<?php echo esc_attr( $bg_default ); ?>"
+                                       data-default-color="<?php echo esc_attr( $bg_default ); ?>">
                             </div>
                             <div class="tmp-color-field">
                                 <label><?php echo esc_html( $section['text']['label'] ); ?></label>
                                 <input type="text" class="tmp-color-picker"
                                        data-color-key="<?php echo esc_attr( $section['text']['key'] ); ?>"
-                                       value="<?php echo esc_attr( $c[ $section['text']['key'] ] ?? '#ffffff' ); ?>"
-                                       data-default-color="<?php echo esc_attr( $c[ $section['text']['key'] ] ?? '#ffffff' ); ?>">
+                                       value="<?php echo esc_attr( $text_default ); ?>"
+                                       data-default-color="<?php echo esc_attr( $text_default ); ?>">
                             </div>
                         </div>
                     </div>

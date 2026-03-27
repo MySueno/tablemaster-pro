@@ -18,9 +18,11 @@ $footer_bg    = $colors['footer_bg'];
 $footer_text  = $colors['footer_text'];
 $odd_bg       = $colors['odd_bg'];
 $even_bg      = $colors['even_bg'];
-$hover_bg     = $colors['hover_bg'];
-$border_color = $colors['border_color'];
-$accent_color = $colors['accent_color'];
+$hover_bg      = $colors['hover_bg'];
+$border_color  = $colors['border_color'];
+$accent_color  = $colors['accent_color'];
+$first_col_bg   = $colors['first_col_bg'] ?? '';
+$first_col_text = $colors['first_col_text'] ?? '';
 
 $allowed_search_pos = array( 'left', 'right', 'top', 'bottom' );
 $allowed_mobile     = array( 'scroll' );
@@ -55,7 +57,7 @@ include __DIR__ . '/partials/style.php';
 ?>
 
 <div id="<?php echo esc_attr( $table_uid ); ?>"
-     class="tmp-wrapper tmp-mobile-<?php echo esc_attr( $mobile_mode ); ?><?php echo $sticky_first_col ? ' tmp-sticky-first' : ''; ?><?php echo $sticky_header ? ' tmp-sticky-header' : ''; ?>"
+     class="tmp-wrapper tmp-mobile-<?php echo esc_attr( $mobile_mode ); ?><?php echo $sticky_first_col ? ' tmp-sticky-first' : ''; ?><?php echo $sticky_header ? ' tmp-sticky-header' : ''; ?><?php echo ( $first_col_bg !== '' || $first_col_text !== '' ) ? ' tmp-first-col-colored' : ''; ?>"
      data-table-id="<?php echo esc_attr( $table->id ); ?>"
      data-per-page="<?php echo esc_attr( $per_page ); ?>"
      data-collapsible="<?php echo $collapsible ? '1' : '0'; ?>"

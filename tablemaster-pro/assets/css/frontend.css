@@ -285,6 +285,13 @@
     background: var(--tmp-even-bg, #ffffff);
 }
 
+.tmp-first-col-colored .tmp-type-data .tmp-td:first-child,
+.tmp-first-col-colored .tmp-type-data .tmp-toggle-cell + .tmp-td {
+    background: var(--tmp-first-col-bg, inherit) !important;
+    color: var(--tmp-first-col-text, inherit);
+    font-weight: 600;
+}
+
 .tmp-type-data:hover,
 .tmp-type-data:hover > .tmp-td {
     background: var(--tmp-hover-bg, #fce4e4) !important;
@@ -537,6 +544,20 @@
 
 .tmp-wrapper.tmp-sticky-first .tmp-even td:first-child {
     background: var(--tmp-even-bg, #ffffff);
+}
+
+.tmp-wrapper.tmp-sticky-first.tmp-first-col-colored .tmp-odd td:first-child,
+.tmp-wrapper.tmp-sticky-first.tmp-first-col-colored .tmp-odd .tmp-toggle-cell + .tmp-td {
+    background: var(--tmp-first-col-bg) !important;
+    color: var(--tmp-first-col-text, inherit);
+    font-weight: 600;
+}
+
+.tmp-wrapper.tmp-sticky-first.tmp-first-col-colored .tmp-even td:first-child,
+.tmp-wrapper.tmp-sticky-first.tmp-first-col-colored .tmp-even .tmp-toggle-cell + .tmp-td {
+    background: var(--tmp-first-col-bg) !important;
+    color: var(--tmp-first-col-text, inherit);
+    font-weight: 600;
 }
 
 .tmp-wrapper.tmp-sticky-first .tmp-type-footer td:first-child,

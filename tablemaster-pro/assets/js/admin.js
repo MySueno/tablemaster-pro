@@ -158,9 +158,15 @@
 
     function getColorValues() {
         var colors = {};
+        var optionalKeys = { first_col_bg: true, first_col_text: true };
         $('.tmp-color-picker').each(function () {
             var key = $(this).data('color-key');
-            colors[key] = $(this).val() || $(this).attr('data-default-color') || '#ffffff';
+            var val = $(this).val();
+            if (optionalKeys[key]) {
+                colors[key] = val || '';
+            } else {
+                colors[key] = val || $(this).attr('data-default-color') || '#ffffff';
+            }
         });
         return colors;
     }
@@ -183,6 +189,12 @@
         $adminTable.find('.tmp-admin-row-data').each(function () {
             var bg = dataIdx % 2 === 0 ? c.odd_bg : c.even_bg;
             $(this).css({ background: bg });
+            var $firstCell = $(this).find('td').eq(2);
+            if ((c.first_col_bg || c.first_col_text) && $firstCell.length) {
+                $firstCell.css({ background: c.first_col_bg || '', color: c.first_col_text || '', fontWeight: c.first_col_bg ? '600' : '' });
+            } else if ($firstCell.length) {
+                $firstCell.css({ background: '', color: '', fontWeight: '' });
+            }
             dataIdx++;
         });
 

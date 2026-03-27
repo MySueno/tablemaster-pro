@@ -19,6 +19,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;
     --tmp-border:       <?php echo esc_attr( $border_color ); ?>;
     --tmp-accent:       <?php echo esc_attr( $accent_color ); ?>;
     --tmp-radius:       <?php echo intval( $border_radius ); ?>px;
+<?php if ( $first_col_bg !== '' ) : ?>
+    --tmp-first-col-bg:   <?php echo esc_attr( $first_col_bg ); ?>;
+<?php endif; ?>
+<?php if ( $first_col_text !== '' ) : ?>
+    --tmp-first-col-text: <?php echo esc_attr( $first_col_text ); ?>;
+<?php endif; ?>
 }
 <?php
 $font_css_map = array(
