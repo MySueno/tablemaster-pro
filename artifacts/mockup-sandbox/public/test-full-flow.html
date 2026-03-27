@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>Full Flow Test — Admin → Save → Frontend (v1.3.64)</title>
+<link rel="stylesheet" href="frontend.css">
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 20px; background: #f1f1f1; }
+h1 { font-size: 22px; }
+h2 { font-size: 18px; margin-top: 30px; }
+.test-section { background: #fff; padding: 20px; margin: 15px 0; border: 1px solid #ddd; border-radius: 4px; }
+.pass { color: #388e3c; font-weight: bold; }
+.fail { color: #d32f2f; font-weight: bold; }
+.log { font-family: monospace; font-size: 13px; padding: 8px; background: #f5f5f5; margin: 5px 0; border-left: 3px solid #1565c0; }
+.admin-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+.admin-table th, .admin-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+.admin-table th { background: #D32637; color: #fff; }
+.admin-table .footer-row { background: #D32637; color: #fff; }
+#results { margin-top: 20px; }
+.result-item { padding: 4px 0; }
+</style>
+</head>
+<body>
+
+<h1>Full Flow Test — Admin → Save → Frontend (v1.3.64)</h1>
+<p>Simuleert het complete pad: nieuwe tabel aanmaken in admin → data invullen → opslaan (kolom-mapping) → frontend renderen</p>
+
+<div id="step1" class="test-section">
+<h2>Stap 1: Admin — initDefaultTable()</h2>
+<div id="admin-output"></div>
+</div>
+
+<div id="step2" class="test-section">
+<h2>Stap 2: Data invoeren (zoals gebruiker doet)</h2>
+<div id="data-output"></div>
+</div>
+
+<div id="step3" class="test-section">
+<h2>Stap 3: Opslaan — save_table_structure() simulatie</h2>
+<div id="save-output"></div>
+</div>
+
+<div id="step4" class="test-section">
+<h2>Stap 4: Frontend renderen (met DB column IDs)</h2>
+<div id="frontend-output"></div>
+</div>
+
+<div id="step5" class="test-section">
+<h2>Stap 5: Groepen + Footer test</h2>
+<div id="groups-output"></div>
+</div>
+
+<div id="results" class="test-section">
+<h2>Resultaten</h2>
+<div id="results-output"></div>
+</div>
+
+<script>
+(function() {
+    var results = [];
+    function assert(name, condition) {
+        results.push({ name: name, pass: condition });
+    }
+
+    // ============================================================
+    // STEP 1: initDefaultTable() simulation — EXACT copy from admin.js
+    // ============================================================
+    var columns = [];
+    var rows = [];
+    var colTempIdx = 0;
+    var rowTempIdx = 0;
+
+    for (var i = 1; i <= 4; i++) {
+        var tempKey = 'new_' + (++colTempIdx);
+        columns.push({
+            id: 0,
+            temp_key: tempKey,
+            label: 'Kolom ' + i,
+            type: 'text',
+            settings: { align: 'left', sortable: true, filterable: true, header_group1: '', header_group2: '' }
+        });
+    }
+
+    for (var r = 0; r < 3; r++) {
+        var tempId = 'new_row_' + (++rowTempIdx);
+        var cells = {};
+        columns.forEach(function(col) { cells[col.temp_key] = ''; });
+        rows.push({
+            id: 0, temp_id: tempId, row_type: 'data',
+            parent_id: 0, parent_temp_id: '', is_collapsed: false,
+            cells: cells, cell_aligns: {}, cell_merges: {}
+        });
+    }
+
+    var closeTempId = 'new_row_' + (++rowTempIdx);
+    var closeCells = {};
+    columns.forEach(function(col) { closeCells[col.temp_key] = ''; });
+    rows.push({
+        id: 0, temp_id: closeTempId, row_type: 'footer',
+        parent_id: 0, parent_temp_id: '', is_collapsed: false,
+        cells: closeCells, cell_aligns: {}, cell_merges: {}
+    });
+
+    // Show admin table
+    var adminHtml = '<table class="admin-table"><thead><tr>';
+    columns.forEach(function(c) { adminHtml += '<th>' + c.label + ' <small>(key: ' + c.temp_key + ')</small></th>'; });
+    adminHtml += '</tr></thead><tbody>';
+    rows.forEach(function(row) {
+        var cls = row.row_type === 'footer' ? ' class="footer-row"' : '';
+        adminHtml += '<tr' + cls + '>';
+        columns.forEach(function(c) {
+            adminHtml += '<td>[' + row.row_type + '] ' + (row.cells[c.temp_key] || '<em>leeg</em>') + '</td>';
+        });
+        adminHtml += '</tr>';
+    });
+    adminHtml += '</tbody></table>';
+    adminHtml += '<div class="log">Kolommen: ' + columns.map(function(c) { return c.temp_key; }).join(', ') + '</div>';
+    adminHtml += '<div class="log">Rijen: ' + rows.length + ' (3 data + 1 footer)</div>';
+    document.getElementById('admin-output').innerHTML = adminHtml;
+
+    assert('initDefaultTable: 4 kolommen', columns.length === 4);
+    assert('initDefaultTable: temp_keys 1-gebaseerd', columns[0].temp_key === 'new_1' && columns[3].temp_key === 'new_4');
+    assert('initDefaultTable: 3 data + 1 footer', rows.filter(function(r) { return r.row_type === 'data'; }).length === 3 && rows.filter(function(r) { return r.row_type === 'footer'; }).length === 1);
+
+    // ============================================================
+    // STEP 2: User enters data — simulating what the user typed
+    // ============================================================
+    rows[0].cells['new_1'] = 'Amsterdam';
+    rows[0].cells['new_2'] = '125.000';
+    rows[0].cells['new_3'] = 'Noord-Holland';
+    rows[0].cells['new_4'] = 'Nederland';
+
+    rows[1].cells['new_1'] = 'Rotterdam';
+    rows[1].cells['new_2'] = '98.500';
+    rows[1].cells['new_3'] = 'Zuid-Holland';
+    rows[1].cells['new_4'] = 'Nederland';
+
+    rows[2].cells['new_1'] = 'Antwerpen';
+    rows[2].cells['new_2'] = '76.200';
+    rows[2].cells['new_3'] = 'Vlaanderen';
+    rows[2].cells['new_4'] = 'België';
+
+    rows[3].cells['new_1'] = 'Totaal: 299.700';
+
+    var dataHtml = '<table class="admin-table"><thead><tr>';
+    columns.forEach(function(c) { dataHtml += '<th>' + c.label + '</th>'; });
+    dataHtml += '</tr></thead><tbody>';
+    rows.forEach(function(row) {
+        var cls = row.row_type === 'footer' ? ' class="footer-row"' : '';
+        dataHtml += '<tr' + cls + '>';
+        columns.forEach(function(c) {
+            dataHtml += '<td>' + (row.cells[c.temp_key] || '') + '</td>';
+        });
+        dataHtml += '</tr>';
+    });
+    dataHtml += '</tbody></table>';
+    document.getElementById('data-output').innerHTML = dataHtml;
+
+    assert('Data: Kolom 1 rij 1 = Amsterdam', rows[0].cells['new_1'] === 'Amsterdam');
+    assert('Data: Kolom 2 rij 1 = 125.000', rows[0].cells['new_2'] === '125.000');
+
+    // ============================================================
+    // STEP 3: Simulate save_table_structure() — the PHP col_id_map logic
+    // ============================================================
+
+    // This simulates class-db.php save_table_structure() lines 666-718
+    // AFTER the fix (removed 'new_' . $order_index line)
+    var col_id_map = {};
+    var db_columns = [];
+    var next_db_id = 100;
+
+    columns.forEach(function(col, order_index) {
+        var temp_key = col.temp_key || '';
+        var new_col_id = next_db_id++;
+
+        // FIXED version: only map by temp_key
+        if (temp_key) {
+            col_id_map[temp_key] = new_col_id;
+        }
+        // OLD BUG LINE (removed): col_id_map['new_' + order_index] = new_col_id;
+
+        db_columns.push({
+            id: new_col_id,
+            label: col.label,
+            type: col.type,
+            order_index: order_index,
+            settings: JSON.stringify(col.settings)
+        });
+    });
+
+    var saveHtml = '<div class="log"><strong>col_id_map (na fix):</strong><br>';
+    for (var k in col_id_map) {
+        saveHtml += '  "' + k + '" → DB column ' + col_id_map[k] + '<br>';
+    }
+    saveHtml += '</div>';
+
+    // Save cells — map temp_col_key to db column id
+    var db_cells = {};
+    var db_row_ids = [];
+    rows.forEach(function(row, ri) {
+        var row_db_id = 200 + ri;
+        db_row_ids.push(row_db_id);
+        db_cells[row_db_id] = {};
+        for (var temp_col_key in row.cells) {
+            var content = row.cells[temp_col_key];
+            var col_db_id = col_id_map[temp_col_key];
+            if (!col_db_id) {
+                saveHtml += '<div class="log fail">FOUT: geen mapping voor temp_key "' + temp_col_key + '"</div>';
+                continue;
+            }
+            if (content && content.trim() !== '') {
+                db_cells[row_db_id][col_db_id] = content;
+            }
+        }
+    });
+
+    saveHtml += '<div class="log"><strong>Opgeslagen cellen in DB:</strong><br>';
+    db_row_ids.forEach(function(rid, ri) {
+        var rowType = rows[ri].row_type;
+        saveHtml += 'Rij ' + rid + ' (' + rowType + '): ';
+        db_columns.forEach(function(dc) {
+            var val = db_cells[rid] && db_cells[rid][dc.id] ? db_cells[rid][dc.id] : '';
+            saveHtml += dc.label + '=' + (val || '""') + '  ';
+        });
+        saveHtml += '<br>';
+    });
+    saveHtml += '</div>';
+    document.getElementById('save-output').innerHTML = saveHtml;
+
+    // Verify correct mapping
+    assert('Save mapping: new_1 → DB col 100', col_id_map['new_1'] === 100);
+    assert('Save mapping: new_2 → DB col 101', col_id_map['new_2'] === 101);
+    assert('Save mapping: new_3 → DB col 102', col_id_map['new_3'] === 102);
+    assert('Save mapping: new_4 → DB col 103', col_id_map['new_4'] === 103);
+    assert('Save: Amsterdam in DB col 100 (Kolom 1)', db_cells[200][100] === 'Amsterdam');
+    assert('Save: 125.000 in DB col 101 (Kolom 2)', db_cells[200][101] === '125.000');
+    assert('Save: Noord-Holland in DB col 102 (Kolom 3)', db_cells[200][102] === 'Noord-Holland');
+    assert('Save: Nederland in DB col 103 (Kolom 4)', db_cells[200][103] === 'Nederland');
+
+    // ============================================================
+    // STEP 4: Frontend render — simulates row-data.php
+    // Uses DB column IDs (not temp keys)
+    // ============================================================
+    var feHtml = '';
+    var feColors = {
+        header_bg: '#D32637', header_text: '#ffffff',
+        footer_bg: '#D32637', footer_text: '#ffffff',
+        odd_bg: '#F8F8F8', even_bg: '#ffffff',
+        border_color: '#e8e8e8'
+    };
+
+    feHtml += '<div class="tmp-wrapper">';
+    feHtml += '<table class="tmp-table" style="width:100%;border-collapse:collapse;">';
+
+    // thead
+    feHtml += '<thead><tr class="tmp-header-row">';
+    db_columns.forEach(function(dc) {
+        feHtml += '<th class="tmp-th" style="background:' + feColors.header_bg + ';color:' + feColors.header_text + ';padding:10px 12px;">' + dc.label + '</th>';
+    });
+    feHtml += '</tr></thead>';
+
+    // tbody — exactly like row-data.php: $row->cells[$col->id]
+    feHtml += '<tbody class="tmp-tbody">';
+    var dataRowIndex = 0;
+    db_row_ids.forEach(function(rid, ri) {
+        var rowType = rows[ri].row_type;
+        if (rowType === 'footer') {
+            // footer row — colspan like row-footer.php
+            var footerParts = [];
+            db_columns.forEach(function(dc) {
+                var fc = db_cells[rid] && db_cells[rid][dc.id] ? db_cells[rid][dc.id] : '';
+                if (fc.trim()) footerParts.push(fc);
+            });
+            feHtml += '<tr class="tmp-row tmp-type-footer" style="background:' + feColors.footer_bg + ';color:' + feColors.footer_text + ';">';
+            feHtml += '<td class="tmp-td tmp-footer-cell" colspan="' + db_columns.length + '" style="padding:10px 12px;font-weight:bold;">' + footerParts.join(' ') + '</td>';
+            feHtml += '</tr>';
+        } else {
+            var bg = dataRowIndex % 2 === 0 ? feColors.odd_bg : feColors.even_bg;
+            feHtml += '<tr class="tmp-row tmp-type-data" style="background:' + bg + ';">';
+            db_columns.forEach(function(dc) {
+                var content = db_cells[rid] && db_cells[rid][dc.id] ? db_cells[rid][dc.id] : '';
+                feHtml += '<td class="tmp-td" data-col-id="' + dc.id + '" data-label="' + dc.label + '" style="padding:8px 12px;border-bottom:1px solid ' + feColors.border_color + ';">' + content + '</td>';
+            });
+            feHtml += '</tr>';
+            dataRowIndex++;
+        }
+    });
+    feHtml += '</tbody></table></div>';
+    document.getElementById('frontend-output').innerHTML = feHtml;
+
+    // Verify frontend data positions
+    var frontendTds = document.querySelectorAll('#frontend-output .tmp-type-data .tmp-td');
+    if (frontendTds.length >= 4) {
+        assert('Frontend Rij 1: Kolom 1 = Amsterdam', frontendTds[0].textContent.trim() === 'Amsterdam');
+        assert('Frontend Rij 1: Kolom 2 = 125.000', frontendTds[1].textContent.trim() === '125.000');
+        assert('Frontend Rij 1: Kolom 3 = Noord-Holland', frontendTds[2].textContent.trim() === 'Noord-Holland');
+        assert('Frontend Rij 1: Kolom 4 = Nederland', frontendTds[3].textContent.trim() === 'Nederland');
+
+        var col1vals = [frontendTds[0].textContent.trim(), frontendTds[4].textContent.trim(), frontendTds[8].textContent.trim()];
+        assert('Frontend Kolom 1 heeft waarden (niet leeg)', col1vals.every(function(v) { return v !== ''; }));
+        assert('Frontend Kolom 1 = Amsterdam, Rotterdam, Antwerpen', col1vals[0] === 'Amsterdam' && col1vals[1] === 'Rotterdam' && col1vals[2] === 'Antwerpen');
+    }
+
+    // Footer check
+    var footerTd = document.querySelector('#frontend-output .tmp-type-footer .tmp-footer-cell');
+    if (footerTd) {
+        assert('Frontend Footer bevat "Totaal: 299.700"', footerTd.textContent.trim() === 'Totaal: 299.700');
+    }
+
+    // Check data-col-id matches
+    if (frontendTds.length >= 4) {
+        assert('Frontend td[0].data-col-id = 100 (Kolom 1)', frontendTds[0].getAttribute('data-col-id') === '100');
+        assert('Frontend td[1].data-col-id = 101 (Kolom 2)', frontendTds[1].getAttribute('data-col-id') === '101');
+    }
+
+    // ============================================================
+    // STEP 5: Test with groups
+    // ============================================================
+    var g_columns = [
+        { id: 300, label: 'Stad', settings: '{"align":"left"}' },
+        { id: 301, label: 'Omzet', settings: '{"align":"right"}' },
+        { id: 302, label: 'Regio', settings: '{"align":"left"}' }
+    ];
+    var g_rows = [
+        { id: 400, row_type: 'group_1', cells: { 300: 'Noord', 301: '', 302: '' } },
+        { id: 401, row_type: 'data', cells: { 300: 'Amsterdam', 301: '€ 125.000', 302: 'NH' } },
+        { id: 402, row_type: 'data', cells: { 300: 'Haarlem', 301: '€ 67.000', 302: 'NH' } },
+        { id: 403, row_type: 'group_1', cells: { 300: 'Zuid', 301: '', 302: '' } },
+        { id: 404, row_type: 'data', cells: { 300: 'Rotterdam', 301: '€ 98.500', 302: 'ZH' } },
+        { id: 405, row_type: 'footer', cells: { 300: 'Totaal', 301: '€ 290.500', 302: '' } }
+    ];
+
+    var gHtml = '<div class="tmp-wrapper">';
+    gHtml += '<table class="tmp-table" style="width:100%;border-collapse:collapse;">';
+    gHtml += '<thead><tr class="tmp-header-row">';
+    g_columns.forEach(function(gc) {
+        gHtml += '<th class="tmp-th" style="background:#1565c0;color:#fff;padding:10px 12px;">' + gc.label + '</th>';
+    });
+    gHtml += '</tr></thead><tbody class="tmp-tbody">';
+
+    var gDataIdx = 0;
+    g_rows.forEach(function(gr) {
+        if (gr.row_type === 'group_1') {
+            var grpLabel = gr.cells[300] || '';
+            gHtml += '<tr class="tmp-row tmp-type-group_1" style="background:#1565c0;color:#fff;">';
+            gHtml += '<td class="tmp-td tmp-group-cell" colspan="3" style="padding:8px 12px;font-weight:bold;">' + grpLabel + '</td>';
+            gHtml += '</tr>';
+        } else if (gr.row_type === 'footer') {
+            var fParts = [];
+            g_columns.forEach(function(gc) { if (gr.cells[gc.id]) fParts.push(gr.cells[gc.id]); });
+            gHtml += '<tr class="tmp-row tmp-type-footer" style="background:#1565c0;color:#fff;">';
+            gHtml += '<td class="tmp-td tmp-footer-cell" colspan="3" style="padding:10px 12px;font-weight:bold;">' + fParts.join(' ') + '</td>';
+            gHtml += '</tr>';
+        } else {
+            var bg = gDataIdx % 2 === 0 ? '#f8f8f8' : '#fff';
+            gHtml += '<tr class="tmp-row tmp-type-data" data-test-row="' + gr.id + '" style="background:' + bg + ';">';
+            g_columns.forEach(function(gc) {
+                var cs = JSON.parse(gc.settings);
+                var val = gr.cells[gc.id] || '';
+                gHtml += '<td class="tmp-td" data-col-id="' + gc.id + '" style="padding:8px 12px;text-align:' + cs.align + ';border-bottom:1px solid #e8e8e8;">' + val + '</td>';
+            });
+            gHtml += '</tr>';
+            gDataIdx++;
+        }
+    });
+    gHtml += '</tbody></table></div>';
+    document.getElementById('groups-output').innerHTML = gHtml;
+
+    // Verify group data
+    var gDataTds = document.querySelectorAll('#groups-output .tmp-type-data .tmp-td');
+    if (gDataTds.length >= 3) {
+        assert('Groepen: Rij 1 Stad = Amsterdam', gDataTds[0].textContent.trim() === 'Amsterdam');
+        assert('Groepen: Rij 1 Omzet = € 125.000', gDataTds[1].textContent.trim() === '€ 125.000');
+        assert('Groepen: Rij 1 Regio = NH', gDataTds[2].textContent.trim() === 'NH');
+    }
+    var gGroupTds = document.querySelectorAll('#groups-output .tmp-type-group_1 .tmp-group-cell');
+    if (gGroupTds.length >= 1) {
+        assert('Groepen: G1 label = Noord', gGroupTds[0].textContent.trim() === 'Noord');
+    }
+    var gFooterTds = document.querySelectorAll('#groups-output .tmp-type-footer .tmp-footer-cell');
+    if (gFooterTds.length >= 1) {
+        assert('Groepen: Footer = Totaal € 290.500', gFooterTds[0].textContent.trim() === 'Totaal € 290.500');
+    }
+
+    // ============================================================
+    // ALSO: test OLD BUG would have caused
+    // ============================================================
+    var old_col_id_map = {};
+    var old_next = 500;
+    columns.forEach(function(col, order_index) {
+        var temp_key = col.temp_key || '';
+        var new_col_id = old_next++;
+        if (temp_key) { old_col_id_map[temp_key] = new_col_id; }
+        // OLD BUG: this line overwrites
+        old_col_id_map['new_' + order_index] = new_col_id;
+    });
+
+    // With old bug: new_1 should map to col 500 (Kolom 1), but gets overwritten to 501 (Kolom 2)
+    assert('OLD BUG: new_1 WOULD map to 501 (wrong!)', old_col_id_map['new_1'] === 501);
+    assert('OLD BUG: new_2 WOULD map to 502 (wrong!)', old_col_id_map['new_2'] === 502);
+    assert('FIX: new_1 maps to 100 (correct!)', col_id_map['new_1'] === 100);
+    assert('FIX: new_2 maps to 101 (correct!)', col_id_map['new_2'] === 101);
+
+    // ============================================================
+    // RENDER RESULTS
+    // ============================================================
+    var html = '';
+    var passCount = 0;
+    var failCount = 0;
+    results.forEach(function(r) {
+        if (r.pass) passCount++;
+        else failCount++;
+        html += '<div class="result-item">' +
+            (r.pass ? '✅' : '❌') + ' ' +
+            '<span class="' + (r.pass ? 'pass' : 'fail') + '">' + (r.pass ? 'PASS' : 'FAIL') + '</span> — ' +
+            r.name + '</div>';
+    });
+    html = '<div style="margin-bottom:10px;font-size:16px;"><strong>' + passCount + '/' + (passCount + failCount) + ' tests geslaagd</strong>' +
+        (failCount > 0 ? ' <span class="fail">(' + failCount + ' GEFAALD)</span>' : ' <span class="pass">— Alles OK!</span>') + '</div>' + html;
+    document.getElementById('results-output').innerHTML = html;
+})();
+</script>
+</body>
+</html>
