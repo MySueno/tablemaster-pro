@@ -1,4 +1,14 @@
 <wpml-config>
+    <elementor-widgets>
+        <widget name="tablemaster_table">
+            <conditions>
+                <condition key="widgetType">tablemaster_table</condition>
+            </conditions>
+            <fields>
+                <field type="copy" editor_type="LINE" name="table_id" />
+            </fields>
+        </widget>
+    </elementor-widgets>
     <admin-texts>
         <key name="tablemaster_settings">
             <key name="default_theme" />
@@ -6,4 +16,12 @@
             <key name="border_radius" />
         </key>
     </admin-texts>
+    <shortcodes>
+        <shortcode>
+            <tag>tablemaster</tag>
+            <attributes>
+                <attribute type="copy" name="id" />
+            </attributes>
+        </shortcode>
+    </shortcodes>
 </wpml-config>
