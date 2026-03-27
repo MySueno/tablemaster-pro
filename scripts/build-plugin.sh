@@ -50,3 +50,12 @@ echo "╔═══════════════════════�
 echo "║  ✓ BUILD GESLAAGD — v$version            "
 echo "║  Herstart nu de API server               "
 echo "╚══════════════════════════════════════════╝"
+
+echo ""
+echo "▶ Stap 5/5: Push naar GitHub..."
+if [ -n "$GITHUB_TOKEN" ]; then
+    node scripts/push-to-github.cjs
+else
+    echo "  ⚠ GITHUB_TOKEN niet ingesteld — push overgeslagen"
+    echo "  Gebruik: GITHUB_TOKEN=xxx bash scripts/build-plugin.sh"
+fi
