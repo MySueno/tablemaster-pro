@@ -174,7 +174,6 @@ $page_title = $is_new
                         'text'  => array( 'key' => 'even_bg', 'label' => __( 'Even', TMP_TEXT_DOMAIN ) ),
                     ),
                 );
-                <?php
                 $optional_color_keys = array( 'first_col_bg', 'first_col_text' );
                 foreach ( $color_sections as $section ) :
                     $bg_val   = $c[ $section['bg']['key'] ] ?? '';
