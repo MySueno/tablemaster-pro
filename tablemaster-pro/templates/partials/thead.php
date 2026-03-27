@@ -104,11 +104,14 @@ if ( $first_col_w !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $first_col
                 $g1_sort = ! empty( $table_sortable );
                 $g1_class = 'tmp-th';
                 if ( $g1_sort ) $g1_class .= ' tmp-sortable';
+                $g1_align = isset( $cm['cs']['align'] ) && in_array( $cm['cs']['align'], $valid_aligns, true ) ? $cm['cs']['align'] : '';
+                $g1_align_style = $g1_align !== '' && $g1_align !== 'left' ? ' style="text-align:' . esc_attr( $g1_align ) . ';"' : '';
             ?>
                 <th class="<?php echo esc_attr( $g1_class ); ?>" colspan="<?php echo intval( $g1_colspan ); ?>"
                     data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"
                     data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"
-                    <?php echo $g1_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
+                    <?php echo $g1_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>
+                    <?php echo $g1_align_style; ?>>
                     <?php echo wp_kses_post( $cm['g1'] ); ?>
                     <?php if ( $g1_sort ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
                 </th>
@@ -159,13 +162,16 @@ if ( $first_col_w !== '' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $first_col
                 $g1_sort   = $g1_no_sub && ! empty( $table_sortable );
                 $g1_class  = 'tmp-th tmp-th-grouped';
                 if ( $g1_sort ) $g1_class .= ' tmp-sortable';
+                $g1_align = isset( $cm['cs']['align'] ) && in_array( $cm['cs']['align'], $valid_aligns, true ) ? $cm['cs']['align'] : '';
+                $g1_align_style = $g1_align !== '' && $g1_align !== 'left' ? ' style="text-align:' . esc_attr( $g1_align ) . ';"' : '';
             ?>
                 <th class="<?php echo esc_attr( $g1_class ); ?>"
                     colspan="<?php echo intval( $g1_colspan ); ?>"
                     <?php if ( $g1_no_sub ) : ?>rowspan="<?php echo intval( $rows_below + 1 ); ?>"<?php endif; ?>
                     <?php if ( $g1_no_sub ) : ?>data-col-id="<?php echo esc_attr( $cm['col']->id ); ?>"<?php endif; ?>
                     <?php if ( $g1_no_sub ) : ?>data-col-type="<?php echo esc_attr( $cm['col']->type ); ?>"<?php endif; ?>
-                    <?php echo $g1_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>>
+                    <?php echo $g1_sort ? 'role="columnheader" aria-sort="none" tabindex="0"' : ''; ?>
+                    <?php echo $g1_align_style; ?>>
                     <?php echo wp_kses_post( $cm['g1'] ); ?>
                     <?php if ( $g1_sort ) : ?><span class="tmp-sort-icon" aria-hidden="true"></span><?php endif; ?>
                 </th>

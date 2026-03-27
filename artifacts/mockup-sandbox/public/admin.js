@@ -309,6 +309,8 @@
                     } else break;
                 }
                 var colspan = groupKeys.length;
+                var grpAlign = (col.settings && col.settings.align) || '';
+                var grpAlignStyle = grpAlign && grpAlign !== 'left' ? ' style="text-align:' + escAttr(grpAlign) + ';"' : '';
                 headerCols += '<th class="tmp-col-header-cell tmp-col-merged-group" ' +
                     'data-col-key="' + escAttr(groupKeys[0]) + '" ' +
                     'data-col-idx="' + ci + '" ' +
@@ -316,7 +318,7 @@
                     'data-group-keys="' + escAttr(groupKeys.join(',')) + '" ' +
                     'data-group-name="' + escAttr(g1) + '" ' +
                     'draggable="true" ' +
-                    (colspan > 1 ? 'colspan="' + colspan + '" ' : '') + '>' +
+                    (colspan > 1 ? 'colspan="' + colspan + '" ' : '') + grpAlignStyle + '>' +
                     '<span class="tmp-col-header-label">' + g1 + '</span>' +
                     '<span class="tmp-col-unmerge-btn dashicons dashicons-editor-unlink" title="Groep opheffen"></span>' +
                 '</th>';
@@ -441,6 +443,9 @@
                 formatUndoPushed = false;
                 $('#tmp-cell-toolbar').removeClass('tmp-toolbar-disabled');
                 $('#tmp-tb-cell-ref').text(groupName);
+                var firstGrpCol = columns.find(function(c) { return (c.temp_key || c.id) + '' === groupKeys[0]; });
+                var curGrpAlign = (firstGrpCol && firstGrpCol.settings && firstGrpCol.settings.align) || 'left';
+                updateAlignButtons(curGrpAlign);
                 function finishGroupNameEdit() {
                     var newVal = cleanCellHtml($editDiv.html()).trim();
                     if (activeCell && activeCell.el === $editDiv[0]) {
@@ -448,6 +453,8 @@
                         $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled');
                         $('#tmp-tb-cell-ref').text('');
                     }
+                    var firstCol = columns.find(function(c) { return (c.temp_key || c.id) + '' === groupKeys[0]; });
+                    var savedAlign = (firstCol && firstCol.settings && firstCol.settings.align) || '';
                     if (newVal && newVal !== origGroupName) {
                         pushUndo();
                         groupKeys.forEach(function (k) {
@@ -458,6 +465,7 @@
                         $th.css('min-width', '');
                         rebuildRowTable();
                     } else {
+                        $th.css('text-align', savedAlign && savedAlign !== 'left' ? savedAlign : '');
                         $label.show();
                         $unlinkBtn.css('opacity', '');
                         $editDiv.remove();
@@ -467,7 +475,7 @@
                 $editDiv.on('blur', function () { setTimeout(finishGroupNameEdit, 150); });
                 $editDiv.on('keydown', function (ev) {
                     if (ev.key === 'Enter') { ev.preventDefault(); finishGroupNameEdit(); }
-                    if (ev.key === 'Escape') { if (activeCell && activeCell.el === $editDiv[0]) { activeCell = null; $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled'); } $label.show(); $unlinkBtn.css('opacity', ''); $editDiv.remove(); $th.css('min-width', ''); }
+                    if (ev.key === 'Escape') { if (activeCell && activeCell.el === $editDiv[0]) { activeCell = null; $('#tmp-cell-toolbar').addClass('tmp-toolbar-disabled'); } var fc = columns.find(function(c) { return (c.temp_key || c.id) + '' === groupKeys[0]; }); var sa = (fc && fc.settings && fc.settings.align) || ''; $th.css('text-align', sa && sa !== 'left' ? sa : ''); $label.show(); $unlinkBtn.css('opacity', ''); $editDiv.remove(); $th.css('min-width', ''); }
                 });
             } else {
                 var colKey = $th.data('col-key') + '';
@@ -1048,7 +1056,17 @@
         if (activeCell.tempId === '__header__') {
             var colKey = activeCell.colKey;
             if (colKey.indexOf('__group__') === 0) {
+                var gKeys = colKey.replace('__group__', '').split(',');
+                pushUndo();
+                gKeys.forEach(function(k) {
+                    var gc = columns.find(function(c) { return (c.temp_key || c.id) + '' === k; });
+                    if (gc) {
+                        if (!gc.settings) gc.settings = {};
+                        gc.settings.align = align;
+                    }
+                });
                 activeCell.$area.css('text-align', align);
+                activeCell.$area.closest('th').css('text-align', align);
             } else {
                 var colObj = columns.find(function(c) { return (c.temp_key || c.id) + '' === colKey; });
                 if (colObj) {

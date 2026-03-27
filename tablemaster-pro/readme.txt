@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.60
+Stable tag: 1.3.61
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,11 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.3.61 =
+* Fix: Uitlijning van samengevoegde kolomkoppen (centreren/rechts) wordt nu correct opgeslagen en blijft behouden na het verlaten van de bewerkingsmodus
+* Fix: Uitlijning van samengevoegde kolomkoppen wordt nu correct weergegeven op de frontend (alle header depth niveaus)
+* Fix: Toolbar alignment-knoppen tonen nu de juiste status bij het bewerken van een samengevoegde kolomkop
 
 = 1.3.60 =
 * Nieuw: Kolomkoppen samenvoegen via enkele klik — selecteer meerdere kolommen en klik "Samenvoegen" (werkt ook op mobiel/tablet)
