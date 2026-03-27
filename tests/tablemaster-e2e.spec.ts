@@ -1,191 +1,171 @@
 import { test, expect } from '@playwright/test';
 
+const MAGIC_LOGIN = 'https://app.instawp.io/wordpress-auto-login?site=%242y%2410%24.3ekyty61WlcvWwqD2ZjiewDeNqc45g8gSIgr.kKG5xHyVLaY97.O';
 const WP_URL = 'https://testwebsite.instawp.site';
-const WP_USER = 'mysueno';
-const WP_PASS = 'MSP5muK9CNwDasLEBTg4';
 
 test('TableMaster Pro — volledige flow: tabel aanmaken, shortcode plaatsen, front-end controleren', async ({ page }) => {
+  const timestamp = Date.now();
 
-  // ─── Stap 1: Inloggen in WP Admin ───
-  await test.step('Inloggen in WordPress', async () => {
-    await page.goto(`${WP_URL}/wp-login.php`);
-    await page.fill('#user_login', WP_USER);
-    await page.fill('#user_pass', WP_PASS);
-    await page.click('#wp-submit');
-    await page.waitForURL('**/wp-admin/**');
+  await test.step('Stap 1: Inloggen via magic link', async () => {
+    await page.goto(MAGIC_LOGIN, { timeout: 30000, waitUntil: 'networkidle' });
+    expect(page.url()).toContain('wp-admin');
     await expect(page.locator('#wpadminbar')).toBeVisible();
+    await page.screenshot({ path: 'screenshots/stap1-ingelogd.jpg', quality: 80 });
   });
 
-  // ─── Stap 2: Navigeren naar TableMaster ───
-  await test.step('Navigeren naar TableMaster plugin', async () => {
-    await page.goto(`${WP_URL}/wp-admin/admin.php?page=tablemaster`);
+  await test.step('Stap 2: Navigeren naar TableMaster plugin', async () => {
+    await page.goto(`${WP_URL}/wp-admin/admin.php?page=tablemaster`, { waitUntil: 'networkidle' });
     await expect(page.locator('body')).toContainText(/TableMaster/i);
+    await page.screenshot({ path: 'screenshots/stap2-tablemaster-lijst.jpg', quality: 80 });
   });
 
-  // ─── Stap 3: Nieuwe tabel aanmaken ───
   let shortcode = '';
 
-  await test.step('Nieuwe tabel aanmaken met 3 kolommen en 3 rijen', async () => {
-    await page.goto(`${WP_URL}/wp-admin/admin.php?page=tablemaster-new`);
-    await page.waitForLoadState('networkidle');
+  await test.step('Stap 3: Nieuwe tabel aanmaken (3 kolommen, 3 rijen)', async () => {
+    await page.goto(`${WP_URL}/wp-admin/admin.php?page=tablemaster-new`, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(2000);
 
-    const titleInput = page.locator('#tmp-table-title');
+    const titleInput = page.locator('#tmp-table-name');
     await expect(titleInput).toBeVisible({ timeout: 10000 });
-    const timestamp = Date.now();
-    await titleInput.fill(`Test Tabel ${timestamp}`);
+    await titleInput.fill(`Playwright Test ${timestamp}`);
 
-    await page.waitForTimeout(1000);
-
-    const headerCells = page.locator('#tmp-rows-wrapper thead th, #tmp-rows-wrapper .tmp-header-row th');
+    const headerCells = page.locator('#tmp-rows-wrapper thead th');
     const headerCount = await headerCells.count();
+    console.log(`Headers: ${headerCount}`);
 
-    if (headerCount === 4) {
-      const lastHeader = headerCells.nth(3);
-      const deleteBtn = lastHeader.locator('.tmp-col-delete, [data-action="delete-column"]');
+    if (headerCount > 5) {
+      const deleteBtn = page.locator('#tmp-rows-wrapper thead th .tmp-col-delete, #tmp-rows-wrapper thead th [title="Kolom verwijderen"]');
       if (await deleteBtn.count() > 0) {
-        await deleteBtn.first().click();
+        await deleteBtn.last().click();
         await page.waitForTimeout(500);
       }
     }
 
-    const dataCells = page.locator('#tmp-rows-wrapper tbody tr:first-child td, #tmp-rows-wrapper .tmp-data-row:first-child td');
-    const colCount = await dataCells.count();
-
-    const dataRows = page.locator('#tmp-rows-wrapper tbody tr, #tmp-rows-wrapper .tmp-data-row');
+    const dataRows = page.locator('#tmp-rows-wrapper tbody tr');
     const rowCount = await dataRows.count();
+    console.log(`Rijen: ${rowCount}`);
 
     await page.screenshot({ path: 'screenshots/stap3-tabel-aangemaakt.jpg', quality: 80 });
   });
 
-  // ─── Stap 4: Tabel opslaan ───
-  await test.step('Tabel opslaan', async () => {
-    const saveBtn = page.locator('#tmp-save-table, button:has-text("Opslaan"), input[value="Opslaan"]');
-    await expect(saveBtn.first()).toBeVisible({ timeout: 5000 });
-    await saveBtn.first().click();
-    await page.waitForTimeout(2000);
-    await page.waitForLoadState('networkidle');
+  await test.step('Stap 4: Tabel opslaan', async () => {
+    const saveBtn = page.locator('#tmp-save-all');
+    await expect(saveBtn).toBeVisible({ timeout: 5000 });
+    await saveBtn.click();
 
-    await page.screenshot({ path: 'screenshots/stap4-tabel-opgeslagen.jpg', quality: 80 });
+    await page.waitForTimeout(3000);
+    await page.waitForLoadState('networkidle');
+    await page.screenshot({ path: 'screenshots/stap4-opgeslagen.jpg', quality: 80 });
   });
 
-  // ─── Stap 5: Shortcode ophalen ───
-  await test.step('Shortcode kopiëren', async () => {
-    const shortcodeEl = page.locator('[id*="shortcode"], .tmp-shortcode, code:has-text("[tablemaster"), input[value*="[tablemaster"]');
-    await expect(shortcodeEl.first()).toBeVisible({ timeout: 10000 });
-
-    const tagName = await shortcodeEl.first().evaluate(el => el.tagName.toLowerCase());
-    if (tagName === 'input') {
-      shortcode = await shortcodeEl.first().inputValue();
-    } else {
-      shortcode = await shortcodeEl.first().innerText();
-    }
-
-    shortcode = shortcode.trim();
+  await test.step('Stap 5: Shortcode kopiëren', async () => {
+    const shortcodeEl = page.locator('#tmp-shortcode-value');
+    await expect(shortcodeEl).toBeVisible({ timeout: 10000 });
+    shortcode = (await shortcodeEl.innerText()).trim();
+    console.log('Shortcode:', shortcode);
     expect(shortcode).toMatch(/\[tablemaster\s/);
+    await page.screenshot({ path: 'screenshots/stap5-shortcode.jpg', quality: 80 });
   });
 
-  // ─── Stap 6: Nieuwe pagina aanmaken met shortcode ───
-  await test.step('Nieuwe WP pagina aanmaken met shortcode', async () => {
-    const timestamp = Date.now();
-    const pageTitle = `TMP Test ${timestamp}`;
+  await test.step('Stap 6: Nieuwe pagina aanmaken met shortcode', async () => {
+    await page.goto(`${WP_URL}/wp-admin/post-new.php?post_type=page`, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(3000);
 
-    await page.goto(`${WP_URL}/wp-admin/post-new.php?post_type=page`);
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(2000);
+    const welcomeModal = page.locator('.components-modal__header button, button[aria-label="Close"]');
+    if (await welcomeModal.count() > 0) {
+      await welcomeModal.first().click().catch(() => {});
+      await page.waitForTimeout(500);
+    }
 
     const isGutenberg = await page.locator('.block-editor').count() > 0;
 
     if (isGutenberg) {
-      const welcomeModal = page.locator('.components-modal__header button[aria-label="Close"], .components-modal__header button:has-text("Close"), button:has-text("Sluiten")');
-      if (await welcomeModal.count() > 0) {
-        await welcomeModal.first().click();
+      const titleArea = page.locator('[aria-label="Add title"], [data-title="Add title"], .editor-post-title__input, h1[contenteditable]');
+      await titleArea.first().click({ timeout: 5000 });
+      await page.keyboard.type(`TMP Test ${timestamp}`);
+
+      const optionsBtn = page.locator('button[aria-label="Options"], button[aria-label="Opties"]');
+      if (await optionsBtn.count() > 0) {
+        await optionsBtn.first().click();
         await page.waitForTimeout(500);
+
+        const codeEditorItem = page.locator('button[role="menuitemradio"]:has-text("Code editor"), button[role="menuitemradio"]:has-text("Code-editor")');
+        if (await codeEditorItem.count() > 0) {
+          await codeEditorItem.first().click();
+          await page.waitForTimeout(1000);
+        } else {
+          await page.keyboard.press('Escape');
+        }
       }
 
-      const titleBlock = page.locator('[aria-label="Add title"], .editor-post-title__input, h1[contenteditable="true"], [data-title="Add title"]');
-      await titleBlock.first().click();
-      await page.keyboard.type(pageTitle);
-
-      await page.keyboard.press('Enter');
-      await page.waitForTimeout(500);
-
-      await page.keyboard.type('/');
-      await page.waitForTimeout(300);
-
-      const shortcodeOption = page.locator('button.components-autocomplete__result:has-text("Shortcode"), button:has-text("Shortcode")');
-      if (await shortcodeOption.count() > 0) {
-        await shortcodeOption.first().click();
+      const codeTextarea = page.locator('.editor-post-text-editor');
+      if (await codeTextarea.count() > 0) {
+        await codeTextarea.first().fill(`<!-- wp:shortcode -->\n${shortcode}\n<!-- /wp:shortcode -->`);
       } else {
-        await page.keyboard.press('Escape');
-        await page.waitForTimeout(200);
-        await page.keyboard.type(shortcode);
-      }
+        await page.keyboard.press('Enter');
+        await page.waitForTimeout(300);
+        await page.keyboard.type('/shortcode');
+        await page.waitForTimeout(1000);
 
-      await page.waitForTimeout(500);
-
-      const shortcodeInput = page.locator('.blocks-shortcode textarea, .wp-block-shortcode textarea, textarea[placeholder*="Shortcode"]');
-      if (await shortcodeInput.count() > 0) {
-        await shortcodeInput.first().fill(shortcode);
+        const shortcodeOption = page.locator('button:has-text("Shortcode")');
+        if (await shortcodeOption.count() > 0) {
+          await shortcodeOption.first().click();
+          await page.waitForTimeout(500);
+          const shortcodeInput = page.locator('.wp-block-shortcode textarea');
+          if (await shortcodeInput.count() > 0) {
+            await shortcodeInput.first().fill(shortcode);
+          }
+        } else {
+          await page.keyboard.press('Escape');
+          await page.keyboard.type(shortcode);
+        }
       }
     } else {
-      await page.fill('#title', pageTitle);
-      await page.waitForTimeout(500);
-
-      const contentArea = page.locator('#content, #wp-content-editor-container textarea');
-      await contentArea.first().fill(shortcode);
+      await page.fill('#title', `TMP Test ${timestamp}`);
+      await page.locator('#content').fill(shortcode);
     }
 
-    await page.screenshot({ path: 'screenshots/stap6-pagina-met-shortcode.jpg', quality: 80 });
+    await page.screenshot({ path: 'screenshots/stap6a-pagina-editor.jpg', quality: 80 });
 
-    const publishBtn = page.locator(
-      'button:has-text("Publiceren"), button:has-text("Publish"), input#publish'
-    );
-    await publishBtn.first().click();
+    const publishToggle = page.locator('button.editor-post-publish-panel__toggle, button:has-text("Publish"):not([aria-disabled="true"]), button:has-text("Publiceren"):not([aria-disabled="true"])');
+    await publishToggle.first().click({ timeout: 5000 });
     await page.waitForTimeout(2000);
 
-    const confirmPublish = page.locator(
-      '.editor-post-publish-button:has-text("Publiceren"), .editor-post-publish-button:has-text("Publish"), button.editor-post-publish-button'
-    );
-    if (await confirmPublish.count() > 0) {
-      await confirmPublish.first().click();
+    const publishConfirm = page.locator('.editor-post-publish-panel button.editor-post-publish-button, button.editor-post-publish-button:has-text("Publish")');
+    if (await publishConfirm.count() > 0) {
+      await publishConfirm.first().click({ timeout: 5000 });
       await page.waitForTimeout(3000);
     }
 
-    await page.screenshot({ path: 'screenshots/stap6-pagina-gepubliceerd.jpg', quality: 80 });
+    await page.screenshot({ path: 'screenshots/stap6b-gepubliceerd.jpg', quality: 80 });
   });
 
-  // ─── Stap 7: Pagina openen op front-end en tabel controleren ───
-  await test.step('Front-end pagina openen en tabel controleren', async () => {
-    const viewLink = page.locator('a:has-text("Pagina bekijken"), a:has-text("View Page"), a:has-text("Bekijk pagina"), .post-publish-panel__postpublish-buttons a');
-
+  await test.step('Stap 7: Front-end openen en tabel controleren', async () => {
     let frontendUrl = '';
+
+    const viewLink = page.locator('a:has-text("View Page"), a:has-text("Pagina bekijken"), .post-publish-panel__postpublish-buttons a');
     if (await viewLink.count() > 0) {
       frontendUrl = await viewLink.first().getAttribute('href') || '';
     }
 
     if (!frontendUrl) {
-      const permalink = page.locator('.edit-post-post-link__link, #sample-permalink a, a[href*="tmp-test"]');
-      if (await permalink.count() > 0) {
-        frontendUrl = await permalink.first().getAttribute('href') || '';
+      await page.goto(`${WP_URL}/?s=TMP+Test+${timestamp}`, { waitUntil: 'networkidle' });
+      const firstResult = page.locator('.entry-title a, article a, h2 a').first();
+      if (await firstResult.count() > 0) {
+        frontendUrl = await firstResult.getAttribute('href') || '';
       }
     }
 
     if (frontendUrl) {
-      await page.goto(frontendUrl);
-    } else {
-      await page.goto(`${WP_URL}/?s=TMP+Test`);
-      const firstResult = page.locator('.entry-title a, article a').first();
-      if (await firstResult.count() > 0) {
-        await firstResult.click();
-      }
+      await page.goto(frontendUrl, { waitUntil: 'networkidle' });
     }
 
-    await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
 
-    const table = page.locator('.tablemaster-wrapper, table.tablemaster, [class*="tablemaster"], .tmp-table-wrapper');
+    const table = page.locator('[id^="tmp-"], .tablemaster-wrapper, table.tablemaster');
     await expect(table.first()).toBeVisible({ timeout: 15000 });
 
     await page.screenshot({ path: 'screenshots/stap7-tabel-frontend.jpg', quality: 80, fullPage: true });
+    console.log('Tabel zichtbaar op front-end!');
   });
 });

@@ -1,20 +1,18 @@
 import { test, expect } from '@playwright/test';
 
-test('Quick login test', async ({ page }) => {
-  console.log('Navigating to login page...');
-  await page.goto('https://testwebsite.instawp.site/wp-login.php', { timeout: 30000 });
-  console.log('Page loaded, title:', await page.title());
+const MAGIC_LOGIN = 'https://app.instawp.io/wordpress-auto-login?site=%242y%2410%24.3ekyty61WlcvWwqD2ZjiewDeNqc45g8gSIgr.kKG5xHyVLaY97.O';
+const WP_URL = 'https://testwebsite.instawp.site';
 
-  await page.fill('#user_login', 'mysueno');
-  await page.fill('#user_pass', 'MSP5muK9CNwDasLEBTg4');
-  console.log('Credentials filled');
-
-  await page.click('#wp-submit');
-  console.log('Submit clicked');
-
-  await page.waitForURL('**/wp-admin/**', { timeout: 30000 });
-  console.log('Logged in! URL:', page.url());
+test('Quick login test via magic link', async ({ page }) => {
+  console.log('Navigating to magic login...');
+  await page.goto(MAGIC_LOGIN, { timeout: 30000, waitUntil: 'networkidle' });
+  console.log('After magic login, URL:', page.url());
 
   await page.screenshot({ path: 'screenshots/login-test.jpg', quality: 80 });
-  console.log('Screenshot saved');
+
+  const isAdmin = page.url().includes('wp-admin');
+  const hasAdminBar = await page.locator('#wpadminbar').count() > 0;
+  console.log('Is admin:', isAdmin, 'Has admin bar:', hasAdminBar);
+
+  expect(isAdmin || hasAdminBar).toBeTruthy();
 });
