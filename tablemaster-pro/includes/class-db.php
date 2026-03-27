@@ -713,7 +713,6 @@ class TableMaster_DB {
                 if ( $temp_key ) {
                     $col_id_map[ $temp_key ] = $new_col_id;
                 }
-                $col_id_map[ 'new_' . $order_index ] = $new_col_id;
             }
         }
 

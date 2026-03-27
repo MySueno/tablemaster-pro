@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.63
+Stable tag: 1.3.64
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,9 +33,9 @@ Functies:
 
 == Changelog ==
 
-= 1.3.63 =
+= 1.3.64 =
+* Fix: Kolom-offset bug — celdata werd bij nieuwe tabellen verschoven opgeslagen (kolom 1 data verscheen in kolom 2 op frontend)
 * Fix: Kritieke PHP parse-fout opgelost (dubbele PHP-tag in table-edit.php)
-* Versie-bump voor update-distributie
 
 = 1.3.62 =
 * Nieuw: Eerste kolom kleurinstelling — geef de rij-titels een eigen achtergrond- en tekstkleur (instelbaar via Kleuren-tab)
