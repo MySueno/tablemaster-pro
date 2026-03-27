@@ -64,8 +64,7 @@ $s = TableMaster_Settings::get();
     <p><?php printf( esc_html__( 'Versie: %s', TMP_TEXT_DOMAIN ), esc_html( TMP_VERSION ) ); ?></p>
     <p><?php printf( esc_html__( 'Database versie: %s', TMP_TEXT_DOMAIN ), esc_html( get_option( 'tablemaster_db_version', 'n/a' ) ) ); ?></p>
     <?php
-        $raw_settings  = get_option( 'tablemaster_settings', array() );
-        $saved_license = isset( $raw_settings['license_key'] ) ? $raw_settings['license_key'] : '';
+        $saved_license = TableMaster_Settings::get( 'license_key' );
         $active_url    = TableMaster_Settings::get_update_url();
     ?>
     <?php if ( ! empty( $saved_license ) ) : ?>
