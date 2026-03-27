@@ -10,13 +10,27 @@ class TableMaster_Shortcode {
     public function render( $atts ) {
         $atts = shortcode_atts( array( 'id' => 0 ), $atts, 'tablemaster' );
         $id   = intval( $atts['id'] );
+
+        if ( ! $id && TableMaster_WPML::is_active() ) {
+            $id = self::resolve_table_id_from_original_post();
+        }
+
         if ( ! $id ) {
-            return '<p class="tablemaster-error">' . esc_html__( 'Ongeldige tabel ID.', TMP_TEXT_DOMAIN ) . '</p>';
+            return '';
         }
 
         $table = TableMaster_DB::get_table( $id );
+
+        if ( ! $table && TableMaster_WPML::is_active() ) {
+            $resolved_id = self::resolve_table_id_from_original_post();
+            if ( $resolved_id && $resolved_id !== $id ) {
+                $id    = $resolved_id;
+                $table = TableMaster_DB::get_table( $id );
+            }
+        }
+
         if ( ! $table ) {
-            return '<p class="tablemaster-error">' . esc_html__( 'Tabel niet gevonden.', TMP_TEXT_DOMAIN ) . '</p>';
+            return '';
         }
 
         TableMaster::enqueue_frontend_assets();
@@ -44,6 +58,41 @@ class TableMaster_Shortcode {
         ob_start();
         include TMP_PLUGIN_DIR . 'templates/table-frontend.php';
         return ob_get_clean();
+    }
+
+    private static function resolve_table_id_from_original_post() {
+        $post_id = get_the_ID();
+        if ( ! $post_id ) {
+            return 0;
+        }
+
+        $default_lang = TableMaster_WPML::get_default_language();
+        if ( ! $default_lang ) {
+            return 0;
+        }
+
+        $original_id = apply_filters( 'wpml_object_id', $post_id, get_post_type( $post_id ), true, $default_lang );
+        if ( ! $original_id || $original_id === $post_id ) {
+            return 0;
+        }
+
+        $original_post = get_post( $original_id );
+        if ( ! $original_post ) {
+            return 0;
+        }
+
+        $content = $original_post->post_content;
+
+        if ( preg_match( '/\[tablemaster\s+id=["\']?(\d+)["\']?\s*\]/', $content, $m ) ) {
+            return intval( $m[1] );
+        }
+
+        $elementor_data = get_post_meta( $original_id, '_elementor_data', true );
+        if ( ! empty( $elementor_data ) && preg_match( '/"table_id"\s*:\s*"?(\d+)"?/', $elementor_data, $m ) ) {
+            return intval( $m[1] );
+        }
+
+        return 0;
     }
 
     private static function translate_settings( $settings, $context, $lang ) {
