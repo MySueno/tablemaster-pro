@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 if ( ! current_user_can( 'manage_options' ) ) wp_die( esc_html__( 'Geen toegang.', TMP_TEXT_DOMAIN ) );
 
 $table_id    = intval( $_GET['id'] ?? 0 );
-$target_lang = sanitize_text_field( $_GET['lang'] ?? '' );
+$target_lang = sanitize_text_field( $_GET['target_lang'] ?? '' );
 
 if ( ! $table_id ) wp_die( esc_html__( 'Geen tabel opgegeven.', TMP_TEXT_DOMAIN ) );
 
@@ -326,7 +326,7 @@ if ( $has_cell_rows ) {
             <span class="tmp-translate-progress-label"><?php esc_html_e( 'vertaald', TMP_TEXT_DOMAIN ); ?></span>
         </div>
         <div class="tmp-translate-export">
-            <a id="tmp-export-translated-csv" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?tablemaster_export_translated_csv=' . $table_id . '&lang=' . $target_lang ), 'tablemaster_export_translated_csv' ) ); ?>" class="button button-secondary">
+            <a id="tmp-export-translated-csv" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?tablemaster_export_translated_csv=' . $table_id . '&target_lang=' . $target_lang ), 'tablemaster_export_translated_csv' ) ); ?>" class="button button-secondary">
                 <span class="dashicons dashicons-download" style="vertical-align:middle;margin-right:4px;"></span>
                 <?php esc_html_e( 'CSV exporteren (vertaald)', TMP_TEXT_DOMAIN ); ?>
             </a>
@@ -624,7 +624,7 @@ if ( $has_cell_rows ) {
         }
         isDirty = false;
         var newLang = $(this).val();
-        window.location.href = '<?php echo esc_js( admin_url( 'admin.php?page=tablemaster-translate&id=' . $table_id . '&lang=' ) ); ?>' + newLang;
+        window.location.href = '<?php echo esc_js( admin_url( 'admin.php?page=tablemaster-translate&id=' . $table_id . '&target_lang=' ) ); ?>' + newLang;
     });
 
     $('#tmp-translate-save').on('click', function() {

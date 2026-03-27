@@ -81,7 +81,7 @@ $tables = TableMaster_DB::get_all_tables();
                                             $badge_icon  = '&#10005;';
                                         }
                             ?>
-                                <a href="<?php echo esc_url( TableMaster_WPML::get_translate_url( $t->id ) . '&lang=' . $lcode ); ?>" class="button button-small" title="<?php echo esc_attr( sprintf( __( 'Vertalen naar %s — %d%%', TMP_TEXT_DOMAIN ), $linfo['native_name'], $prog['percent'] ) ); ?>" style="position:relative;">
+                                <a href="<?php echo esc_url( TableMaster_WPML::get_translate_url( $t->id ) . '&target_lang=' . $lcode ); ?>" class="button button-small" title="<?php echo esc_attr( sprintf( __( 'Vertalen naar %s — %d%%', TMP_TEXT_DOMAIN ), $linfo['native_name'], $prog['percent'] ) ); ?>" style="position:relative;">
                                     <?php echo esc_html( $lang_label ); ?>
                                     <span style="<?php echo esc_attr( $badge_style ); ?>display:inline-block;font-size:10px;line-height:1;padding:2px 4px;border-radius:3px;margin-left:3px;"><?php echo wp_kses( $badge_icon, array() ); ?></span>
                                 </a>

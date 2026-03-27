@@ -257,7 +257,7 @@ class TableMaster_Admin {
         }
 
         $table_id    = intval( $_GET['tablemaster_export_translated_csv'] );
-        $target_lang = isset( $_GET['lang'] ) ? sanitize_text_field( $_GET['lang'] ) : '';
+        $target_lang = isset( $_GET['target_lang'] ) ? sanitize_text_field( $_GET['target_lang'] ) : '';
 
         $table = TableMaster_DB::get_table( $table_id );
         if ( ! $table ) {
