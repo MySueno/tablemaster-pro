@@ -59,7 +59,43 @@ class TableMaster_DB {
 
         update_option( 'tablemaster_db_version', TMP_VERSION );
 
+        self::migrate_default_lang_cells();
+
         self::insert_demo_data();
+    }
+
+    public static function migrate_default_lang_cells() {
+        global $wpdb;
+
+        if ( ! class_exists( 'TableMaster_WPML' ) || ! TableMaster_WPML::is_active() ) {
+            return;
+        }
+
+        $default_lang = TableMaster_WPML::get_default_language();
+        if ( $default_lang === '' ) {
+            return;
+        }
+
+        $migrated_for = get_option( 'tablemaster_lang_cells_migrated', '' );
+        if ( $migrated_for === $default_lang ) {
+            return;
+        }
+
+        $affected = $wpdb->query( $wpdb->prepare(
+            "UPDATE {$wpdb->prefix}tablemaster_cells SET lang = '' WHERE lang = %s",
+            $default_lang
+        ) );
+
+        if ( $affected > 0 ) {
+            $tables = self::get_all_tables();
+            if ( ! empty( $tables ) ) {
+                foreach ( $tables as $table ) {
+                    self::flush_table_cache( $table->id );
+                }
+            }
+        }
+
+        update_option( 'tablemaster_lang_cells_migrated', $default_lang );
     }
 
     public static function uninstall() {
@@ -380,12 +416,28 @@ class TableMaster_DB {
             $lang_clause = '';
             $query_args = array_map( 'intval', $row_ids );
             if ( $lang ) {
-                $lang_clause = ' AND (lang = %s OR lang = %s)';
-                $query_args[] = $lang;
-                $query_args[] = '';
+                $default_lang_code = '';
+                if ( class_exists( 'TableMaster_WPML' ) && TableMaster_WPML::is_active() ) {
+                    $default_lang_code = TableMaster_WPML::get_default_language();
+                }
+                if ( $default_lang_code !== '' && $default_lang_code !== $lang ) {
+                    $lang_clause = ' AND (lang = %s OR lang = %s OR lang = %s)';
+                    $query_args[] = $lang;
+                    $query_args[] = '';
+                    $query_args[] = $default_lang_code;
+                    $order_clause = $wpdb->prepare(
+                        ' ORDER BY CASE WHEN lang = %s THEN 1 WHEN lang = %s THEN 2 ELSE 3 END',
+                        $lang, ''
+                    );
+                } else {
+                    $lang_clause = ' AND (lang = %s OR lang = %s)';
+                    $query_args[] = $lang;
+                    $query_args[] = '';
+                    $order_clause = ' ORDER BY lang DESC';
+                }
             }
             $raw_cells = $wpdb->get_results( $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}tablemaster_cells WHERE row_id IN ($placeholders)$lang_clause ORDER BY lang DESC",
+                "SELECT * FROM {$wpdb->prefix}tablemaster_cells WHERE row_id IN ($placeholders)$lang_clause" . ( $order_clause ?? ' ORDER BY lang DESC' ),
                 $query_args
             ) );
             foreach ( $raw_cells as $cell ) {
@@ -422,6 +474,13 @@ class TableMaster_DB {
     public static function save_table_structure( $table_id, $columns_data, $rows_data, $lang = '' ) {
         global $wpdb;
         $table_id = intval( $table_id );
+
+        if ( $lang !== '' && class_exists( 'TableMaster_WPML' ) && TableMaster_WPML::is_active() ) {
+            $default_lang = TableMaster_WPML::get_default_language();
+            if ( $lang === $default_lang ) {
+                $lang = '';
+            }
+        }
 
         self::flush_table_cache( $table_id );
 
