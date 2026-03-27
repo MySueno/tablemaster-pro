@@ -290,6 +290,7 @@
     background: var(--tmp-first-col-bg, inherit) !important;
     color: var(--tmp-first-col-text, inherit);
     font-weight: 600;
+    border-top-color: var(--tmp-first-col-bg, transparent);
 }
 
 .tmp-type-data:hover,
@@ -551,6 +552,7 @@
     background: var(--tmp-first-col-bg) !important;
     color: var(--tmp-first-col-text, inherit);
     font-weight: 600;
+    border-top-color: var(--tmp-first-col-bg, transparent);
 }
 
 .tmp-wrapper.tmp-sticky-first.tmp-first-col-colored .tmp-even td:first-child,
@@ -558,6 +560,7 @@
     background: var(--tmp-first-col-bg) !important;
     color: var(--tmp-first-col-text, inherit);
     font-weight: 600;
+    border-top-color: var(--tmp-first-col-bg, transparent);
 }
 
 .tmp-wrapper.tmp-sticky-first .tmp-type-footer td:first-child,
