@@ -85,118 +85,8 @@ class TableMaster_DB {
             return;
         }
 
-        $green_settings = json_encode( array(
-            'caption'            => 'Medewerkers per Bedrijf',
-            'search'             => true,
-            'search_position'    => 'right',
-            'pagination'         => true,
-            'per_page'           => 10,
-            'per_page_selector'  => true,
-            'collapsible_groups' => false,
-            'mobile_mode'        => 'scroll',
-            'default_sort_col'   => '',
-            'default_sort_dir'   => 'asc',
-            'inline_html'        => false,
-            'theme'              => 'red',
-            'colors'             => array(
-                'header_bg'       => '#D32637',
-                'header_text'     => '#ffffff',
-                'group1_bg'       => '#D32637',
-                'group1_text'     => '#ffffff',
-                'group2_bg'       => '#F9E6E7',
-                'group2_text'     => '#D32637',
-                'group3_bg'       => '#ffffff',
-                'group3_text'     => '#1a1a1a',
-                'footer_bg'       => '#D32637',
-                'footer_text'     => '#ffffff',
-                'odd_bg'          => '#F8F8F8',
-                'even_bg'         => '#ffffff',
-                'hover_bg'        => '#fce4e4',
-                'border_color'    => '#e8e8e8',
-                'accent_color'    => '#D32637',
-            ),
-        ) );
-
-        $now = current_time( 'mysql' );
-
-        $wpdb->insert(
-            "{$wpdb->prefix}tablemaster_tables",
-            array(
-                'name'       => 'Medewerkers Overzicht (Demo)',
-                'slug'       => 'medewerkers-overzicht-demo',
-                'settings'   => $green_settings,
-                'created_at' => $now,
-                'updated_at' => $now,
-                'created_by' => 1,
-            )
-        );
-        $t1 = $wpdb->insert_id;
-
-        $cols1 = array(
-            array( 'label' => 'Achternaam',  'type' => 'text',   'order_index' => 0,
-                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left',   'sortable' => true,  'filterable' => true) ) ),
-            array( 'label' => 'Voornaam',    'type' => 'text',   'order_index' => 1,
-                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left',   'sortable' => true,  'filterable' => true) ) ),
-            array( 'label' => 'Bedrijf',     'type' => 'text',   'order_index' => 2,
-                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left',   'sortable' => true,  'filterable' => true) ) ),
-            array( 'label' => 'Land',        'type' => 'text',   'order_index' => 3,
-                   'settings' => json_encode( array( 'width' => '120px','align' => 'left',   'sortable' => true,  'filterable' => true) ) ),
-            array( 'label' => 'Verjaardag',  'type' => 'date',   'order_index' => 4,
-                   'settings' => json_encode( array( 'width' => '120px','align' => 'center', 'sortable' => true,  'filterable' => false) ) ),
-        );
-
-        $col_ids1 = array();
-        foreach ( $cols1 as $col ) {
-            $wpdb->insert( "{$wpdb->prefix}tablemaster_columns", array_merge( array( 'table_id' => $t1 ), $col ) );
-            $col_ids1[] = $wpdb->insert_id;
-        }
-
-        $demo_rows = array(
-            array( 'type' => 'group_1', 'parent' => null,  'data' => array( 'Adobe', '', 'Adobe', '', '' ) ),
-            array( 'type' => 'data',    'parent' => 0,     'data' => array( 'Houston',   'Jordan',   'Adobe', 'Canada',         '1985-03-05' ) ),
-            array( 'type' => 'data',    'parent' => 0,     'data' => array( 'Gutierrez',  'Diana',    'Adobe', 'Mexico',         '1990-07-14' ) ),
-            array( 'type' => 'data',    'parent' => 0,     'data' => array( 'Nakamura',   'Kenji',    'Adobe', 'Japan',          '1988-11-22' ) ),
-            array( 'type' => 'group_1', 'parent' => null,  'data' => array( 'Apple', '', 'Apple', '', '' ) ),
-            array( 'type' => 'data',    'parent' => 4,     'data' => array( 'Smith',      'Emily',    'Apple', 'United States',  '1993-01-30' ) ),
-            array( 'type' => 'data',    'parent' => 4,     'data' => array( 'Müller',     'Hans',     'Apple', 'Germany',        '1979-06-18' ) ),
-            array( 'type' => 'data',    'parent' => 4,     'data' => array( 'Okonkwo',    'Chisom',   'Apple', 'Nigeria',        '1995-09-03' ) ),
-            array( 'type' => 'group_1', 'parent' => null,  'data' => array( 'Cisco', '', 'Cisco', '', '' ) ),
-            array( 'type' => 'data',    'parent' => 8,     'data' => array( 'Patel',      'Priya',    'Cisco', 'India',          '1987-04-12' ) ),
-            array( 'type' => 'data',    'parent' => 8,     'data' => array( 'Leblanc',    'François', 'Cisco', 'France',         '1982-12-28' ) ),
-            array( 'type' => 'data',    'parent' => 8,     'data' => array( 'Chen',       'Wei',      'Cisco', 'China',          '1991-08-07' ) ),
-        );
-
-        $row_ids1   = array();
-        $parent_map = array();
-        foreach ( $demo_rows as $idx => $r ) {
-            $parent_id = null;
-            if ( is_int( $r['parent'] ) ) {
-                $parent_id = $parent_map[ $r['parent'] ] ?? null;
-            }
-            $wpdb->insert( "{$wpdb->prefix}tablemaster_rows", array(
-                'table_id'    => $t1,
-                'parent_id'   => $parent_id,
-                'row_type'    => $r['type'],
-                'order_index' => $idx,
-                'is_collapsed'=> 0,
-            ) );
-            $rid           = $wpdb->insert_id;
-            $row_ids1[]    = $rid;
-            $parent_map[$idx] = $rid;
-
-            foreach ( $r['data'] as $ci => $content ) {
-                if ( $content === '' ) continue;
-                $wpdb->insert( "{$wpdb->prefix}tablemaster_cells", array(
-                    'row_id'    => $rid,
-                    'column_id' => $col_ids1[$ci],
-                    'content'   => $content,
-                    'lang'      => '',
-                ) );
-            }
-        }
-
-        $red_settings = json_encode( array(
-            'caption'            => 'Medische Behandelingen',
+        $default_settings = json_encode( array(
+            'caption'            => '',
             'search'             => true,
             'search_position'    => 'right',
             'pagination'         => true,
@@ -217,6 +107,8 @@ class TableMaster_DB {
                 'group2_text'  => '#D32637',
                 'group3_bg'    => '#ffffff',
                 'group3_text'  => '#1a1a1a',
+                'footer_bg'    => '#D32637',
+                'footer_text'  => '#ffffff',
                 'odd_bg'       => '#F8F8F8',
                 'even_bg'      => '#ffffff',
                 'hover_bg'     => '#fce4e4',
@@ -225,170 +117,51 @@ class TableMaster_DB {
             ),
         ) );
 
+        $now = current_time( 'mysql' );
+
         $wpdb->insert(
             "{$wpdb->prefix}tablemaster_tables",
             array(
-                'name'       => 'Medische Behandelingen (Demo)',
-                'slug'       => 'medische-behandelingen-demo',
-                'settings'   => $red_settings,
+                'name'       => 'Mijn eerste tabel',
+                'slug'       => 'mijn-eerste-tabel',
+                'settings'   => $default_settings,
                 'created_at' => $now,
                 'updated_at' => $now,
-                'created_by' => 1,
+                'created_by' => get_current_user_id() ?: 1,
             )
         );
-        $t2 = $wpdb->insert_id;
+        $table_id = $wpdb->insert_id;
 
-        $cols2 = array(
-            array( 'label' => 'Behandeling',   'type' => 'text', 'order_index' => 0,
-                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left', 'sortable' => true, 'filterable' => true) ) ),
-            array( 'label' => 'Categorie',     'type' => 'text', 'order_index' => 1,
-                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left', 'sortable' => true, 'filterable' => true) ) ),
-            array( 'label' => 'Indicatie',     'type' => 'text', 'order_index' => 2,
-                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left', 'sortable' => false,'filterable' => false,) ) ),
-            array( 'label' => 'Prijs (€)',     'type' => 'number','order_index' => 3,
-                   'settings' => json_encode( array( 'width' => '100px','align' => 'right','sortable' => true, 'filterable' => false,) ) ),
-        );
-
-        $col_ids2 = array();
-        foreach ( $cols2 as $col ) {
-            $wpdb->insert( "{$wpdb->prefix}tablemaster_columns", array_merge( array( 'table_id' => $t2 ), $col ) );
-            $col_ids2[] = $wpdb->insert_id;
-        }
-
-        $demo2 = array(
-            array( 'type' => 'group_1', 'parent' => null, 'data' => array( 'Massage', 'Fysiotherapie', '', '' ) ),
-            array( 'type' => 'group_2', 'parent' => 0,    'data' => array( 'Klassieke massage', 'Fysiotherapie', '', '' ) ),
-            array( 'type' => 'data',    'parent' => 1,    'data' => array( 'Rugmassage 30 min',       'Fysiotherapie', 'Spierspanning',   '45' ) ),
-            array( 'type' => 'data',    'parent' => 1,    'data' => array( 'Rugmassage 60 min',       'Fysiotherapie', 'Spierspanning',   '75' ) ),
-            array( 'type' => 'group_2', 'parent' => 0,    'data' => array( 'Sportmassage', 'Fysiotherapie', '', '' ) ),
-            array( 'type' => 'data',    'parent' => 4,    'data' => array( 'Sportmassage 45 min',     'Fysiotherapie', 'Sportblessure',   '60' ) ),
-            array( 'type' => 'group_1', 'parent' => null, 'data' => array( 'Injecties', 'Medisch', '', '' ) ),
-            array( 'type' => 'group_2', 'parent' => 6,    'data' => array( 'Botox', 'Medisch', '', '' ) ),
-            array( 'type' => 'group_3', 'parent' => 7,    'data' => array( 'Voorhoofd Botox', 'Medisch', 'Rimpels', '' ) ),
-            array( 'type' => 'data',    'parent' => 8,    'data' => array( 'Botox 1 zone',            'Medisch',       'Rimpels',         '150' ) ),
-            array( 'type' => 'data',    'parent' => 8,    'data' => array( 'Botox 3 zones',           'Medisch',       'Rimpels',         '350' ) ),
-            array( 'type' => 'group_1', 'parent' => null, 'data' => array( 'Curettage', 'Dermatologie', '', '' ) ),
-            array( 'type' => 'data',    'parent' => 11,   'data' => array( 'Curettage wrat',          'Dermatologie',  'Wratten',         '80' ) ),
-            array( 'type' => 'data',    'parent' => 11,   'data' => array( 'Curettage fibroom',       'Dermatologie',  'Huidafwijking',   '95' ) ),
-        );
-
-        $pm2 = array();
-        foreach ( $demo2 as $idx => $r ) {
-            $parent_id = null;
-            if ( is_int( $r['parent'] ) ) {
-                $parent_id = $pm2[ $r['parent'] ] ?? null;
-            }
-            $wpdb->insert( "{$wpdb->prefix}tablemaster_rows", array(
-                'table_id'    => $t2,
-                'parent_id'   => $parent_id,
-                'row_type'    => $r['type'],
-                'order_index' => $idx,
-                'is_collapsed'=> 0,
+        $col_settings = json_encode( array( 'width' => 'auto', 'align' => 'left', 'sortable' => true, 'filterable' => true ) );
+        $col_ids = array();
+        for ( $i = 1; $i <= 4; $i++ ) {
+            $wpdb->insert( "{$wpdb->prefix}tablemaster_columns", array(
+                'table_id'    => $table_id,
+                'label'       => 'Kolom ' . $i,
+                'type'        => 'text',
+                'order_index' => $i - 1,
+                'settings'    => $col_settings,
             ) );
-            $rid = $wpdb->insert_id;
-            $pm2[$idx] = $rid;
-            foreach ( $r['data'] as $ci => $content ) {
-                if ( $content === '' ) continue;
-                $wpdb->insert( "{$wpdb->prefix}tablemaster_cells", array(
-                    'row_id'    => $rid,
-                    'column_id' => $col_ids2[$ci],
-                    'content'   => $content,
-                    'lang'      => '',
-                ) );
-            }
+            $col_ids[] = $wpdb->insert_id;
         }
 
-        $anato_settings = json_encode( array(
-            'caption'            => '',
-            'search'             => false,
-            'search_position'    => 'right',
-            'pagination'         => false,
-            'per_page'           => -1,
-            'per_page_selector'  => false,
-            'collapsible_groups' => false,
-            'mobile_mode'        => 'scroll',
-            'default_sort_col'   => '',
-            'default_sort_dir'   => 'asc',
-            'inline_html'        => false,
-            'theme'              => 'red',
-            'colors'             => array(
-                'header_bg'    => '#c0392b',
-                'header_text'  => '#ffffff',
-                'group1_bg'    => '#c0392b',
-                'group1_text'  => '#ffffff',
-                'group2_bg'    => '#e8a0a0',
-                'group2_text'  => '#1a1a1a',
-                'group3_bg'    => '#f5c6c6',
-                'group3_text'  => '#1a1a1a',
-                'odd_bg'       => '#ffffff',
-                'even_bg'      => '#f9f9f9',
-                'hover_bg'     => '#fce4e4',
-                'border_color' => '#e8e8e8',
-                'accent_color' => '#c0392b',
-            ),
-        ) );
-
-        $wpdb->insert(
-            "{$wpdb->prefix}tablemaster_tables",
-            array(
-                'name'       => 'Anatomopathologie (Kiemen)',
-                'slug'       => 'anatomopathologie-kiemen',
-                'settings'   => $anato_settings,
-                'created_at' => $now,
-                'updated_at' => $now,
-                'created_by' => 1,
-            )
-        );
-        $t3 = $wpdb->insert_id;
-
-        $cols3 = array(
-            array( 'label' => 'Kiemen',               'type' => 'text',   'order_index' => 0,
-                   'settings' => json_encode( array( 'width' => 'auto', 'align' => 'left',   'sortable' => true,  'filterable' => true) ) ),
-            array( 'label' => 'Percentage 2024-2025',  'type' => 'text',   'order_index' => 1,
-                   'settings' => json_encode( array( 'width' => '200px','align' => 'left',   'sortable' => true,  'filterable' => false) ) ),
-            array( 'label' => 'Percentage 2018',       'type' => 'text',   'order_index' => 2,
-                   'settings' => json_encode( array( 'width' => '200px','align' => 'left',   'sortable' => true,  'filterable' => false) ) ),
-        );
-
-        $col_ids3 = array();
-        foreach ( $cols3 as $col ) {
-            $wpdb->insert( "{$wpdb->prefix}tablemaster_columns", array_merge( array( 'table_id' => $t3 ), $col ) );
-            $col_ids3[] = $wpdb->insert_id;
-        }
-
-        $demo3 = array(
-            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Campylobacter spp.',      '63,8%', '71,7%' ) ),
-            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Campylobacter jejuni',    '77,5%', '86,8%' ) ),
-            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Campylobacter coli',      '11,3%', '11,6%' ) ),
-            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Campylobacter andere',    '11,2%', '1,6%'  ) ),
-            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Aeromonas spp.',          '14,0%', '11,8%' ) ),
-            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Salmonella spp.',         '10,5%', '11,4%' ) ),
-            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Shigella spp.',           '2,1%',  '2,0%'  ) ),
-            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Yersinia enterocolitica', '5,4%',  '2,0%'  ) ),
-            array( 'type' => 'data',    'parent' => null, 'data' => array( 'E.coli O157',             '0,3%',  '0,1%'  ) ),
-            array( 'type' => 'data',    'parent' => null, 'data' => array( 'Andere',                  '3,9%',  '1,0%'  ) ),
-            array( 'type' => 'group_1', 'parent' => null, 'data' => array( 'Som',                     '100%',  '100%'  ) ),
-        );
-
-        foreach ( $demo3 as $idx => $r ) {
+        for ( $r = 0; $r < 3; $r++ ) {
             $wpdb->insert( "{$wpdb->prefix}tablemaster_rows", array(
-                'table_id'    => $t3,
+                'table_id'    => $table_id,
                 'parent_id'   => null,
-                'row_type'    => $r['type'],
-                'order_index' => $idx,
+                'row_type'    => 'data',
+                'order_index' => $r,
                 'is_collapsed'=> 0,
             ) );
-            $rid = $wpdb->insert_id;
-            foreach ( $r['data'] as $ci => $content ) {
-                if ( $content === '' ) continue;
-                $wpdb->insert( "{$wpdb->prefix}tablemaster_cells", array(
-                    'row_id'    => $rid,
-                    'column_id' => $col_ids3[$ci],
-                    'content'   => $content,
-                    'lang'      => '',
-                ) );
-            }
         }
+
+        $wpdb->insert( "{$wpdb->prefix}tablemaster_rows", array(
+            'table_id'    => $table_id,
+            'parent_id'   => null,
+            'row_type'    => 'footer',
+            'order_index' => 3,
+            'is_collapsed'=> 0,
+        ) );
     }
 
     public static function get_all_tables() {
