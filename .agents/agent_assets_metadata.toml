@@ -6,3 +6,9 @@ id = "1nnwkidNWpFLPJbk71kWg"
 uri = "file://tablemaster-pro.zip"
 type = "unspecified"
 title = "TableMaster Pro v1.3.60"
+
+[[outputs]]
+id = "t7M8wWQAzRsZqetFI3zSs"
+uri = "file://attached_assets/testplan_resultaten.md"
+type = "text"
+title = "QA Testresultaten — TableMaster Pro v1.3.64"
