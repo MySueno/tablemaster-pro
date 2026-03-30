@@ -190,8 +190,8 @@
             var bg = dataIdx % 2 === 0 ? c.odd_bg : c.even_bg;
             $(this).css({ background: bg });
             var $firstCell = $(this).find('td').eq(2);
-            if ((c.first_col_bg || c.first_col_text) && $firstCell.length) {
-                $firstCell.css({ background: c.first_col_bg || '', color: c.first_col_text || '', fontWeight: c.first_col_bg ? '600' : '' });
+            if (c.first_col_bg && $firstCell.length) {
+                $firstCell.css({ background: c.first_col_bg, color: c.first_col_text || '#ffffff', fontWeight: '600' });
             } else if ($firstCell.length) {
                 $firstCell.css({ background: '', color: '', fontWeight: '' });
             }
