@@ -67,7 +67,7 @@ class TableMaster_Settings {
             'odd_bg'       => '#F8F8F8', 'even_bg'      => '#ffffff',
             'hover_bg'     => '#fce4e4', 'border_color' => '#e8e8e8',
             'accent_color' => '#D32737',
-            'first_col_bg' => '#D32737', 'first_col_text' => '#ffffff',
+            'first_col_bg' => '',        'first_col_text' => '',
         );
         $safe = array();
         foreach ( $defaults as $key => $fallback ) {
