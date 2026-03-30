@@ -169,7 +169,7 @@
 .tmp-th {
     background: var(--tmp-header-bg, #D32637);
     color: var(--tmp-header-text, #fff);
-    padding: 20px;
+    padding: 16px;
     text-align: left;
     font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: 600;
@@ -347,7 +347,7 @@
     font-weight: 600;
     font-size: 0.95em;
     text-align: left;
-    padding: 20px;
+    padding: 16px;
 }
 
 .tmp-group-cell {
