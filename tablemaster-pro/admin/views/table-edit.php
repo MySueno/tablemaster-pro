@@ -180,8 +180,8 @@ $page_title = $is_new
                     $text_val = $c[ $section['text']['key'] ] ?? '';
                     $bg_is_optional   = in_array( $section['bg']['key'], $optional_color_keys, true );
                     $text_is_optional = in_array( $section['text']['key'], $optional_color_keys, true );
-                    $bg_default   = $bg_is_optional ? '' : ( $bg_val ?: '#ffffff' );
-                    $text_default = $text_is_optional ? '' : ( $text_val ?: '#ffffff' );
+                    $bg_default   = $bg_is_optional ? ( $bg_val ?: '' ) : ( $bg_val ?: '#ffffff' );
+                    $text_default = $text_is_optional ? ( $text_val ?: '' ) : ( $text_val ?: '#ffffff' );
                 ?>
                     <div class="tmp-color-section">
                         <div class="tmp-color-section-title"><?php echo esc_html( $section['title'] ); ?></div>

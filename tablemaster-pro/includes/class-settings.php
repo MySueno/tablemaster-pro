@@ -59,15 +59,15 @@ class TableMaster_Settings {
 
     public static function sanitize_colors( $colors ) {
         $defaults = array(
-            'header_bg'    => '#D32637', 'header_text'  => '#ffffff',
-            'group1_bg'    => '#D32637', 'group1_text'  => '#ffffff',
+            'header_bg'    => '#D32737', 'header_text'  => '#ffffff',
+            'group1_bg'    => '#D32737', 'group1_text'  => '#ffffff',
             'group2_bg'    => '#F9E6E7', 'group2_text'  => '#D32637',
-            'group3_bg'    => '#ffffff', 'group3_text'  => '#1a1a1a',
-            'footer_bg'   => '#D32637', 'footer_text'  => '#ffffff',
+            'group3_bg'    => '#f8f8f8', 'group3_text'  => '#1a1a1a',
+            'footer_bg'   => '#D32737', 'footer_text'  => '#ffffff',
             'odd_bg'       => '#F8F8F8', 'even_bg'      => '#ffffff',
             'hover_bg'     => '#fce4e4', 'border_color' => '#e8e8e8',
-            'accent_color' => '#D32637',
-            'first_col_bg' => '',        'first_col_text' => '',
+            'accent_color' => '#D32737',
+            'first_col_bg' => '#D32737', 'first_col_text' => '#ffffff',
         );
         $safe = array();
         foreach ( $defaults as $key => $fallback ) {
@@ -84,14 +84,15 @@ class TableMaster_Settings {
     public static function get_color_presets() {
         return array(
             'red' => array(
-                'header_bg'    => '#D32637', 'header_text'  => '#ffffff',
-                'group1_bg'    => '#D32637', 'group1_text'  => '#ffffff',
+                'header_bg'    => '#D32737', 'header_text'  => '#ffffff',
+                'group1_bg'    => '#D32737', 'group1_text'  => '#ffffff',
                 'group2_bg'    => '#F9E6E7', 'group2_text'  => '#D32637',
-                'group3_bg'    => '#ffffff', 'group3_text'  => '#1a1a1a',
-                'footer_bg'   => '#D32637', 'footer_text'  => '#ffffff',
+                'group3_bg'    => '#f8f8f8', 'group3_text'  => '#1a1a1a',
+                'footer_bg'   => '#D32737', 'footer_text'  => '#ffffff',
                 'odd_bg'       => '#F8F8F8', 'even_bg'      => '#ffffff',
                 'hover_bg'     => '#fce4e4', 'border_color' => '#e8e8e8',
-                'accent_color' => '#D32637',
+                'accent_color' => '#D32737',
+                'first_col_bg' => '#D32737', 'first_col_text' => '#ffffff',
             ),
             'blue' => array(
                 'header_bg'    => '#1565c0', 'header_text'  => '#ffffff',
