@@ -174,14 +174,12 @@ $page_title = $is_new
                         'text'  => array( 'key' => 'even_bg', 'label' => __( 'Even', TMP_TEXT_DOMAIN ) ),
                     ),
                 );
-                $optional_color_keys = array( 'first_col_bg', 'first_col_text' );
+                $preset_defaults = $default_colors;
                 foreach ( $color_sections as $section ) :
                     $bg_val   = $c[ $section['bg']['key'] ] ?? '';
                     $text_val = $c[ $section['text']['key'] ] ?? '';
-                    $bg_is_optional   = in_array( $section['bg']['key'], $optional_color_keys, true );
-                    $text_is_optional = in_array( $section['text']['key'], $optional_color_keys, true );
-                    $bg_default   = $bg_is_optional ? ( $bg_val ?: '' ) : ( $bg_val ?: '#ffffff' );
-                    $text_default = $text_is_optional ? ( $text_val ?: '' ) : ( $text_val ?: '#ffffff' );
+                    $bg_preset   = $preset_defaults[ $section['bg']['key'] ] ?? '#ffffff';
+                    $text_preset = $preset_defaults[ $section['text']['key'] ] ?? '#ffffff';
                 ?>
                     <div class="tmp-color-section">
                         <div class="tmp-color-section-title"><?php echo esc_html( $section['title'] ); ?></div>
@@ -190,15 +188,15 @@ $page_title = $is_new
                                 <label><?php echo esc_html( $section['bg']['label'] ); ?></label>
                                 <input type="text" class="tmp-color-picker"
                                        data-color-key="<?php echo esc_attr( $section['bg']['key'] ); ?>"
-                                       value="<?php echo esc_attr( $bg_default ); ?>"
-                                       data-default-color="<?php echo esc_attr( $bg_default ); ?>">
+                                       value="<?php echo esc_attr( $bg_val ); ?>"
+                                       data-default-color="<?php echo esc_attr( $bg_preset ); ?>">
                             </div>
                             <div class="tmp-color-field">
                                 <label><?php echo esc_html( $section['text']['label'] ); ?></label>
                                 <input type="text" class="tmp-color-picker"
                                        data-color-key="<?php echo esc_attr( $section['text']['key'] ); ?>"
-                                       value="<?php echo esc_attr( $text_default ); ?>"
-                                       data-default-color="<?php echo esc_attr( $text_default ); ?>">
+                                       value="<?php echo esc_attr( $text_val ); ?>"
+                                       data-default-color="<?php echo esc_attr( $text_preset ); ?>">
                             </div>
                         </div>
                     </div>
