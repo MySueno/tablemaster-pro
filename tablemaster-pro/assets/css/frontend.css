@@ -269,7 +269,7 @@
 }
 
 .tmp-td {
-    padding: 20px;
+    padding: 8px 12px;
     border-top: 1px solid var(--tmp-border, #e0e0e0);
     vertical-align: middle;
     color: #5C5C5C;
@@ -347,14 +347,14 @@
     font-weight: 600;
     font-size: 0.95em;
     text-align: left;
-    padding: 20px;
+    padding: 8px 12px;
 }
 
 .tmp-group-cell {
     font-weight: 700;
     font-size: 1em;
     text-align: left;
-    padding: 20px;
+    padding: 8px 12px;
 }
 
 .tmp-group-cell-inner {
