@@ -67,6 +67,17 @@ if ( ! $table ) {
             .tmp-preview-page { padding: 16px 12px; }
             .tmp-preview-toolbar { padding: 0 12px; font-size: 12px; gap: 8px; }
         }
+
+        /* THEME-BLEED SIMULATIE
+           Veel WordPress themes (Twenty-Twenty, Astra, OceanWP, Storefront, etc.)
+           geven globale `table td/th` borders mee via `.entry-content table td`.
+           We simuleren dat hier zodat de admin-preview een realistische worst-case
+           context biedt — als de tabel hier zonder lijnen rendert, dan ook op live. */
+        .tmp-preview-page table,
+        .tmp-preview-page td,
+        .tmp-preview-page th {
+            border: 1px solid #ddd;
+        }
     </style>
 </head>
 <body>

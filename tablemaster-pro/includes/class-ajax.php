@@ -80,6 +80,7 @@ class TableMaster_Ajax {
         $clean['enable_export']      = ! empty( $settings['enable_export'] );
         $clean['sticky_first_col']   = ! empty( $settings['sticky_first_col'] );
         $clean['sticky_header']      = ! empty( $settings['sticky_header'] );
+        $clean['show_row_borders']   = ! empty( $settings['show_row_borders'] );
         $clean['theme']              = in_array( $settings['theme'] ?? '', $allowed_themes, true ) ? $settings['theme'] : 'custom';
 
         $dcw = trim( $settings['default_col_width'] ?? '' );

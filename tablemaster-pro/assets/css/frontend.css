@@ -126,10 +126,32 @@
     margin-bottom: -1px;
 }
 
+/* =============================================
+   THEME-BLEED RESET
+   WordPress themes geven vaak globale `table td/th` borders, box-shadows
+   of background-image streepjes mee. Deze defensieve reset ZORGT dat de
+   plugin-tabel altijd een schone lei is, ongeacht het actieve theme.
+   De plugin-styling hieronder zet daarna de WEL gewenste borders weer aan.
+   Selectoren bewust met dubbele klasse (.tmp-wrapper .tmp-table) zodat ze
+   typische theme rules (.entry-content table td, etc.) verslaan.
+   ============================================= */
+.tmp-wrapper .tmp-table,
+.tmp-wrapper .tmp-table thead,
+.tmp-wrapper .tmp-table tbody,
+.tmp-wrapper .tmp-table tfoot,
+.tmp-wrapper .tmp-table tr,
+.tmp-wrapper .tmp-table th,
+.tmp-wrapper .tmp-table td {
+    border: 0;
+    box-shadow: none;
+    background-image: none;
+}
+
 /* The table */
-.tmp-table {
+.tmp-wrapper .tmp-table {
     width: 100%;
     border-collapse: collapse;
+    border-spacing: 0;
     table-layout: fixed;
     font-family: inherit;
     font-size: inherit;
@@ -243,13 +265,21 @@
     height: 34px;
 }
 
-.tmp-td {
+.tmp-wrapper .tmp-table .tmp-td {
     padding: 8px 16px;
-    border-top: 1px solid var(--tmp-border, #e0e0e0);
+    /* Géén border-top by default — rijscheidingslijnen alleen wanneer expliciet aan via .tmp-row-borders.
+       Voorheen tekende deze cel altijd een lijn, wat samen met theme-bleed lijnen "zichtbaar" maakte op live. */
+    border-top: 0;
     vertical-align: middle;
     color: #5C5C5C;
     font-weight: 400;
     text-align: left;
+}
+
+/* Optionele rijscheidingslijnen — alleen actief wanneer de gebruiker
+   "Rijscheidingslijnen tonen" aanzet in de tabel-instellingen. */
+.tmp-wrapper.tmp-row-borders .tmp-table .tmp-td {
+    border-top: 1px solid var(--tmp-border, #e0e0e0);
 }
 
 .tmp-type-data.tmp-odd {
@@ -260,8 +290,8 @@
     background: var(--tmp-even-bg, #ffffff);
 }
 
-.tmp-first-col-colored .tmp-type-data .tmp-td:first-child,
-.tmp-first-col-colored .tmp-type-data .tmp-toggle-cell + .tmp-td {
+.tmp-wrapper.tmp-first-col-colored .tmp-type-data .tmp-td:first-child,
+.tmp-wrapper.tmp-first-col-colored .tmp-type-data .tmp-toggle-cell + .tmp-td {
     background: var(--tmp-first-col-bg, inherit) !important;
     color: var(--tmp-first-col-text, inherit);
     font-weight: 600;
@@ -291,14 +321,14 @@
     height: 34px;
 }
 
-.tmp-type-group_1 .tmp-td,
-.tmp-type-group_2 .tmp-td,
-.tmp-type-group_3 .tmp-td {
+.tmp-wrapper .tmp-type-group_1 .tmp-td,
+.tmp-wrapper .tmp-type-group_2 .tmp-td,
+.tmp-wrapper .tmp-type-group_3 .tmp-td {
     border-color: rgba(0,0,0,0.08);
     color: inherit;
 }
 
-.tmp-table tbody tr:first-child .tmp-td {
+.tmp-wrapper .tmp-table tbody tr:first-child .tmp-td {
     border-top: none;
 }
 

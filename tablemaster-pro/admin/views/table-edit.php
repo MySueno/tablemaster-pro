@@ -305,6 +305,13 @@ $page_title = $is_new
                     <input type="text" id="tmp-max-height" value="<?php echo esc_attr( $settings['max_height'] ?? '' ); ?>" class="small-text" placeholder="geen limiet" style="width:100px;">
                     <p class="description"><?php esc_html_e( 'Bijv. 400px, 50vh. Bij overschrijding verschijnt automatisch een verticale scrollbar.', TMP_TEXT_DOMAIN ); ?></p>
                 </div>
+                <div class="tmp-form-group">
+                    <label>
+                        <input type="checkbox" id="tmp-show-row-borders" <?php checked( $settings['show_row_borders'] ?? false ); ?>>
+                        <?php esc_html_e( 'Rijscheidingslijnen tonen', TMP_TEXT_DOMAIN ); ?>
+                    </label>
+                    <p class="description"><?php esc_html_e( 'Standaard uit. Wanneer aan, verschijnt er een horizontale lijn tussen rijen in de kleur van de "Rand"-instelling.', TMP_TEXT_DOMAIN ); ?></p>
+                </div>
             </div>
 
             <!-- FONT TAB -->

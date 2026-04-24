@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.64
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,13 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.5.2 =
+* Fix: Horizontale rijscheidingslijnen in tabellen op de live website (Chrome, Safari) — admin preview en frontend zijn nu pixel-identiek
+* Structurele fix: defensieve CSS-reset op `.tmp-wrapper .tmp-table` voorkomt dat WordPress theme-styling (bijv. `.entry-content table td`) doorbloed naar plugin-tabellen
+* Wijziging: Standaard worden er GEEN horizontale lijnen tussen rijen getoond — dit matcht de admin preview
+* Nieuw: Optie "Rijscheidingslijnen tonen" onder Weergave-tab — wanneer aan, verschijnt een horizontale lijn in de kleur van de Rand-instelling tussen rijen
+* Verbetering: Standalone preview-pagina simuleert nu typische theme-bleed (`table td { border: 1px solid #ddd }`) zodat de preview een realistische worst-case context biedt
 
 = 1.3.64 =
 * Fix: Kolom-offset bug — celdata werd bij nieuwe tabellen verschoven opgeslagen (kolom 1 data verscheen in kolom 2 op frontend)
