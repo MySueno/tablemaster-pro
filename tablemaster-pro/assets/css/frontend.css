@@ -1,35 +1,9 @@
 /* TableMaster Pro - Frontend Styles */
 
-@font-face {
-    font-family: 'Calibri';
-    src: local('Calibri'),
-         url('../fonts/carlito-regular.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Calibri';
-    src: local('Calibri Bold'),
-         url('../fonts/carlito-bold.woff2') format('woff2');
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Calibri';
-    src: local('Calibri Bold'),
-         url('../fonts/carlito-bold.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-
 .tmp-wrapper {
     box-sizing: border-box;
-    font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Erft body-font van de actieve WordPress theme — NIET wijzigen naar een vaste font-stack */
+    font-family: inherit;
     font-weight: 400;
     color: #5C5C5C;
     margin: 1.5em 0;
@@ -171,7 +145,8 @@
     color: var(--tmp-header-text, #fff);
     padding: 16px;
     text-align: left;
-    font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Erft body-font van de actieve WordPress theme — NIET wijzigen naar een vaste font-stack */
+    font-family: inherit;
     font-weight: 600;
     white-space: nowrap;
     border-right: none;

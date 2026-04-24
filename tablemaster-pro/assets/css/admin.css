@@ -291,7 +291,8 @@ td.tmp-cell-selected {
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
-    font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Erft font van de WP admin context — NIET wijzigen naar een vaste font-stack */
+    font-family: inherit;
     font-size: 0.88em;
     color: #5C5C5C;
 }
@@ -301,7 +302,8 @@ td.tmp-cell-selected {
     padding: 7px 8px;
     text-align: left;
     border: 1px solid #ddd;
-    font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Erft font van de WP admin context — NIET wijzigen naar een vaste font-stack */
+    font-family: inherit;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;

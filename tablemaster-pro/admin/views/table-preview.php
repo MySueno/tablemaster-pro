@@ -27,7 +27,9 @@ if ( ! $table ) {
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            /* Standalone preview: gebruik de neutrale system-font van het OS van de bezoeker.
+               De live frontend erft van de WP theme — deze preview heeft geen theme context. */
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             font-size: 15px;
             line-height: 1.6;
             color: #333;
@@ -45,7 +47,7 @@ if ( ! $table ) {
             display: flex;
             align-items: center;
             gap: 16px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             font-size: 13px;
         }
         .tmp-preview-toolbar strong { color: #fff; }

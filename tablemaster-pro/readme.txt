@@ -290,7 +290,7 @@ Functies:
 * Fix: Taalcode wordt nu expliciet doorgegeven door de hele vertaalchain — betrouwbaar voor alle talen
 * Fix: Directe database-fallback toegevoegd wanneer WPML's vertaalfilter de vertaling niet vindt
 * Verbeterd: Hover-effect kleurt nu de volledige rij (inclusief alle cellen)
-* Verbeterd: Standaard font ingesteld op Calibri Regular (400) met semi-bold (600) voor kolomkoppen
+* Verbeterd: Standaard font erft van het body-lettertype van de actieve WordPress theme — naadloze integratie met paginastijl
 * Fix: Standaard sorteer-pijltjes verborgen — alleen zichtbaar bij actief sorteren
 
 = 1.3.1 =
