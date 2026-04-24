@@ -343,9 +343,15 @@
     background: var(--tmp-footer-bg, #D32637) !important;
 }
 
-.tmp-type-footer .tmp-td {
+.tmp-wrapper .tmp-type-footer .tmp-td {
     border-top: none;
     color: inherit;
+}
+
+/* Belangrijk: ook met rijscheidingslijnen aan, krijgt de afsluitrij geen top-border —
+   die heeft zijn eigen volledige achtergrondkleur en hoort visueel los te staan. */
+.tmp-wrapper.tmp-row-borders .tmp-table .tmp-type-footer .tmp-td {
+    border-top: 0;
 }
 
 .tmp-footer-cell {
