@@ -70,13 +70,33 @@ if ( ! $table ) {
 
         /* THEME-BLEED SIMULATIE
            Veel WordPress themes (Twenty-Twenty, Astra, OceanWP, Storefront, etc.)
-           geven globale `table td/th` borders mee via `.entry-content table td`.
-           We simuleren dat hier zodat de admin-preview een realistische worst-case
-           context biedt — als de tabel hier zonder lijnen rendert, dan ook op live. */
+           geven globale regels mee via `.entry-content table td/th` voor:
+             - borders (typisch 1px solid #ddd)
+             - padding (typisch 8–12px)
+             - achtergrond- en tekstkleur (zebra of accent)
+             - font-size / font-family (kleinere/serif-stack)
+           We simuleren die worst-case hier (zonder de extra `.entry-content`
+           class — `.tmp-preview-page table` heeft dezelfde specificity 0,0,1,1
+           als wat een theme typisch toepast). Renders de plugin-tabel hier
+           visueel correct, dan ook op live. */
         .tmp-preview-page table,
+        .tmp-preview-page tr,
         .tmp-preview-page td,
         .tmp-preview-page th {
             border: 1px solid #ddd;
+            padding: 12px 10px;
+            background: #f4f4f4;
+            color: #111;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 13px;
+            text-align: right;
+        }
+        .tmp-preview-page th {
+            background: #e2e2e2;
+            font-weight: 400;
+        }
+        .tmp-preview-page tr:nth-child(even) td {
+            background: #ececec;
         }
     </style>
 </head>
