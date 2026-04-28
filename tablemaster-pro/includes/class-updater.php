@@ -47,6 +47,9 @@ class TableMaster_Updater {
     }
 
     public function maybe_auto_bust_cache() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
         $user_id = get_current_user_id();
         if ( ! $user_id ) {
             return;
@@ -85,12 +88,12 @@ class TableMaster_Updater {
         $args = array( 'page' => 'tablemaster-settings' );
         if ( is_object( $remote ) && ! empty( $remote->version ) ) {
             $args['tmp_check']  = 'ok';
-            $args['tmp_remote'] = rawurlencode( $remote->version );
+            $args['tmp_remote'] = $remote->version;
         } else {
             $error = get_transient( $this->error_cache_key );
             if ( ! empty( $error ) ) {
                 $args['tmp_check'] = 'err';
-                $args['tmp_msg']   = rawurlencode( $error );
+                $args['tmp_msg']   = $error;
             } elseif ( empty( $this->license_key ) ) {
                 $args['tmp_check'] = 'nolicense';
             } else {
