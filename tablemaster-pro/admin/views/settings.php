@@ -47,6 +47,21 @@ $s = TableMaster_Settings::get();
                 </td>
             </tr>
             <tr>
+                <th><?php esc_html_e( 'Plugin automatisch bijwerken', TMP_TEXT_DOMAIN ); ?></th>
+                <td>
+                    <label>
+                        <input type="checkbox" name="auto_update_plugin" value="1" <?php checked( TableMaster_Updater::is_auto_update_enabled() ); ?>>
+                        <?php esc_html_e( 'Plugin automatisch bijwerken zodra een nieuwe versie beschikbaar is', TMP_TEXT_DOMAIN ); ?>
+                    </label>
+                    <p class="description">
+                        <?php esc_html_e( 'Wanneer ingeschakeld installeert WordPress nieuwe versies van TableMaster Pro vanzelf, zonder dat u iets hoeft te doen. Deze instelling staat altijd in sync met de WordPress Plugins-pagina (één bron van waarheid).', TMP_TEXT_DOMAIN ); ?>
+                    </p>
+                    <p class="description">
+                        <?php esc_html_e( 'Aanbevolen voor de meeste sites: wij testen elke release vóór publicatie. Voor mission-critical sites kunt u deze optie uit laten en updates zelf handmatig uitvoeren na uw eigen test.', TMP_TEXT_DOMAIN ); ?>
+                    </p>
+                </td>
+            </tr>
+            <tr>
                 <th><?php esc_html_e( 'Data verwijderen bij deïnstallatie', TMP_TEXT_DOMAIN ); ?></th>
                 <td>
                     <label>
@@ -67,7 +82,6 @@ $s = TableMaster_Settings::get();
 
     <?php
         $saved_license   = TableMaster_Settings::get( 'license_key' );
-        $active_url      = TableMaster_Settings::get_update_url();
         $cached          = get_transient( 'tmp_update_check' );
         $cached_version  = ( is_object( $cached ) && ! empty( $cached->version ) ) ? $cached->version : null;
         $last_error      = get_transient( 'tmp_update_error' );
@@ -106,10 +120,6 @@ $s = TableMaster_Settings::get();
                         <span style="color:#d63638;"><?php esc_html_e( 'geen licentiecode ingevuld — automatische updates zijn uitgeschakeld', TMP_TEXT_DOMAIN ); ?></span>
                     <?php endif; ?>
                 </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e( 'Update-server', TMP_TEXT_DOMAIN ); ?></th>
-                <td><code><?php echo esc_html( $active_url ); ?></code></td>
             </tr>
             <tr>
                 <th scope="row"><?php esc_html_e( 'Geïnstalleerde versie', TMP_TEXT_DOMAIN ); ?></th>

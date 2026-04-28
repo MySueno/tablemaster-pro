@@ -27,6 +27,46 @@ class TableMaster_Updater {
         $this->error_cache_key = 'tmp_update_error';
     }
 
+    /**
+     * Plugin-bestand waarmee WP de auto-update opt-in bijhoudt
+     * in de site-option `auto_update_plugins`.
+     */
+    const PLUGIN_FILE = 'tablemaster-pro/tablemaster-pro.php';
+
+    /**
+     * Leest of TableMaster Pro op auto-update staat.
+     * Bron van waarheid is de WP-site-option `auto_update_plugins`,
+     * dezelfde plek waar de WP Plugins-pagina mee werkt.
+     */
+    public static function is_auto_update_enabled() {
+        $auto_updates = get_site_option( 'auto_update_plugins', array() );
+        if ( ! is_array( $auto_updates ) ) {
+            $auto_updates = array();
+        }
+        return in_array( self::PLUGIN_FILE, $auto_updates, true );
+    }
+
+    /**
+     * Zet auto-update voor TableMaster Pro aan of uit door het
+     * plugin-bestand toe te voegen aan / te verwijderen uit de
+     * site-option `auto_update_plugins`.
+     */
+    public static function set_auto_update_enabled( $enabled ) {
+        $auto_updates = get_site_option( 'auto_update_plugins', array() );
+        if ( ! is_array( $auto_updates ) ) {
+            $auto_updates = array();
+        }
+        $is_enabled = in_array( self::PLUGIN_FILE, $auto_updates, true );
+
+        if ( $enabled && ! $is_enabled ) {
+            $auto_updates[] = self::PLUGIN_FILE;
+            update_site_option( 'auto_update_plugins', array_values( $auto_updates ) );
+        } elseif ( ! $enabled && $is_enabled ) {
+            $auto_updates = array_values( array_diff( $auto_updates, array( self::PLUGIN_FILE ) ) );
+            update_site_option( 'auto_update_plugins', $auto_updates );
+        }
+    }
+
     public function init() {
         $settings = TableMaster_Settings::get();
         $this->update_url  = TableMaster_Settings::get_update_url();

@@ -47,6 +47,13 @@ class TableMaster_Settings {
             'delete_data_on_uninstall' => ! empty( $data['delete_data_on_uninstall'] ) ? '1' : '0',
         );
         update_option( 'tablemaster_settings', $clean );
+
+        // Auto-update opt-in synchroniseren met WP's eigen `auto_update_plugins`
+        // site-option, zodat de WP Plugins-pagina dezelfde status toont.
+        if ( class_exists( 'TableMaster_Updater' ) ) {
+            TableMaster_Updater::set_auto_update_enabled( ! empty( $data['auto_update_plugin'] ) );
+        }
+
         delete_transient( 'tmp_update_check' );
         delete_transient( 'tmp_update_error' );
         delete_site_transient( 'update_plugins' );
