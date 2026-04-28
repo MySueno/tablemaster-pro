@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.5.5
+Stable tag: 1.5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,15 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.5.6 =
+* Verbetering: update-meldingen verschijnen nu binnen ongeveer een uur op alle sites in plaats van na 12 uur (cache verlaagd van 12u naar 1u)
+* Nieuw: bij het openen van de Plugins- of Updates-pagina wordt automatisch (gerate-limit per gebruiker, max 1× per 5 min) een verse update-controle gedaan
+* Nieuw: knop "Nu controleren op updates" en verbindings­statuspaneel onder TableMaster Pro → Instellingen
+* Nieuw: knop "Verbinding testen" toont direct HTTP-status, gevonden versie en eventuele foutmelding zonder de cache te overschrijven
+* Verbetering: sneller herstel na tijdelijke netwerkfouten (5 minuten in plaats van 30)
+* Verbetering: stale cache met een versie ouder dan de geïnstalleerde wordt automatisch verworpen
+* Verbetering: opslaan van instellingen wist nu ook de WordPress plugin-update transient zodat een nieuwe check direct plaatsvindt
 
 = 1.5.5 =
 * Fix: rij-kleuren (oneven/even) worden nu correct getoond op de live website, ongeacht het actieve WordPress-thema. Voorheen kon een thema met `tr:nth-child(even) td` regels een grijs/wit zebra-patroon over jouw gekozen kleuren heen schilderen.

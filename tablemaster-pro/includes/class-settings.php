@@ -48,6 +48,8 @@ class TableMaster_Settings {
         );
         update_option( 'tablemaster_settings', $clean );
         delete_transient( 'tmp_update_check' );
+        delete_transient( 'tmp_update_error' );
+        delete_site_transient( 'update_plugins' );
     }
 
     public static function sanitize_hex_color( $color, $default = '#000000' ) {

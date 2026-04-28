@@ -8,9 +8,12 @@ class TableMaster_Updater {
     private $update_url;
     private $license_key;
     private $cache_key;
-    private $cache_ttl = 43200;
+    private $cache_ttl = 3600;
     private $error_cache_key;
-    private $error_cache_ttl = 1800;
+    private $error_cache_ttl = 300;
+    private $force_check_throttle = 300;
+    private $last_check_option = 'tmp_last_successful_check';
+    private $force_check_meta  = 'tmp_last_force_check';
 
     public function __construct() {
         $this->plugin_slug   = 'tablemaster-pro';
@@ -26,13 +29,158 @@ class TableMaster_Updater {
         $this->update_url  = TableMaster_Settings::get_update_url();
         $this->license_key = $settings['license_key'] ?? '';
 
+        add_action( 'admin_post_tmp_force_update_check', array( $this, 'handle_force_check' ) );
+        add_action( 'wp_ajax_tmp_test_connection',       array( $this, 'ajax_test_connection' ) );
+        add_action( 'admin_notices',                     array( $this, 'maybe_force_check_notice' ) );
+
         if ( empty( $this->update_url ) || empty( $this->license_key ) ) {
             return;
         }
+
         add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_update' ) );
         add_filter( 'plugins_api', array( $this, 'plugin_info' ), 20, 3 );
         add_filter( 'upgrader_post_install', array( $this, 'after_install' ), 10, 3 );
         add_action( 'admin_notices', array( $this, 'connection_error_notice' ) );
+
+        add_action( 'load-plugins.php',     array( $this, 'maybe_auto_bust_cache' ) );
+        add_action( 'load-update-core.php', array( $this, 'maybe_auto_bust_cache' ) );
+    }
+
+    public function maybe_auto_bust_cache() {
+        $user_id = get_current_user_id();
+        if ( ! $user_id ) {
+            return;
+        }
+        $last = (int) get_user_meta( $user_id, $this->force_check_meta, true );
+        if ( $last && ( time() - $last ) < $this->force_check_throttle ) {
+            return;
+        }
+        update_user_meta( $user_id, $this->force_check_meta, time() );
+        $this->bust_caches();
+    }
+
+    private function bust_caches() {
+        delete_transient( $this->cache_key );
+        delete_transient( $this->error_cache_key );
+        delete_site_transient( 'update_plugins' );
+    }
+
+    public function handle_force_check() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( esc_html__( 'Geen toegang.', TMP_TEXT_DOMAIN ) );
+        }
+        check_admin_referer( 'tmp_force_update_check' );
+
+        $this->bust_caches();
+
+        $remote = null;
+        if ( ! empty( $this->update_url ) && ! empty( $this->license_key ) ) {
+            $remote = $this->get_remote_info();
+        }
+
+        if ( function_exists( 'wp_update_plugins' ) ) {
+            wp_update_plugins();
+        }
+
+        $args = array( 'page' => 'tablemaster-settings' );
+        if ( is_object( $remote ) && ! empty( $remote->version ) ) {
+            $args['tmp_check']  = 'ok';
+            $args['tmp_remote'] = rawurlencode( $remote->version );
+        } else {
+            $error = get_transient( $this->error_cache_key );
+            if ( ! empty( $error ) ) {
+                $args['tmp_check'] = 'err';
+                $args['tmp_msg']   = rawurlencode( $error );
+            } elseif ( empty( $this->license_key ) ) {
+                $args['tmp_check'] = 'nolicense';
+            } else {
+                $args['tmp_check'] = 'unknown';
+            }
+        }
+
+        wp_safe_redirect( add_query_arg( $args, admin_url( 'admin.php' ) ) );
+        exit;
+    }
+
+    public function maybe_force_check_notice() {
+        if ( empty( $_GET['tmp_check'] ) || empty( $_GET['page'] ) || $_GET['page'] !== 'tablemaster-settings' ) {
+            return;
+        }
+        $check = sanitize_key( wp_unslash( $_GET['tmp_check'] ) );
+        if ( $check === 'ok' ) {
+            $remote = isset( $_GET['tmp_remote'] ) ? sanitize_text_field( wp_unslash( $_GET['tmp_remote'] ) ) : '';
+            printf(
+                '<div class="notice notice-success is-dismissible"><p><strong>TableMaster Pro:</strong> %s</p></div>',
+                esc_html( sprintf( __( 'Verse update-controle uitgevoerd. Nieuwste beschikbare versie: %1$s. Geïnstalleerd: %2$s.', TMP_TEXT_DOMAIN ), $remote, TMP_VERSION ) )
+            );
+        } elseif ( $check === 'err' ) {
+            $msg = isset( $_GET['tmp_msg'] ) ? sanitize_text_field( wp_unslash( $_GET['tmp_msg'] ) ) : '';
+            printf(
+                '<div class="notice notice-error is-dismissible"><p><strong>TableMaster Pro:</strong> %s</p></div>',
+                esc_html( sprintf( __( 'Update-controle mislukt: %s', TMP_TEXT_DOMAIN ), $msg ) )
+            );
+        } elseif ( $check === 'nolicense' ) {
+            printf(
+                '<div class="notice notice-warning is-dismissible"><p><strong>TableMaster Pro:</strong> %s</p></div>',
+                esc_html__( 'Caches gewist, maar er is geen licentiecode ingesteld. Vul een licentiecode in om updates te ontvangen.', TMP_TEXT_DOMAIN )
+            );
+        } else {
+            printf(
+                '<div class="notice notice-info is-dismissible"><p><strong>TableMaster Pro:</strong> %s</p></div>',
+                esc_html__( 'Caches gewist. Geen update-info ontvangen.', TMP_TEXT_DOMAIN )
+            );
+        }
+    }
+
+    public function ajax_test_connection() {
+        check_ajax_referer( 'tmp_test_connection', 'nonce' );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Geen toegang.', TMP_TEXT_DOMAIN ) ), 403 );
+        }
+
+        $update_url  = TableMaster_Settings::get_update_url();
+        $settings    = TableMaster_Settings::get();
+        $license_key = $settings['license_key'] ?? '';
+
+        if ( empty( $update_url ) || empty( $license_key ) ) {
+            wp_send_json_error( array(
+                'message' => __( 'Update-URL of licentiecode ontbreekt.', TMP_TEXT_DOMAIN ),
+            ) );
+        }
+
+        $url = trailingslashit( $update_url ) . 'api/wp-update/info';
+        $start = microtime( true );
+        $response = wp_remote_get( $url, array(
+            'timeout'   => 15,
+            'sslverify' => true,
+            'headers'   => array(
+                'Accept'        => 'application/json',
+                'Connection'    => 'close',
+                'X-License-Key' => $license_key,
+            ),
+        ) );
+        $elapsed_ms = (int) round( ( microtime( true ) - $start ) * 1000 );
+
+        if ( is_wp_error( $response ) ) {
+            wp_send_json_error( array(
+                'message'     => $response->get_error_message(),
+                'elapsed_ms'  => $elapsed_ms,
+                'url'         => $url,
+            ) );
+        }
+
+        $status_code = wp_remote_retrieve_response_code( $response );
+        $body        = wp_remote_retrieve_body( $response );
+        $decoded     = json_decode( $body );
+        $remote_ver  = ( is_object( $decoded ) && ! empty( $decoded->version ) ) ? $decoded->version : null;
+
+        wp_send_json_success( array(
+            'http_status'    => $status_code,
+            'remote_version' => $remote_ver,
+            'installed'      => TMP_VERSION,
+            'url'            => $url,
+            'elapsed_ms'     => $elapsed_ms,
+        ) );
     }
 
     private function get_download_url() {
@@ -255,7 +403,12 @@ class TableMaster_Updater {
     private function get_remote_info() {
         $cached = get_transient( $this->cache_key );
         if ( $cached !== false ) {
-            return $cached;
+            if ( is_object( $cached ) && ! empty( $cached->version )
+                 && version_compare( $cached->version, TMP_VERSION, '<' ) ) {
+                delete_transient( $this->cache_key );
+            } else {
+                return $cached;
+            }
         }
 
         $recent_error = get_transient( $this->error_cache_key );
@@ -296,13 +449,14 @@ class TableMaster_Updater {
 
         set_transient( $this->cache_key, $decoded, $this->cache_ttl );
         delete_transient( $this->error_cache_key );
+        update_option( $this->last_check_option, time() );
         return $decoded;
     }
 
     private function set_error_transient( $message ) {
         set_transient(
             $this->error_cache_key,
-            sprintf( 'Kan update server niet bereiken (%s). Volgende poging over 30 minuten.', $message ),
+            sprintf( 'Kan update server niet bereiken (%s). Volgende poging over 5 minuten.', $message ),
             $this->error_cache_ttl
         );
     }
