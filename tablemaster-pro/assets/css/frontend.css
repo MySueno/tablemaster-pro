@@ -297,6 +297,24 @@
     background: var(--tmp-even-bg, #ffffff);
 }
 
+/* =============================================
+   THEME-BLEED RESET — ROW BACKGROUND
+   WordPress themes (Twenty-Twenty, Astra, OceanWP, Storefront, Hello
+   Elementor, Avada, e.a.) injecteren vaak `tr:nth-child(odd|even) td`
+   regels die de td-achtergrond OVER de tr-achtergrond schilderen. De
+   plugin moet daarom de gekozen rij-kleur óók op de cellen zelf
+   schilderen, met voldoende specificity (4 classes + element = 0,0,4,1)
+   om typische theme-regels (0,0,3,1) te verslaan. GEEN !important —
+   dat zou hover-, first-col-colored- en sticky-overrides breken.
+   ============================================= */
+.tmp-wrapper .tmp-table .tmp-type-data.tmp-odd > .tmp-td {
+    background: var(--tmp-odd-bg, #fff);
+}
+
+.tmp-wrapper .tmp-table .tmp-type-data.tmp-even > .tmp-td {
+    background: var(--tmp-even-bg, #ffffff);
+}
+
 .tmp-wrapper.tmp-first-col-colored .tmp-type-data .tmp-td:first-child,
 .tmp-wrapper.tmp-first-col-colored .tmp-type-data .tmp-toggle-cell + .tmp-td {
     background: var(--tmp-first-col-bg, inherit) !important;

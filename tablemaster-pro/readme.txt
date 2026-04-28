@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.5.4
+Stable tag: 1.5.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.5.5 =
+* Fix: rij-kleuren (oneven/even) worden nu correct getoond op de live website, ongeacht het actieve WordPress-thema. Voorheen kon een thema met `tr:nth-child(even) td` regels een grijs/wit zebra-patroon over jouw gekozen kleuren heen schilderen.
+* Verbetering: standalone admin preview simuleert nu zowel oneven als even theme-bleed (twee verschillende grijstinten), zodat dit type regressie meteen zichtbaar is in de preview vóór een live deploy.
 
 = 1.5.4 =
 * Wijziging: nieuwe kolommen en cellen worden standaard gecentreerd uitgelijnd

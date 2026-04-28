@@ -95,6 +95,9 @@ if ( ! $table ) {
             background: #e2e2e2;
             font-weight: 400;
         }
+        .tmp-preview-page tr:nth-child(odd) td {
+            background: #f4f4f4;
+        }
         .tmp-preview-page tr:nth-child(even) td {
             background: #ececec;
         }
