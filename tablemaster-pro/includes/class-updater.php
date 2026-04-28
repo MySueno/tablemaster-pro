@@ -8,9 +8,12 @@ class TableMaster_Updater {
     private $update_url;
     private $license_key;
     private $cache_key;
+    // 1 uur — sneller doorrollen van nieuwe versies naar alle WP-sites (was 12 uur).
     private $cache_ttl = 3600;
     private $error_cache_key;
+    // 5 minuten — sneller herstel na tijdelijke netwerkfouten (was 30 minuten).
     private $error_cache_ttl = 300;
+    // 5 minuten per gebruiker tussen auto-bust acties op admin-paginabezoek (anti-thundering-herd).
     private $force_check_throttle = 300;
     private $last_check_option = 'tmp_last_successful_check';
     private $force_check_meta  = 'tmp_last_force_check';

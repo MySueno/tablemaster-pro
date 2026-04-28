@@ -143,7 +143,7 @@ $s = TableMaster_Settings::get();
         </tbody>
     </table>
 
-    <p style="margin-top:14px;">
+    <div style="margin-top:14px;">
         <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline-block; margin-right:8px;">
             <input type="hidden" name="action" value="tmp_force_update_check">
             <?php wp_nonce_field( 'tmp_force_update_check' ); ?>
@@ -152,7 +152,7 @@ $s = TableMaster_Settings::get();
 
         <button type="button" class="button" id="tmp-test-connection-btn"><?php esc_html_e( 'Verbinding testen', TMP_TEXT_DOMAIN ); ?></button>
         <span id="tmp-test-connection-result" style="margin-left:10px;"></span>
-    </p>
+    </div>
 
     <p class="description" style="margin-top:14px; max-width:760px;">
         <?php esc_html_e( 'Update niet zichtbaar? Klik op "Nu controleren op updates". De cache vernieuwt automatisch elk uur, en bij een netwerkfout wordt na 5 minuten opnieuw geprobeerd. Bij het openen van de WordPress Plugins- of Updates-pagina wordt automatisch een verse controle gedaan (max 1× per 5 minuten per gebruiker).', TMP_TEXT_DOMAIN ); ?>
