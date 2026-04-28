@@ -170,7 +170,8 @@ class TableMaster_DB {
         );
         $table_id = $wpdb->insert_id;
 
-        $col_settings = json_encode( array( 'width' => 'auto', 'align' => 'left', 'sortable' => true, 'filterable' => true ) );
+        $col_settings_first = json_encode( array( 'width' => 'auto', 'align' => 'left',   'sortable' => true, 'filterable' => true ) );
+        $col_settings_rest  = json_encode( array( 'width' => 'auto', 'align' => 'center', 'sortable' => true, 'filterable' => true ) );
         $col_ids = array();
         for ( $i = 1; $i <= 4; $i++ ) {
             $wpdb->insert( "{$wpdb->prefix}tablemaster_columns", array(
@@ -178,7 +179,7 @@ class TableMaster_DB {
                 'label'       => 'Kolom ' . $i,
                 'type'        => 'text',
                 'order_index' => $i - 1,
-                'settings'    => $col_settings,
+                'settings'    => $i === 1 ? $col_settings_first : $col_settings_rest,
             ) );
             $col_ids[] = $wpdb->insert_id;
         }
@@ -520,14 +521,15 @@ class TableMaster_DB {
         $col_id_map = array();
         foreach ( $columns_data as $order_index => $col ) {
             $allowed_aligns = array( 'left', 'center', 'right' );
-            $raw_align = sanitize_text_field( $col['settings']['align'] ?? 'left' );
+            $default_align  = $order_index === 0 ? 'left' : 'center';
+            $raw_align = sanitize_text_field( $col['settings']['align'] ?? $default_align );
             $raw_width = sanitize_text_field( $col['settings']['width'] ?? 'auto' );
             if ( $raw_width !== 'auto' && ! preg_match( '/^\d{1,4}(px|em|rem|%)$/', $raw_width ) ) {
                 $raw_width = 'auto';
             }
             $col_settings = array(
                 'width'         => $raw_width,
-                'align'         => in_array( $raw_align, $allowed_aligns, true ) ? $raw_align : 'left',
+                'align'         => in_array( $raw_align, $allowed_aligns, true ) ? $raw_align : $default_align,
                 'sortable'      => ! empty( $col['settings']['sortable'] ),
                 'filterable'    => ! empty( $col['settings']['filterable'] ),
                 'header_group1' => self::clean_group_value( $col['settings']['header_group1'] ?? '', 500 ),

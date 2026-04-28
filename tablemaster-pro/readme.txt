@@ -4,7 +4,7 @@ Tags: table, tables, responsive table, sortable table, filterable table, wpml
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.5.3
+Stable tag: 1.5.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,11 @@ Functies:
 4. Gebruik de shortcode [tablemaster id="X"] in uw berichten of pagina's
 
 == Changelog ==
+
+= 1.5.4 =
+* Wijziging: nieuwe kolommen en cellen worden standaard gecentreerd uitgelijnd
+* Uitzondering: kolom 1 van een nieuwe tabel blijft standaard links uitgelijnd
+* Bestaande tabellen blijven ongewijzigd; alle uitlijningen zijn nog steeds handmatig aanpasbaar via de toolbar
 
 = 1.5.3 =
 * Structurele fix: alle visueel relevante CSS-selectoren voor de plugin-tabel zijn gequalified als `.tmp-wrapper .tmp-table ...` zodat WordPress theme-styling (padding, font, achtergrond, alignment) niet meer doorbloed naar TableMaster-tabellen op de live website

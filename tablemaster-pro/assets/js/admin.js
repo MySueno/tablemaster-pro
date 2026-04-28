@@ -252,7 +252,7 @@
             temp_key: tempKey,
             label:    (i18n.add_column || 'Kolom') + ' ' + (columns.length + 1),
             type:     'text',
-            settings: { align: 'left', sortable: true, filterable: true, header_group1: '', header_group2: '' }
+            settings: { align: 'center', sortable: true, filterable: true, header_group1: '', header_group2: '' }
         }, colData || {});
         if (!col.settings.header_group1) col.settings.header_group1 = '';
         if (!col.settings.header_group2) col.settings.header_group2 = '';
@@ -1535,7 +1535,7 @@
                     temp_key: tempKey,
                     label:    label.trim() || ('Kolom ' + (idx + 1)),
                     type:     'text',
-                    settings: { align: 'left', sortable: true, filterable: true, header_group1: '', header_group2: '' }
+                    settings: { align: idx === 0 ? 'left' : 'center', sortable: true, filterable: true, header_group1: '', header_group2: '' }
                 });
             });
 
@@ -1582,7 +1582,7 @@
                 temp_key: tempKey,
                 label:    (i18n.add_column || 'Kolom') + ' ' + i,
                 type:     'text',
-                settings: { align: 'left', sortable: true, filterable: true, header_group1: '', header_group2: '' }
+                settings: { align: i === 1 ? 'left' : 'center', sortable: true, filterable: true, header_group1: '', header_group2: '' }
             });
         }
 
